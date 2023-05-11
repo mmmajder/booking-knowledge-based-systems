@@ -18,6 +18,7 @@ public class PriceCatalog {
     private Long id;
 
     private double economyPrice;
+    private double premiumPrice;
     private double businessPrice;
     private double firstClassPrice;
 

@@ -1,0 +1,97 @@
+<app-sidebar currentPage="flights"></app-sidebar>
+<img src="../../../../../assets/images/background-line.jpg" class="dashboard-background" alt="dashboard-background"/>
+
+<div style="margin-left: 90px; margin-right: 10px; margin-top: -80px">
+  <h1 style="font-weight: 500; margin-left: 10px; color: white">Flights</h1>
+  <span style="display: flex; flex-direction: column; align-items: start">
+  <div style="display: flex; flex-direction: column; margin-top: 50px;">
+    <section>
+      <mat-checkbox [color]="'primary'" class="example-margin" [(ngModel)]="returnTicket">Return ticket</mat-checkbox>
+    </section>
+    <mat-form-field appearance="outline">
+      <mat-label>From</mat-label>
+      <input type="text"
+             placeholder="From"
+             aria-label="From"
+             matInput
+             [formControl]="myControlFrom"
+             [matAutocomplete]="autoFrom"
+             [ngModel]="from">
+      <mat-autocomplete autoActiveFirstOption #autoFrom="matAutocomplete" (optionSelected)='fromSelected($event)'>
+        <mat-option *ngFor="let option of filteredOptionsFrom | async" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <!--    <div style="display: flex; flex-direction: row;">-->
+    <!--    <mat-divider></mat-divider>-->
+    <!--    <button mat-raised-button (click)="reverseAirports()" style="margin-bottom: 20px">-->
+    <!--      <mat-icon style="margin-left: 10px">import_export</mat-icon>-->
+    <!--    </button>-->
+    <!--    </div>-->
+    <mat-form-field appearance="outline">
+      <mat-label>To</mat-label>
+      <input type="text"
+             placeholder="To"
+             aria-label="To"
+             matInput
+             [formControl]="myControlTo"
+             [matAutocomplete]="autoTo">
+      <mat-autocomplete #autoTo="matAutocomplete" (optionSelected)='toSelected($event)'>
+        <mat-option *ngFor="let option of filteredOptionsTo | async" [value]="option">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <mat-form-field *ngIf="!returnTicket" appearance="outline" class="example-form-field">
+      <mat-label>Choose a date</mat-label>
+      <input matInput [matDatepicker]="datepicker">
+      <mat-hint>MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+      <mat-datepicker #datepicker>
+        <mat-datepicker-actions>
+          <button mat-button matDatepickerCancel>Cancel</button>
+          <button mat-raised-button color="primary" matDatepickerApply>Apply</button>
+        </mat-datepicker-actions>
+      </mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field *ngIf="returnTicket" appearance="outline" class="example-form-field">
+      <mat-label>Enter a date range</mat-label>
+      <mat-date-range-input [rangePicker]="rangePicker">
+        <input matStartDate placeholder="Start date">
+        <input matEndDate placeholder="End date">
+      </mat-date-range-input>
+      <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+      <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
+      <mat-date-range-picker #rangePicker>
+        <mat-date-range-picker-actions>
+          <button mat-button matDateRangePickerCancel>Cancel</button>
+          <button mat-raised-button color="primary" matDateRangePickerApply>Apply</button>
+        </mat-date-range-picker-actions>
+      </mat-date-range-picker>
+    </mat-form-field>
+
+    <div style="border: 1px solid #ccc; padding: 10px; border-radius: 4px; align-items: center;"
+         (click)="openPassengersDialog()">
+        <mat-icon>supervisor_account</mat-icon>
+      {{numberOfAdults + numberOfChildren}} passenger, {{seatClass}}
+    </div>
+    <mat-form-field appearance="outline" style="margin-top: 20px">
+      <mat-label>Stops</mat-label>
+      <mat-select [(ngModel)]="selectedNumberOfStops" name="food">
+        <mat-option *ngFor="let numberOfStops of possibleNumberOfStops" [value]="numberOfStops">
+          {{numberOfStops}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button style="font-size: 12px; margin-top: 20px; width: 100%" mat-raised-button
+            (click)="search()" color="primary">
+        Search
+    </button>
+
+  </div>
+  </span>
+
+</div>

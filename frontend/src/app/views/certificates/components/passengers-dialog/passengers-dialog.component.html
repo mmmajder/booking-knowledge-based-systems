@@ -1,0 +1,44 @@
+<div style="padding: 20px">
+  <h1>Passengers</h1>
+  <span style="display: flex; flex-direction: row;">
+    <div style="width: 50%;">
+      <h2>Adults</h2>
+      <p>Over 18</p>
+    </div>
+    <div style="width: 50%;">
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Adults</mat-label>
+        <input matInput type="number" [(ngModel)]="numberOfAdults" min="0">
+      </mat-form-field>
+    </div>
+  </span>
+  <span style="display: flex; flex-direction: row;">
+    <div style="width: 50%;">
+      <h2>Children</h2>
+      <p>Age: 0-17</p>
+    </div>
+    <div style="width: 50%;">
+      <mat-form-field class="example-full-width" appearance="outline">
+        <mat-label>Children</mat-label>
+        <input matInput type="number" [(ngModel)]="numberOfChildren" min="0">
+      </mat-form-field>
+    </div>
+  </span>
+  <span style="display: flex; flex-direction: row;">
+    <h2 style="width: 50%;">Class</h2>
+    <div style="width: 50%;">
+    <mat-form-field appearance="outline">
+      <mat-label>Class</mat-label>
+      <mat-select [(ngModel)]="selectedClass" name="food">
+        <mat-option *ngFor="let seatClass of seatClasses" [value]="seatClass">
+          {{seatClass}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    </div>
+  </span>
+  <button style="font-size: 12px; margin-top: 20px; width: 100%" mat-raised-button
+          (click)="confirm()" color="primary">
+    Finish
+  </button>
+</div>
