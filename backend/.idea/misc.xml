@@ -3,9 +3,9 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/kjar/pom.xml" />
-        <option value="$PROJECT_DIR$/model/pom.xml" />
-        <option value="$PROJECT_DIR$/service/pom.xml" />
+        <option value="$PROJECT_DIR$/backward-kjar/pom.xml" />
+        <option value="$PROJECT_DIR$/backward-model/pom.xml" />
+        <option value="$PROJECT_DIR$/backward-service/pom.xml" />
       </list>
     </option>
   </component>
