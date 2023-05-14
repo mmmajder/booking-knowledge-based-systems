@@ -18,10 +18,6 @@ public class HotelOccupancy {
     @Column(unique = true)
     private Long id;
 
-//    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-//    @MapKeyJoinColumn(name = "hotel_room_id")
-//    private Map<HotelRoom, RoomOccupancy> occupancies;
-
     @OneToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "room_occupancy_mapping",
 //            joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},

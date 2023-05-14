@@ -3,6 +3,7 @@ package com.ftn.sbnz.backward.model.models.flight;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.kie.api.definition.type.Position;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -18,11 +19,14 @@ public class Flight {
     private Long id;
 
     @ManyToOne
+    @Position(0)
     private Airport departureAirport;
     @ManyToOne
+    @Position(1)
     private Airport arrivalAirport;
-
+    @Position(2)
     private Instant departureTime;
+    @Position(3)
     private Instant arrivalTime;
 
     @ManyToOne
@@ -30,5 +34,10 @@ public class Flight {
 
     @OneToOne
     private PlaneBusyness planeBusyness;
+
+    public Flight(Airport departureAirport, Airport arrivalAirport) {
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
+    }
 
 }

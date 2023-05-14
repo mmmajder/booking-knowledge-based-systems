@@ -1,0 +1,45 @@
+package flightTransfer;
+import com.ftn.sbnz.backward.model.models.flight.Airport;
+import com.ftn.sbnz.backward.model.models.flight.Flight;
+import com.ftn.sbnz.backward.model.models.flight.FlightRequest;
+import java.time.Instant
+import java.time.Duration;
+
+
+query isConnectedTo(Airport startLocation, Airport endLocation, boolean isFirst, Instant departureTime, Instant arrivalTime)
+    Flight( startLocation, endLocation, endDepartureTime, endArrivalTime; ) and eval(isWithinRange(endDepartureTime, endArrivalTime, departureTime, arrivalTime, isFirst))
+    or
+    ( $f: Flight( startLocation, z, followingDepartureTime, followingArrivalTime; ) and eval(isWithinRange(followingDepartureTime, followingArrivalTime, departureTime, arrivalTime, isFirst)) and isConnectedTo( startLocation: z, endLocation: endLocation, isFirst: false, departureTime: followingDepartureTime, arrivalTime: followingArrivalTime ) )
+end
+
+function boolean isWithinRange(Instant followingDepartureTime, Instant followingArrivalTime, Instant departureTime, Instant arrivalTime, boolean isFirst) {
+    if (isFirst) {
+        Instant minTime = departureTime.minus(Duration.ofMinutes(1));
+        Instant maxTime = departureTime.plus(Duration.ofHours(24));
+        return followingDepartureTime.isAfter(minTime) && followingDepartureTime.isBefore(maxTime);
+    } else {
+        Instant minTime = arrivalTime.plus(Duration.ofMinutes(30));
+        Instant maxTime = arrivalTime.plus(Duration.ofHours(5));
+        return followingDepartureTime.isAfter(minTime) && followingDepartureTime.isBefore(maxTime);
+    }
+}
+
+rule "check connection"
+when
+    $fr: FlightRequest($startLocation: departureAirport, $endLocation: arrivalAirport, $departureTime: departureTime)
+    isConnectedTo(startLocation: $startLocation, endLocation: $endLocation, isFirst: true, departureTime: $departureTime, arrivalTime: $departureTime)
+then
+    System.out.println("----------");
+    System.out.println("Flight request");
+    System.out.println($startLocation.getCity());
+    System.out.println($endLocation.getCity());
+    System.out.println($departureTime);
+    System.out.println("----------");
+end
+
+rule "add flight"
+when
+    $f: Flight()
+then
+    System.out.println("Flight");
+end

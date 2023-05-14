@@ -10,4 +10,8 @@
     <kbase name="porodica2Example" eventProcessingMode="stream" packages="porodica2">
         <ksession name="porodica2Klk"/>
     </kbase>
+
+    <kbase name="baseTransfer" packages="flightTransfer">
+        <ksession name="flighttransfersession"/>
+    </kbase>
 </kmodule>
