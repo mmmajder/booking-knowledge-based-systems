@@ -60,7 +60,7 @@ public class TestBackward {
         FlightRequest flightRequest = new FlightRequest();
         flightRequest.setDepartureAirport(airport1);
         flightRequest.setArrivalAirport(airport4);
-        flightRequest.setDepartureTime(Instant.parse("2023-07-01T11:21:42.12Z"));
+        flightRequest.setDepartureTime(Instant.parse("2023-07-01T11:00:42.12Z"));
         ksession.insert(flightRequest);
 
         long ruleFireCount = ksession.fireAllRules();
