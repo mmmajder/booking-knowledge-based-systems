@@ -1,11 +1,13 @@
 package com.ftn.sbnz.backward.service.service;
 
+import com.ftn.sbnz.backward.model.models.Customer;
 import com.ftn.sbnz.backward.model.models.Role;
 import com.ftn.sbnz.backward.model.models.User;
 import com.ftn.sbnz.backward.model.models.UserAuth;
 import com.ftn.sbnz.backward.model.models.enums.UserRole;
 import com.ftn.sbnz.backward.service.dto.*;
 import com.ftn.sbnz.backward.service.exception.BadRequestException;
+import com.ftn.sbnz.backward.service.exception.PasswordsDoNotMatchException;
 import com.ftn.sbnz.backward.service.utils.TokenUtils;
 import lombok.AllArgsConstructor;
 import net.bytebuddy.utility.RandomString;
@@ -41,10 +43,13 @@ public class AuthentificationService {
     private EmailService emailService;
 
     public void addCustomer(CreateUserDTO createUserDTO) throws MessagingException {
+        if (!createUserDTO.getPassword().equals(createUserDTO.getPasswordConfirmation())) {
+            throw new PasswordsDoNotMatchException("Passwords do not match");
+        }
         if (userService.findByEmail(createUserDTO.getEmail()) != null)
             throw new BadRequestException("User with this email already exist");
-//        Customer customer = customerService.createCustomer(createUserDTO);
-//        emailService.sendRegistrationAsync(customer);
+        Customer customer = userService.createCustomer(createUserDTO);
+        emailService.sendRegistrationAsync(customer);
     }
 
     public LoginResponseDTO login(JwtAuthenticationRequest authenticationRequest) {

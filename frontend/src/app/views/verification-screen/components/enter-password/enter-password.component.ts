@@ -13,7 +13,9 @@ import {SetPasswordRequest} from "../../../../model/SetPasswordRequest";
 })
 export class EnterPasswordComponent {
   formGroup = this._formBuilder.group({
-    passwordFormControl: ['', [Validators.required, Validators.minLength(12), this.passwordValidator()]],
+    passwordFormControl: ['', [Validators.required, Validators.minLength(12)
+      , this.passwordValidator()
+    ]],
     password2FormControl: ['password2', [Validators.required]]
   });
 

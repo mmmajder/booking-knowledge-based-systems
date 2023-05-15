@@ -53,9 +53,9 @@ public class AuthController {
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
 
-    @GetMapping("/verify/{code}")
-    public ResponseEntity<UserVerificationResponseDTO> verifyUser(@PathVariable String code) {
-        User user = authentificationService.verify(code);
+    @PostMapping("/register/verify")
+    public ResponseEntity<UserVerificationResponseDTO> verifyUser(@Valid @RequestBody VerificationRequest verificationRequest) {
+        User user = authentificationService.verify(verificationRequest.getCode());
         UserVerificationResponseDTO dto = DTOMapper.getUserVerificationResponseDTO(user);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }

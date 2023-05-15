@@ -13,11 +13,13 @@ import {
   TenantInvitationContainerComponent
 } from "./views/verification-screen/container/tenant-invitation-container/tenant-invitation-container.component";
 import {TokensContainerComponent} from "./views/tokens/container/tokens/tokens-container.component";
+import {VerifyRegistrationComponent} from "./views/verify-registration/verify-registration.component";
 
 const routes: Routes = [
   {path: '', component: HomepageContainerComponent},
   {path: 'hotels', component: HotelContainerComponent, canActivate: [AuthGuard]},
   {path: 'flights', component: FlightsContainerComponent, canActivate: [AuthGuard]},
+  {path: 'verify/:verificationCode', component: VerifyRegistrationComponent},
   // {path: 'requests', component: CertificateRequestsComponent},
   // {path: 'properties', component: PropertiesContainerComponent},
   // {path: 'registration/verification', component: VerificationScreenContainerComponent},

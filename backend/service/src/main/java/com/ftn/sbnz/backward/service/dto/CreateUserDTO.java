@@ -20,9 +20,11 @@ public class CreateUserDTO {
     @NotEmpty
     private String password;
     @NotEmpty
-    private String name;
+    private String passwordConfirmation;
     @NotEmpty
-    private String surname;
+    private String firstName;
+    @NotEmpty
+    private String lastName;
     @NotEmpty
     private String city;
     @NotEmpty

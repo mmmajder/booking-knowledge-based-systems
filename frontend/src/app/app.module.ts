@@ -27,6 +27,7 @@ import {TokensModule} from "./views/tokens/tokens.module";
 import { PaymentComponent } from './views/payment/payment.component';
 import {NgxPayPalModule} from "ngx-paypal";
 import {MatDialogModule} from "@angular/material/dialog";
+import { VerifyRegistrationComponent } from './views/verify-registration/verify-registration.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import {MatDialogModule} from "@angular/material/dialog";
     NotFoundPageComponent,
     NotAuthorizedPageComponent,
     PaymentComponent,
+    VerifyRegistrationComponent,
   ],
   imports: [
     BrowserModule,

@@ -26,7 +26,7 @@ public class EmailService {
         MimeMessage message = javaMailSender.createMimeMessage();
         message.setSubject("Please verify your registration");
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setTo("ubernet-test@outlook.com");
+        helper.setTo("mejlzaisamrstim18@outlook.com");
         helper.setFrom(Objects.requireNonNull(env.getProperty("spring.mail.username")));
         String content = EmailContentUtils.getVerificationContent();
         String verifyURL = "http://localhost:4200/verify/" + user.getUserAuth().getVerificationCode();
@@ -42,7 +42,7 @@ public class EmailService {
         MimeMessage message = javaMailSender.createMimeMessage();
         message.setSubject("Forgot password");
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setTo("ubernet-test@outlook.com");
+        helper.setTo("mejlzaisamrstim18@outlook.com");
         helper.setFrom(Objects.requireNonNull(env.getProperty("spring.mail.username")));
         String content = EmailContentUtils.getResetPasswordContent();
         String verifyURL = "http://localhost:4200/reset-password/" + user.getUserAuth().getResetPasswordCode();

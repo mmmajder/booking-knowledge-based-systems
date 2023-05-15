@@ -1,6 +1,9 @@
 package com.ftn.sbnz.backward.service.service;
 
+import com.ftn.sbnz.backward.model.models.Customer;
 import com.ftn.sbnz.backward.model.models.User;
+import com.ftn.sbnz.backward.model.models.UserAuth;
+import com.ftn.sbnz.backward.service.dto.CreateUserDTO;
 import com.ftn.sbnz.backward.service.repository.UserRepository;
 import com.ftn.sbnz.backward.model.models.enums.UserRole;
 import com.ftn.sbnz.backward.model.models.Role;
@@ -10,14 +13,18 @@ import com.ftn.sbnz.backward.service.dto.UserResponse;
 import com.ftn.sbnz.backward.service.repository.RoleRepository;
 import com.ftn.sbnz.backward.service.repository.UserRepository;
 import com.ftn.sbnz.backward.service.utils.DTOMapper;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +34,11 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserAuthService userAuthService;
 
     public UserService() {
     }
@@ -112,5 +124,38 @@ public class UserService implements UserDetailsService {
 
     public User findByResetPasswordCode(String token) {
         return userRepository.findByResetPasswordCode(token);
+    }
+
+    public Customer createCustomer(CreateUserDTO createUserDTO) {
+        Customer customer = new Customer();
+        customer.setEmail(createUserDTO.getEmail());
+        customer.setPassword(passwordEncoder.encode(createUserDTO.getPassword()));
+        customer.setName(createUserDTO.getFirstName());
+        customer.setSurname(createUserDTO.getLastName());
+        customer.setCity(createUserDTO.getCity());
+        customer.setPhoneNumber(createUserDTO.getPhoneNumber());
+        customer.setDeleted(false);
+        customer.setUserAuth(createCustomerAuth());
+        customer.setRole(UserRole.CUSTOMER);
+        customer.setBlocked(false);
+        customer.setNumberOfTokens(0);
+        customer.setActive(false);
+        customer.setNumberOfTokens(0);
+        return (Customer) save(customer);
+    }
+
+    private UserAuth createCustomerAuth() {
+        UserAuth userAuth = new UserAuth();
+        String randomCode = RandomString.make(64);
+        userAuth.setVerificationCode(randomCode);
+        userAuth.setLastPasswordSet(new Timestamp(System.currentTimeMillis()));
+        userAuth.setRoles(getCustomerRoles());
+        userAuth.setIsEnabled(false);
+        userAuthService.save(userAuth);
+        return userAuth;
+    }
+
+    private List<Role> getCustomerRoles() {
+        return List.of(findRolesByUserType("ROLE_USER"), findRolesByUserType("ROLE_CUSTOMER"));
     }
 }
