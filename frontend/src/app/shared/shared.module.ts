@@ -15,10 +15,12 @@ import {MatChipsModule} from "@angular/material/chips";
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle";
 import {SidebarComponent} from './sidebar/sidebar.component';
+import { NavbarComponent } from './navbar/navbar.component';
 
 @NgModule({
   declarations: [
-    SidebarComponent
+    SidebarComponent,
+    NavbarComponent
   ],
   imports: [
     MatToolbarModule,
@@ -38,9 +40,10 @@ import {SidebarComponent} from './sidebar/sidebar.component';
     MatExpansionModule,
     MatSlideToggleModule,
   ],
-  exports: [
-    SidebarComponent
-  ],
+    exports: [
+        SidebarComponent,
+        NavbarComponent
+    ],
 })
 export class SharedModule {
 }

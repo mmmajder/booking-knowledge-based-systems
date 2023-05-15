@@ -24,12 +24,16 @@ import {MatCardModule} from "@angular/material/card";
 import {VerificationpageModule} from "./views/verification-screen/verificationpage.module";
 import {PropertiesModule} from "./views/objects/properties.module";
 import {TokensModule} from "./views/tokens/tokens.module";
+import { PaymentComponent } from './views/payment/payment.component';
+import {NgxPayPalModule} from "ngx-paypal";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
   declarations: [
     AppComponent,
     NotFoundPageComponent,
     NotAuthorizedPageComponent,
+    PaymentComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,7 +58,9 @@ import {TokensModule} from "./views/tokens/tokens.module";
     MatCardModule,
     ReactiveFormsModule,
     PropertiesModule,
-    TokensModule
+    TokensModule,
+    NgxPayPalModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]

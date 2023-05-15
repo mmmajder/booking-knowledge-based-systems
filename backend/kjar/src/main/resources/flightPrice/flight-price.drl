@@ -1,0 +1,10 @@
+package flightPrice;
+
+import com.ftn.sbnz.backward.model.models.events.PreviewFlightEvent;
+
+rule "Calculate base price"
+    when
+        $t1: PreviewFlightEvent($fId: flightId)
+    then
+        System.out.println("");
+end
