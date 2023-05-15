@@ -20,12 +20,8 @@ export class SidebarComponent {
   }
 
   logout() {
-    this.authService.logout().subscribe({
-      next: () => {
-        localStorage.removeItem('userRole');
-        this.router.navigate(['']);
-      },
-      error: (err) => console.error(err)
-    })
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('token')
+    this.router.navigate(['']);
   }
 }

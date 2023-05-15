@@ -55,10 +55,10 @@ export class AuthService {
     return {
       headers: new HttpHeaders({
         'Access-Control-Allow-Origin': '*',
+        'Authorization': localStorage.getItem('token') || 'authkey',
         'Content-Type': 'application/json',
       }),
       params: params,
-      withCredentials: true
     };
   }
 

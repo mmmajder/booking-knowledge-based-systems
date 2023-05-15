@@ -16,8 +16,8 @@ import {TokensContainerComponent} from "./views/tokens/container/tokens/tokens-c
 
 const routes: Routes = [
   {path: '', component: HomepageContainerComponent},
-  {path: 'hotels', component: HotelContainerComponent},
-  {path: 'flights', component: FlightsContainerComponent},
+  {path: 'hotels', component: HotelContainerComponent, canActivate: [AuthGuard]},
+  {path: 'flights', component: FlightsContainerComponent, canActivate: [AuthGuard]},
   // {path: 'requests', component: CertificateRequestsComponent},
   // {path: 'properties', component: PropertiesContainerComponent},
   // {path: 'registration/verification', component: VerificationScreenContainerComponent},
