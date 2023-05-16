@@ -34,24 +34,10 @@ public class AuthController {
         return ResponseEntity.ok(loginResponseDTO);
     }
 
-//    @PostMapping("/logout/{token}")
-//    public void logout(@PathVariable String token) {
-//        authentificationService.logoutUser(token);
-//    }
-
     @PostMapping("/register")
     public void addCustomer(@Valid @RequestBody CreateUserDTO userDTO) throws MessagingException {
         authentificationService.addCustomer(userDTO);
     }
-
-//    @PostMapping("/registerDriver")
-//    public ResponseEntity<String> registerDriver(@Valid @RequestBody CreateDriverDTO userDTO) {
-//        Driver driver = authentificationService.addDriver(userDTO);
-//        if (driver == null) {
-//            return new ResponseEntity<>(HttpStatus.CONFLICT);
-//        }
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
 
     @PostMapping("/register/verify")
     public ResponseEntity<UserVerificationResponseDTO> verifyUser(@Valid @RequestBody VerificationRequest verificationRequest) {

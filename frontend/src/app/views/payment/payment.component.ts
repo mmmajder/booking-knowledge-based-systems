@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {ICreateOrderRequest, IPayPalConfig} from "ngx-paypal";
 import {User} from "../../model/User";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
+import {CustomerService} from "../../services/customer.service";
 
 @Component({
   selector: 'app-payment',
@@ -15,7 +16,7 @@ export class PaymentComponent  implements OnInit {
   validTokenValue: boolean;
   user: User;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<PaymentComponent>) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<PaymentComponent>, private customerService: CustomerService) {
     this.validTokenValue = false
     this.user = data.user
   }
@@ -95,9 +96,6 @@ export class PaymentComponent  implements OnInit {
           }
         ]
       },
-      // advanced: {
-      //   commit: 'true',
-      // },
       style: {
         label: 'paypal',
         layout: 'vertical'
@@ -108,10 +106,9 @@ export class PaymentComponent  implements OnInit {
       },
       onClientAuthorization: (data) => {
         console.log('onClientAuthorization - you should probably inform your server about completed transaction at this point', data);
-        // this.customerService.addTokens(this.user.email, +this.tokens).subscribe(tokens => {
-        //   this.store.dispatch([new SetTokens(tokens)])
-        // })
-        this.dialogRef.close()
+        this.customerService.addTokens(+this.tokens).subscribe(() => {
+          this.dialogRef.close()
+        })
       },
       onCancel: (data, actions) => {
         console.log('OnCancel', data, actions);

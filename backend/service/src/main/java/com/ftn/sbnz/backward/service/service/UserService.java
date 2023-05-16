@@ -158,4 +158,9 @@ public class UserService implements UserDetailsService {
     private List<Role> getCustomerRoles() {
         return List.of(findRolesByUserType("ROLE_USER"), findRolesByUserType("ROLE_CUSTOMER"));
     }
+
+    public void addTokens(double numberOfTokens, Customer user) {
+        user.setNumberOfTokens(user.getNumberOfTokens() + numberOfTokens);
+        save(user);
+    }
 }

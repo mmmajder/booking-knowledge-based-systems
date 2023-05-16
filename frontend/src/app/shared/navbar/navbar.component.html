@@ -1,6 +1,6 @@
-<mat-toolbar class="navbar">
+<mat-toolbar class="navbar" *ngIf="userRole==='CUSTOMER'">
   <span class="example-spacer"></span>
-  <button mat-button *ngIf="userRole==='ROLE_CUSTOMER'" (click)="addTokens()" id="tokenBtn">
+  <button mat-button (click)="addTokens()" id="tokenBtn">
     <span class="number-of-tokens">{{numberOfTokens | number:'1.2-2' }} </span>
     <mat-icon class="token">monetization_on</mat-icon>
   </button>

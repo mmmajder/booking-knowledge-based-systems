@@ -61,20 +61,8 @@ public class AuthentificationService {
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User user = (User) authentication.getPrincipal();
-//        if (user.getRole().equals(UserRole.DRIVER)) {
-//            driverService.loginDriver(user.getEmail());
-//        }
         if (!isUserEnabled(user)) return null;
         return createAccessToken(user);
-    }
-
-    private LoginResponseDTO saveAuthInContext(User user) {
-//        var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
-        var authentication = new UsernamePasswordAuthenticationToken(user.getEmail(), "");
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = tokenUtils.generateToken(userService.findByEmail((String) authentication.getPrincipal()));
-        long expiresIn = tokenUtils.getExpiredIn();
-        return new LoginResponseDTO(new UserTokenState(token, expiresIn), user.getRole());
     }
 
     private LoginResponseDTO createAccessToken(User user) {
