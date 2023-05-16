@@ -1,5 +1,5 @@
 <div class="sidebar">
-  <img src="assets/logo/icon_blue.png" class="logo" style="margin-top: 10px" alt="">
+  <img src="assets/logo/icon.png" class="logo" style="margin-top: 10px" alt="">
   <hr style="height: 1px; background: var(--blue)">
   <ul>
     <li>
@@ -13,6 +13,12 @@
         <mat-icon>airplanemode_active</mat-icon>
       </a>
       <span class="tooltip">Flights</span>
+    </li>
+    <li *ngIf="userRole==='CUSTOMER'">
+      <a (click)="addTokens()">
+        <mat-icon>monetization_on</mat-icon>
+      </a>
+      <span class="tooltip">Budget: {{numberOfTokens | number:'1.2-2' }}</span>
     </li>
     <li>
       <a (click)="logout()">

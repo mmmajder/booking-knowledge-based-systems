@@ -16,10 +16,14 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {PropertiesContainerComponent} from './container/properties-container/properties-container.component';
 import {PropertyCardComponent} from './components/property-card/property-card.component';
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {PropertyEditFormDialogComponent} from './components/property-details-dialog/property-edit-form-dialog.component';
+import {
+  PropertyEditFormDialogComponent
+} from './components/property-details-dialog/property-edit-form-dialog.component';
 import {PropertyDetailsComponent} from './components/property-details/property-details.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
-import { AddTenantDialogComponent } from './components/add-tenant-dialog/add-tenant-dialog.component';
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatSliderModule} from "@angular/material/slider";
+import {MatDatepickerModule} from "@angular/material/datepicker";
 
 @NgModule({
   declarations: [
@@ -27,28 +31,30 @@ import { AddTenantDialogComponent } from './components/add-tenant-dialog/add-ten
     PropertyCardComponent,
     PropertyEditFormDialogComponent,
     PropertyDetailsComponent,
-    AddTenantDialogComponent
   ],
-    imports: [
-        MatFormFieldModule,
-        MatIconModule,
-        MatButtonModule,
-        MatCardModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatDialogModule,
-        FormsModule,
-        CommonModule,
-        MatSnackBarModule,
-        ReactiveFormsModule,
-        MatMenuModule,
-        SharedModule,
-        MatSelectModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatTooltipModule,
-        MatAutocompleteModule
-    ],
+  imports: [
+    MatFormFieldModule,
+    MatIconModule,
+    MatButtonModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDialogModule,
+    FormsModule,
+    CommonModule,
+    MatSnackBarModule,
+    ReactiveFormsModule,
+    MatMenuModule,
+    SharedModule,
+    MatSelectModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatTooltipModule,
+    MatAutocompleteModule,
+    MatCheckboxModule,
+    MatSliderModule,
+    MatDatepickerModule
+  ],
   exports: [
     PropertiesContainerComponent,
     PropertyCardComponent

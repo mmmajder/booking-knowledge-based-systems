@@ -5,7 +5,6 @@ import {PropertyEditFormDialogComponent} from "../property-details-dialog/proper
 import {MatDialog, MatDialogRef} from "@angular/material/dialog";
 import {AuthService} from "../../../../services/auth.service";
 import {User} from "../../../../model/User";
-import {AddTenantDialogComponent} from "../add-tenant-dialog/add-tenant-dialog.component";
 
 @Component({
   selector: 'app-property-details',
@@ -16,7 +15,7 @@ export class PropertyDetailsComponent implements OnInit {
   @Input() id!: string;
   property: PropertyDetails = new PropertyDetails();
   loggedUser!: User;
-  userRole!: string
+  userRole!: string;
 
   constructor(private authService: AuthService, private propertyService: PropertyService, private dialog: MatDialog,
               private dialogRef: MatDialogRef<PropertyDetailsComponent>) {
@@ -65,11 +64,5 @@ export class PropertyDetailsComponent implements OnInit {
     this.propertyService.deleteProperty(this.property.id).subscribe(() => {
       this.dialogRef.close()
     })
-  }
-
-  openAddTenantDialog() {
-    let dialogRef = this.dialog.open(AddTenantDialogComponent);
-    dialogRef.componentInstance.property = this.property;
-    // dialogRef.afterClosed().subscribe(() => this.updateDisplay.emit())
   }
 }

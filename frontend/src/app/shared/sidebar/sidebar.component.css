@@ -76,7 +76,7 @@
 .sidebar ul li .tooltip {
   position: absolute;
   height: 35px;
-  width: 122px;
+  width: 150px;
   background: var(--white);
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   left: 122px;

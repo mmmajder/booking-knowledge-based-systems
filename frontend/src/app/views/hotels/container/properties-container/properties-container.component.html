@@ -1,0 +1,116 @@
+<app-sidebar currentPage="hotels"></app-sidebar>
+
+<div class="row" style="margin-left: 90px">
+  <div class="col-6">
+    <form style="margin: 0 auto; overflow-y: auto;">
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Destination</mat-label>
+        <input matInput type="text">
+      </mat-form-field>
+
+<!--      <mat-form-field appearance="outline" style="width: 100%;">-->
+<!--        <mat-label>Date range</mat-label>-->
+<!--        <input matInput [matDatepicker]="picker" placeholder="Choose a date">-->
+<!--        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>-->
+<!--        <mat-datepicker #picker></mat-datepicker>-->
+<!--      </mat-form-field>-->
+
+<!--      <mat-form-field appearance="outline" style="width: 100%;">-->
+<!--        <mat-label>Number of adults</mat-label>-->
+<!--        <input matInput type="number" value="2">-->
+<!--      </mat-form-field>-->
+
+<!--      <mat-form-field appearance="outline" style="width: 100%;">-->
+<!--        <mat-label>Number of children</mat-label>-->
+<!--        <input matInput type="number" value="0">-->
+<!--      </mat-form-field>-->
+
+<!--      <mat-form-field appearance="outline" style="width: 100%;">-->
+<!--        <mat-label>User rating</mat-label>-->
+<!--        <mat-select>-->
+<!--          <mat-option value="1">1</mat-option>-->
+<!--          <mat-option value="2">2</mat-option>-->
+<!--          <mat-option value="3">3</mat-option>-->
+<!--          <mat-option value="4">4</mat-option>-->
+<!--          <mat-option value="5">5</mat-option>-->
+<!--          <mat-option value="6">6</mat-option>-->
+<!--          <mat-option value="7">7</mat-option>-->
+<!--          <mat-option value="8">8</mat-option>-->
+<!--          <mat-option value="9">9</mat-option>-->
+<!--          <mat-option value="10">10</mat-option>-->
+<!--        </mat-select>-->
+<!--      </mat-form-field>-->
+
+<!--      <mat-form-field appearance="outline" style="width: 100%;">-->
+<!--        <mat-label>Hotel star rating</mat-label>-->
+<!--        <mat-select>-->
+<!--          <mat-option value="1">1-->
+<!--            <mat-icon color="var(&#45;&#45;yellow)">star</mat-icon>-->
+<!--          </mat-option>-->
+<!--          <mat-option value="2">2-->
+<!--            <mat-icon color="var(&#45;&#45;yellow)">star</mat-icon>-->
+<!--          </mat-option>-->
+<!--          <mat-option value="3">3-->
+<!--            <mat-icon color="var(&#45;&#45;yellow)">star</mat-icon>-->
+<!--          </mat-option>-->
+<!--          <mat-option value="4">4-->
+<!--            <mat-icon color="var(&#45;&#45;yellow)">star</mat-icon>-->
+<!--          </mat-option>-->
+<!--          <mat-option value="5">5-->
+<!--            <mat-icon color="var(&#45;&#45;yellow)">star</mat-icon>-->
+<!--          </mat-option>-->
+<!--        </mat-select>-->
+<!--      </mat-form-field>-->
+
+<!--      <mat-form-field appearance="outline" style="width: 100%;">-->
+<!--        <mat-label>Budget range</mat-label>-->
+<!--        <mat-slider min="200" max="500">-->
+<!--          <input value="300" matSliderStartThumb>-->
+<!--          <input value="400" matSliderEndThumb>-->
+<!--        </mat-slider>-->
+<!--      </mat-form-field>-->
+
+<!--      <mat-form-field appearance="outline" style="width: 100%;">-->
+<!--        <mat-label>Distance from beach/city center (in meters)</mat-label>-->
+<!--        <mat-slider min="200" max="500">-->
+<!--          <input value="300" matSliderStartThumb>-->
+<!--          <input value="400" matSliderEndThumb>-->
+<!--        </mat-slider>-->
+<!--      </mat-form-field>-->
+
+<!--      <mat-form-field appearance="outline" style="width: 100%;">-->
+<!--        <mat-label>Amenities</mat-label>-->
+<!--        <mat-checkbox>WiFi</mat-checkbox>-->
+<!--        <mat-checkbox>Parking</mat-checkbox>-->
+<!--        <mat-checkbox>Gym</mat-checkbox>-->
+<!--        <mat-checkbox>Restaurant</mat-checkbox>-->
+<!--        <mat-checkbox>Fitness</mat-checkbox>-->
+<!--      </mat-form-field>-->
+
+<!--      <mat-form-field appearance="outline" style="width: 100%;">-->
+<!--        <mat-label>Entertainment activities</mat-label>-->
+<!--        <mat-checkbox>Sauna</mat-checkbox>-->
+<!--        <mat-checkbox>Pool</mat-checkbox>-->
+<!--        <mat-checkbox>Hiking</mat-checkbox>-->
+<!--        <mat-checkbox>Cinema</mat-checkbox>-->
+<!--      </mat-form-field>-->
+
+<!--      <mat-form-field appearance="outline" style="width: 100%;">-->
+<!--        <mat-label>Meals</mat-label>-->
+<!--        <mat-checkbox>Breakfast</mat-checkbox>-->
+<!--        <mat-checkbox>Half board</mat-checkbox>-->
+<!--        <mat-checkbox>Full board</mat-checkbox>-->
+<!--      </mat-form-field>-->
+
+      <button mat-button type="submit">Search</button>
+    </form>
+  </div>
+  <div class="col-6" style="border-left: 1px solid gray; padding-left: 20px;">
+    <div *ngFor="let o of properties">
+      <app-property-card [property]="o" (updateDisplay)="getCards()"></app-property-card>
+    </div>
+    <div *ngIf="properties.length === 0" class="d-flex justify-content-center" style="width: 100%">
+      <p>No hotels with these parameters!</p>
+    </div>
+  </div>
+</div>
