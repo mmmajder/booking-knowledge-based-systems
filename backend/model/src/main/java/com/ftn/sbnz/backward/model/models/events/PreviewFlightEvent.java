@@ -1,5 +1,8 @@
 package com.ftn.sbnz.backward.model.models.events;
 
+import com.ftn.sbnz.backward.model.models.Customer;
+import com.ftn.sbnz.backward.model.models.flight.Flight;
+import com.ftn.sbnz.backward.model.models.flight.SeatClass;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +22,11 @@ import java.util.Date;
 public class PreviewFlightEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    private Long flightId;
+    private Flight flight;
+    private Customer customer;
+    private int numberOfAdults;
+    private int numberOfChildren;
+    private SeatClass seatClass;
 
     private Date executionTime;
 }

@@ -14,4 +14,8 @@
     <kbase name="baseTransfer" packages="flightTransfer">
         <ksession name="flighttransfersession"/>
     </kbase>
+
+    <kbase name="baseFlightPrice" packages="flightPrice">
+        <ksession name="flightpricesession"/>
+    </kbase>
 </kmodule>
