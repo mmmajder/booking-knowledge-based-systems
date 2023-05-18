@@ -1,5 +1,5 @@
 import {Component} from '@angular/core';
-import {BasicPropertyDetails} from "../../../../model/Property";
+import {HotelResponse} from "../../../../model/Property";
 import {PropertyService} from "../../../../services/property.service";
 import {SearchHotelsParams} from "../../../../model/hotels/SearchHotelsParams";
 
@@ -10,7 +10,7 @@ import {SearchHotelsParams} from "../../../../model/hotels/SearchHotelsParams";
 })
 export class PropertiesContainerComponent {
   searchParams = new SearchHotelsParams();
-  properties: BasicPropertyDetails[] = [];
+  properties: HotelResponse[] = [];
   facilities = [
     "WiFi",
     "Parking",

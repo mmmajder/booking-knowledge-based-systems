@@ -10,7 +10,7 @@ import {User} from "../../../../model/User";
   styleUrls: ['./property-details.component.css']
 })
 export class PropertyDetailsComponent implements OnInit {
-  @Input() id!: string;
+  @Input() id!: number;
   property: PropertyDetails = new PropertyDetails();
   loggedUser!: User;
   userRole!: string;

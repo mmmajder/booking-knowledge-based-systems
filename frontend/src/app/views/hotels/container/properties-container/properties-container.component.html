@@ -1,6 +1,6 @@
 <app-sidebar currentPage="hotels"></app-sidebar>
 
-<div class="row" style="margin-left: 90px; margin-top: 20px; height: 90%">
+<div class="row" style="margin-left: 90px; margin-top: 20px; margin-bottom: 20px; height: 90%">
   <div class="col-5">
     <form style="margin: 0 auto; overflow-y: scroll; overflow-x: hidden; height: 100%">
 
@@ -39,7 +39,7 @@
       <section>
         <h4>Review Score</h4>
         <div *ngFor="let choice of reviewScores">
-          <mat-checkbox [value]="choice.value"
+          <mat-checkbox [value]="choice.value.toString()"
                         (change)="$event.checked ? searchParams.reviewScore.push(choice.value) : searchParams.starRating = remove(choice.value, searchParams.reviewScore)">
             {{choice.description}}
           </mat-checkbox>
@@ -102,8 +102,10 @@
   </div>
 
   <div class="col-7" style="border-left: 1px solid gray; padding-left: 20px;">
-    <div *ngFor="let o of properties">
-      <app-property-card [property]="o" (updateDisplay)="getCards()"></app-property-card>
+    <div class="row">
+      <div class="col-6" *ngFor="let o of properties">
+        <app-property-card [property]="o" (updateDisplay)="getCards()"></app-property-card>
+      </div>
     </div>
     <div *ngIf="properties.length === 0" class="d-flex justify-content-center" style="width: 100%">
       <p>No hotels with these parameters!</p>

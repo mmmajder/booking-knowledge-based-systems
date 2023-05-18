@@ -1,25 +1,25 @@
 import {User} from "./User";
-import {T} from "@angular/cdk/keycodes";
 
-export class BasicPropertyDetails {
-  id!: string;
-  image: string = "";
-  address!: string;
-  name!: string;
-  type!: PropertyType;
-  owner!: User;
-}
+export class HotelResponse {
+  id: number;
+  name: string;
+  address: string;
+  image: string;
+  country: string;
+  city: string;
+  rating: number;
+  stars: number;
 
-export class CreatePropertyRequest {
-  ownerId!: string;
-  name!: string;
-  address!: string;
-  type!: string;
-  image!: string;
-}
-
-export class UpdatePropertyRequest extends CreatePropertyRequest {
-  propertyId!: string;
+  constructor(id: number, name: string, address: string, image: string, country: string, city: string, rating: number, stars: number) {
+    this.id = id;
+    this.name = name;
+    this.address = address;
+    this.image = image;
+    this.country = country;
+    this.city = city;
+    this.rating = rating;
+    this.stars = stars;
+  }
 }
 
 export class PropertyDetails {

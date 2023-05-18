@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {BasicPropertyDetails} from "../../../../model/Property";
+import {HotelResponse} from "../../../../model/Property";
 import {MatDialog} from "@angular/material/dialog";
 import {PropertyDetailsComponent} from "../property-details/property-details.component";
 import {AuthService} from "../../../../services/auth.service";
@@ -11,7 +11,7 @@ import {AuthService} from "../../../../services/auth.service";
 })
 export class PropertyCardComponent implements OnInit {
   @Output() updateDisplay: EventEmitter<any> = new EventEmitter();
-  @Input() property!: BasicPropertyDetails;
+  @Input() property!: HotelResponse;
   loggedUserId!: string;
   userRole!: string;
 
@@ -25,7 +25,7 @@ export class PropertyCardComponent implements OnInit {
     })
   }
 
-  objectDetails(id: string) {
+  objectDetails(id: number) {
     let dialogRef = this.dialog.open(PropertyDetailsComponent, {
       height: '650px',
       width: '800px'

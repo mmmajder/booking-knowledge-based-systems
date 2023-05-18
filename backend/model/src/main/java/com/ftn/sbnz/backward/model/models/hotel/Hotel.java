@@ -30,5 +30,7 @@ public class Hotel {
     private String imageUrl;
     @OneToMany
     private List<HotelFacility> facilities;
+    @OneToMany
+    private List<Review> reviews;
     private double distanceFromCenter;
 }
