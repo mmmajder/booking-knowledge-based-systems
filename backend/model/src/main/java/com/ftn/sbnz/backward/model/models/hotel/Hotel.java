@@ -12,7 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Hotel {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
@@ -27,12 +26,9 @@ public class Hotel {
     @OneToOne
     private HotelOccupancy hotelOccupancy;
     private double rating;
-    @OneToOne
-    private PriceCatalogHotel priceCatalog;
-
+    private int stars;
+    private String imageUrl;
+    @OneToMany
+    private List<HotelFacility> facilities;
     private double distanceFromCenter;
-    // todo ANDJI: content -WiFi, parking, teretana, restoran, fitness
-    // todo ANDJI: fun activities -(sauna, bazen, planinarenje, bioskop…)
-
-//    private List<Image> images;
 }

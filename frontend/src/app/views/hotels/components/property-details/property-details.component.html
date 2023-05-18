@@ -1,0 +1,19 @@
+<div style="padding: 20px">
+  <h2>
+    <mat-icon style="color: var(--blue)">house</mat-icon>
+    Property details
+  </h2>
+  <p style="margin-top: -15px"><i>Property id: {{property.id}}</i>
+    <span *ngIf="loggedUser && property && property.owner && loggedUser.id===property.owner.id">
+    </span>
+  </p>
+  <hr>
+  <div class="row">
+    <div class="label">Name:</div>
+    <div class="value">{{property.name}}</div>
+  </div>
+  <div class="row">
+    <div class="label">Address:</div>
+    <div class="value">{{property.address}}</div>
+  </div>
+</div>

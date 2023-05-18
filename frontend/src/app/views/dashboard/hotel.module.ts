@@ -13,19 +13,15 @@ import {HotelContainerComponent} from './container/hotel-container/hotel-contain
 import {SharedModule} from "../../shared/shared.module";
 import {CsrFormComponent} from './components/csr-form/csr-form.component';
 import {MatSelectModule} from "@angular/material/select";
-import { UsersComponent } from './components/users/users.component';
+import {UsersComponent} from './components/users/users.component';
 import {MatTableModule} from "@angular/material/table";
 import {MatTooltipModule} from "@angular/material/tooltip";
-import { UserDetailsDialogComponent } from './components/user-details-dialog/user-details-dialog.component';
-import { ConfirmUserDeleteComponent } from './components/confirm-user-delete/confirm-user-delete.component';
 
 @NgModule({
   declarations: [
     HotelContainerComponent,
     CsrFormComponent,
     UsersComponent,
-    UserDetailsDialogComponent,
-    ConfirmUserDeleteComponent,
   ],
   imports: [
     MatFormFieldModule,

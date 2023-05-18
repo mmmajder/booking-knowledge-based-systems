@@ -22,12 +22,13 @@ import {CertificatesModule} from "./views/certificates/certificates.module";
 import {CsrModule} from "./views/csr/csr.module";
 import {MatCardModule} from "@angular/material/card";
 import {VerificationpageModule} from "./views/verification-screen/verificationpage.module";
-import {PropertiesModule} from "./views/objects/properties.module";
 import {TokensModule} from "./views/tokens/tokens.module";
-import { PaymentComponent } from './views/payment/payment.component';
+import {PaymentComponent} from './views/payment/payment.component';
 import {NgxPayPalModule} from "ngx-paypal";
 import {MatDialogModule} from "@angular/material/dialog";
-import { VerifyRegistrationComponent } from './views/verify-registration/verify-registration.component';
+import {VerifyRegistrationComponent} from './views/verify-registration/verify-registration.component';
+import {PropertiesModule} from "./views/hotels/properties.module";
+import {MatFormFieldModule} from "@angular/material/form-field";
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { VerifyRegistrationComponent } from './views/verify-registration/verify-
     MatProgressSpinnerModule,
     MatTableModule,
     MatPaginatorModule,
+    MatFormFieldModule,
     MatSortModule,
     MatInputModule,
     FormsModule,

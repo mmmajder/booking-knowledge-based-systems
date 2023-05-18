@@ -1,0 +1,112 @@
+<app-sidebar currentPage="hotels"></app-sidebar>
+
+<div class="row" style="margin-left: 90px; margin-top: 20px; height: 90%">
+  <div class="col-5">
+    <form style="margin: 0 auto; overflow-y: scroll; overflow-x: hidden; height: 100%">
+
+      <h2>
+        <mat-icon color="primary">search</mat-icon>
+        Search hotels
+      </h2>
+
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Destination</mat-label>
+        <input [(ngModel)]="searchParams.destination" name="destination" matInput type="text">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate name="dateStart" [(ngModel)]="searchParams.startDate" placeholder="Start date">
+          <input matEndDate name="dateEnd" [(ngModel)]="searchParams.endDate" placeholder="End date">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+
+      <p style="width: 100%; display: flex">
+        <mat-form-field appearance="outline" style="width: 49%; float: left">
+          <mat-label>Number of adults</mat-label>
+          <input [(ngModel)]="searchParams.numAdults" name="numOfAdults" matInput type="number" value="2">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" style="width: 49%; float: right">
+          <mat-label>Number of children</mat-label>
+          <input [(ngModel)]="searchParams.numChildren" name="numOfChildren" matInput type="number" value="0">
+        </mat-form-field>
+      </p>
+
+      <section>
+        <h4>Review Score</h4>
+        <div *ngFor="let choice of reviewScores">
+          <mat-checkbox [value]="choice.value"
+                        (change)="$event.checked ? searchParams.reviewScore.push(choice.value) : searchParams.starRating = remove(choice.value, searchParams.reviewScore)">
+            {{choice.description}}
+          </mat-checkbox>
+        </div>
+      </section>
+
+      <section>
+        <h4>Hotel star rating</h4>
+        <div *ngFor="let choice of [1, 2, 3, 4, 5]">
+          <mat-checkbox [value]="choice.toString()"
+                        (change)="$event.checked ? searchParams.starRating.push(choice) : searchParams.starRating = remove(choice, searchParams.starRating)">
+            {{choice}}
+            <mat-icon style="color: var(--yellow)">star</mat-icon>
+          </mat-checkbox>
+        </div>
+      </section>
+
+      <div class="example-label-container">
+        <label class="example-name-label">Price range: </label>
+        <label class="example-value-label">{{searchParams.priceRangeStart}} - {{searchParams.priceRangeEnd}}</label>
+      </div>
+      <mat-slider min="5" max="5000" [discrete]="true">
+        <input [(ngModel)]="searchParams.priceRangeStart" name="priceStart" matSliderStartThumb>
+        <input [(ngModel)]="searchParams.priceRangeEnd" name="priceEnd" matSliderEndThumb>
+      </mat-slider>
+
+      <div class="example-label-container">
+        <label class="example-name-label">Distance from beach/city center (m): </label>
+        <label class="example-value-label">{{searchParams.distanceStart}} - {{searchParams.distanceEnd}}</label>
+      </div>
+      <mat-slider min="0" max="5000" [discrete]="true">
+        <input [(ngModel)]="searchParams.distanceStart" name="distanceStart" matSliderStartThumb>
+        <input [(ngModel)]="searchParams.distanceEnd" name="distanceEnd" matSliderEndThumb>
+      </mat-slider>
+
+      <section>
+        <h4>Facilities</h4>
+        <div *ngFor="let choice of facilities">
+          <mat-checkbox [value]="choice"
+                        (change)="$event.checked ? searchParams.facilities.push(choice) : searchParams.facilities = removeString(choice, searchParams.facilities)">
+            {{choice}}
+          </mat-checkbox>
+        </div>
+      </section>
+
+      <section>
+        <h4>Meals</h4>
+        <div *ngFor="let choice of meals">
+          <mat-checkbox [value]="choice"
+                        (change)="$event.checked ? searchParams.meals.push(choice) : searchParams.facilities = removeString(choice, searchParams.meals)">
+            {{choice}}
+          </mat-checkbox>
+        </div>
+      </section>
+
+      <button mat-raised-button (click)="getCards()" color="primary" style="width: 100%; margin-bottom: 20px"
+              type="submit">Search
+      </button>
+    </form>
+  </div>
+
+  <div class="col-7" style="border-left: 1px solid gray; padding-left: 20px;">
+    <div *ngFor="let o of properties">
+      <app-property-card [property]="o" (updateDisplay)="getCards()"></app-property-card>
+    </div>
+    <div *ngIf="properties.length === 0" class="d-flex justify-content-center" style="width: 100%">
+      <p>No hotels with these parameters!</p>
+    </div>
+  </div>
+</div>

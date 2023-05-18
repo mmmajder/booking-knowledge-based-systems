@@ -1,0 +1,29 @@
+mat-form-field {
+  margin-right: 10px;
+}
+
+::ng-deep .mdc-text-field--outlined {
+  background-color: white !important;
+  border-radius: 5px !important;
+}
+
+.mat-mdc-slider {
+  max-width: 300px;
+  width: 100%;
+}
+
+.example-label-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 10px 0;
+  max-width: 284px;
+}
+
+.example-result-card .example-value-label {
+  font-weight: 600;
+}
+
+mat-slider {
+  width: 90%;
+  margin-left: 20px;
+}
