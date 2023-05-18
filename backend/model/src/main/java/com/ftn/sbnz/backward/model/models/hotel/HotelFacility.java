@@ -10,15 +10,12 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class FoodPrice {
-
+public class HotelFacility {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
     private Long id;
 
-    private double bedAndBreakfast;
-    private double halfBoard;
-    private double fullBoard;
-    private double allInclusive;
+    private Facilities facility;
+    private Double additionalPrice;
 }

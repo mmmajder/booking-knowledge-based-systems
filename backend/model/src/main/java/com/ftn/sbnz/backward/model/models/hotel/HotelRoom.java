@@ -18,5 +18,4 @@ public class HotelRoom {
 
     private String roomNumber;
     private RoomType roomType;
-    // todo ANDJI add if sth is missing
 }

@@ -14,17 +14,18 @@ import {User} from "../../model/User";
 export class SidebarComponent {
   @Input() currentPage = 'dashboard';
   userRole = 'ROLE_ADMIN';
-  numberOfTokens: number = 0;
+  numberOfTokens = 0;
   loggedUser!: User;
 
   constructor(private router: Router, public dialog: MatDialog, private customerService: CustomerService, private authService: AuthService) {
     this.userRole = localStorage.getItem("userRole")!;
-    this.authService.getCurrentlyLoggedUser().subscribe((res) =>
-      this.loggedUser = res
+    this.authService.getCurrentlyLoggedUser().subscribe((res) => {
+        this.loggedUser = res;
+        if (this.userRole === "CUSTOMER") {
+          this.getNumberOfTokens();
+        }
+      }
     )
-    if (this.userRole === "CUSTOMER") {
-      this.getNumberOfTokens();
-    }
   }
 
   navigate(page: string) {

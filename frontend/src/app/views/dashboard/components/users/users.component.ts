@@ -4,7 +4,6 @@ import {MatDialog} from "@angular/material/dialog";
 import {UserListItem} from "../../model/UserListItem";
 import {User} from "../../../../model/User";
 import {UserService} from "../../../../services/user.service";
-import {UserDetailsDialogComponent} from "../user-details-dialog/user-details-dialog.component";
 
 @Component({
   selector: 'app-users',
@@ -33,19 +32,6 @@ export class UsersComponent implements OnInit {
       this.propertyOwners = propertyOwners;
       this.userList = new MatTableDataSource<UserListItem>(UsersComponent.usersToUserListItems(this.propertyOwners));
     });
-  }
-
-  registerNewUser() {
-    const dialogRef = this.dialog.open(UserDetailsDialogComponent);
-    dialogRef.componentInstance.mode = 'create';
-    dialogRef.afterClosed().subscribe(() => this.getUsers())
-  }
-
-  openUsersProfileDialog(element: UserListItem) {
-    const dialogRef = this.dialog.open(UserDetailsDialogComponent, {panelClass: 'no-padding-card'});
-    dialogRef.componentInstance.userEmail = element.email;
-    dialogRef.componentInstance.mode = 'edit';
-    dialogRef.afterClosed().subscribe(() => this.getUsers())
   }
 
   private static usersToUserListItems(users: User[]): UserListItem[] {

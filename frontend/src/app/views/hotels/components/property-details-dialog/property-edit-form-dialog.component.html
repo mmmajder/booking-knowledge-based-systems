@@ -26,21 +26,6 @@
           </mat-select>
         </mat-form-field>
       </p>
-      <div [ngSwitch]="mode">
-        <div *ngSwitchCase="'create'">
-          <button mat-raised-button id="register-button" color="primary" type="submit"
-                  style="width: 100%; margin-top: -10px;" (click)="addNewProperty()" [disabled]="formGroup.invalid">
-            Create
-          </button>
-        </div>
-        <div *ngSwitchCase="'edit'">
-          <button mat-raised-button id="edit-button" color="primary" type="submit"
-                  style="width: 100%; margin-top: -10px;" (click)="editProperty()"
-                  [disabled]="formGroup.invalid">
-            Save changes
-          </button>
-        </div>
-      </div>
     </form>
   </mat-card-content>
 </mat-card>

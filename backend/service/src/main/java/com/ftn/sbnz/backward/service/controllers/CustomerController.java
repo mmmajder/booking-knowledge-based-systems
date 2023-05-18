@@ -2,7 +2,6 @@ package com.ftn.sbnz.backward.service.controllers;
 
 import com.ftn.sbnz.backward.model.models.Customer;
 import com.ftn.sbnz.backward.model.models.User;
-import com.ftn.sbnz.backward.service.dto.CreateUserDTO;
 import com.ftn.sbnz.backward.service.dto.NumberOfTokensRequest;
 import com.ftn.sbnz.backward.service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,9 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("*")
 @RequestMapping(value = "/customer")
 public class CustomerController {
+
     @Autowired
     private UserService userService;
-
 
     @GetMapping("/tokens")
     public double getNumberOfTokens(Authentication authentication) {

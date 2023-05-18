@@ -1,12 +1,7 @@
 import {Component} from '@angular/core';
-import {BasicPropertyDetails, getKeyFromValue, PropertyType} from "../../../../model/Property";
+import {BasicPropertyDetails} from "../../../../model/Property";
 import {PropertyService} from "../../../../services/property.service";
-import {MatSelectChange} from "@angular/material/select";
-import {MatDialog} from "@angular/material/dialog";
-import {
-  PropertyEditFormDialogComponent
-} from "../../components/property-details-dialog/property-edit-form-dialog.component";
-import {AuthService} from "../../../../services/auth.service";
+import {SearchHotelsParams} from "../../../../model/hotels/SearchHotelsParams";
 
 @Component({
   selector: 'app-properties-container',
@@ -14,48 +9,51 @@ import {AuthService} from "../../../../services/auth.service";
   styleUrls: ['./properties-container.component.css']
 })
 export class PropertiesContainerComponent {
-  searchFilter = "";
-  type: string | undefined = 'All';
+  searchParams = new SearchHotelsParams();
   properties: BasicPropertyDetails[] = [];
-  public fileTypes = Object.values(PropertyType);
-  userRole: string;
+  facilities = [
+    "WiFi",
+    "Parking",
+    "Pool",
+    "Sauna",
+    "Gym",
+    "Spa",
+    "Playroom",
+    "Restaurant",
+    "Bar",
+    "Store",
+    "Cinema"
+  ];
+  meals = [
+    "Bed and breakfast",
+    "Half board",
+    "Full board",
+    "All inclusive"
+  ];
+  reviewScores = [
+    {"value": 9, "description": "Excellent 9+"},
+    {"value": 8, "description": "Very good 8+"},
+    {"value": 7, "description": "Good 7+"},
+    {"value": 6, "description": "Pleasant 6+"},
+  ];
 
-  constructor(private propertiesService: PropertyService, private dialog: MatDialog, private authService: AuthService) {
-    this.userRole = localStorage.getItem("userRole") || "";
+  constructor(private propertiesService: PropertyService) {
     this.getCards();
   }
 
   getCards() {
-    let type = this.type;
-    if (type === "All") {
-      type = undefined;
-    }
-    if (this.userRole === "ROLE_ADMIN") {
-      this.propertiesService.getProperties(this.searchFilter, getKeyFromValue(type)).subscribe({
-        next: (properties) => this.properties = properties,
-        error: err => console.error(err)
-      })
-    } else if (this.userRole === "ROLE_PROPERTY_OWNER") {
-      this.authService.getCurrentlyLoggedUser().subscribe((user) => {
-        this.propertiesService.getUsersProperties(this.searchFilter, getKeyFromValue(type), user.id).subscribe({
-          next: (properties) => this.properties = properties,
-          error: (err) => console.error(err)
-        })
-      })
-    }
+    console.log(this.searchParams)
+    this.propertiesService.getProperties(this.searchParams).subscribe({
+      next: (properties) => this.properties = properties,
+      error: err => console.error(err)
+    })
   }
 
-  selectedFilterChange($event: MatSelectChange) {
-    this.getCards();
+  remove(choice: number, list: number[]) {
+    return list.filter(item => item !== choice);
   }
 
-  applySearchFilter($event: KeyboardEvent) {
-    this.getCards();
-  }
-
-  addNewProperty() {
-    const dialogRef = this.dialog.open(PropertyEditFormDialogComponent);
-    dialogRef.componentInstance.mode = 'create';
-    dialogRef.afterClosed().subscribe(() => this.getCards())
+  removeString(choice: string, list: string[]) {
+    return list.filter(item => item !== choice);
   }
 }

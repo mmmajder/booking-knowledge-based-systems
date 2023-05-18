@@ -1,13 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
-import {PropertyService} from "../../../../services/property.service";
 import {
-  CreatePropertyRequest,
-  getKeyFromValue, getValueByKey,
+  getValueByKey,
   PropertyDetails,
-  PropertyType, UpdatePropertyRequest
+  PropertyType
 } from "../../../../model/Property";
-import {AuthService} from "../../../../services/auth.service";
 import {User} from "../../../../model/User";
 import {MatDialogRef} from "@angular/material/dialog";
 
@@ -23,7 +20,6 @@ export class PropertyEditFormDialogComponent implements OnInit {
     nameFormControl: ['name', [Validators.required]],
     addressFormControl: ['address', [Validators.required]],
   });
-  propertyTypes: string[] = [];
   type: string = 'House';
   address!: string;
   name!: string;
@@ -32,7 +28,7 @@ export class PropertyEditFormDialogComponent implements OnInit {
   image: string = ""
   property!: PropertyDetails;
 
-  constructor(public dialogRef: MatDialogRef<PropertyEditFormDialogComponent>, private _formBuilder: FormBuilder, private propertyService: PropertyService, private authService: AuthService) {
+  constructor(public dialogRef: MatDialogRef<PropertyEditFormDialogComponent>, private _formBuilder: FormBuilder) {
   }
 
   ngOnInit(): void {
@@ -43,40 +39,4 @@ export class PropertyEditFormDialogComponent implements OnInit {
     }
   }
 
-  addNewProperty() {
-    this.authService.getCurrentlyLoggedUser().subscribe((user) => {
-      this.loggedUser = user
-      const requestBody: CreatePropertyRequest = {
-        "ownerId": this.loggedUser.id,
-        "name": this.name,
-        "address": this.address,
-        "type": getKeyFromValue(this.type)!,
-        "image": this.image
-      }
-      this.propertyService.addNewProperty(requestBody).subscribe(() => {
-        this.dialogRef.close()
-      })
-    })
-  }
-
-  deleteProperty() {
-
-  }
-
-  editProperty() {
-    this.authService.getCurrentlyLoggedUser().subscribe((user) => {
-      this.loggedUser = user
-      const requestBody: UpdatePropertyRequest = {
-        "propertyId": this.property.id,
-        "ownerId": this.loggedUser.id,
-        "name": this.name,
-        "address": this.address,
-        "type": getKeyFromValue(this.type)!,
-        "image": this.image
-      }
-      this.propertyService.editProperty(requestBody).subscribe(() => {
-        this.dialogRef.close()
-      })
-    })
-  }
 }
