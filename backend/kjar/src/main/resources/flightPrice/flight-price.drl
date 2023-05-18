@@ -1,10 +1,51 @@
 package flightPrice;
 
 import com.ftn.sbnz.backward.model.models.events.PreviewFlightEvent;
+import com.ftn.sbnz.backward.model.models.flight.SeatClass;
 
 rule "Calculate base price"
     when
-        $t1: PreviewFlightEvent($fId: flightId)
+        $flight: PreviewFlightEvent($flight: flight, $customer: customer, $numberOfAdults: numberOfAdults, $numberOfChildren: numberOfChildren, $seatClass: seatClass)
     then
+        double basePrice = 0.0;
+        switch($seatClass) {
+          case SeatClass.ECONOMY:
+            basePrice += $flight.getPriceCatalog().getEconomyPrice();
+            break;
+          case SeatClass.PREMIUM:
+            basePrice += $flight.getPriceCatalog().getPremiumPrice();
+            break;
+          case SeatClass.BUSINESS:
+            basePrice += $flight.getPriceCatalog().getBusinessPrice();
+            break;
+          case SeatClass.FIRST:
+            basePrice += $flight.getPriceCatalog().getFirstClassPrice();
+            break;
+          default:
+            break;
+        }
+        double coefficientForNumberOfPassengers = $flight.getNumberOfAdults() + $flight.getNumberOfChildren() * (1 - $flight.getFlight().getPriceCatalog().getDiscountForChildren());
+        double discountForNumberOfPassengers =  $flight.getFlight().getPriceCatalog().calculateDiscountForMultipleTickets($numberOfAdults + $numberOfChildren);
+        System.out.println(basePrice);
+        System.out.println(coefficientForNumberOfPassengers);
+        System.out.println(discountForNumberOfPassengers);
+        double result = basePrice * coefficientForNumberOfPassengers * (1-discountForNumberOfPassengers);
         System.out.println("");
+end
+
+
+// at the end add loyalty program discount
+rule "Calculate loyalty program discount"
+    when
+        $t1: CalculateLoyaltyProgramPriceEvent($cId: customerId, )
+                Number(intValue >= 10) from accumulate(
+                    $t2: TransactionEvent(
+                        this != $t1,
+                        customerId == $cId,
+                        this meets[1h] $t1
+                    ),
+                    count($t2)
+                )
+    then
+
 end
