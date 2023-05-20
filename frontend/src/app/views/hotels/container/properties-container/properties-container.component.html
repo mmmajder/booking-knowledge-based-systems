@@ -10,6 +10,11 @@
       </h2>
 
       <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Hotel name</mat-label>
+        <input [(ngModel)]="searchParams.name" name="name" matInput type="text">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%;">
         <mat-label>Destination</mat-label>
         <input [(ngModel)]="searchParams.destination" name="destination" matInput type="text">
       </mat-form-field>

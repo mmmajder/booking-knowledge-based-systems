@@ -1,7 +1,0 @@
-package brodovi
-
-
-
-query isPartOf(String parent, String part)
-
-

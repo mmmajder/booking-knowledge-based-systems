@@ -10,6 +10,7 @@ import java.util.Date;
 @Setter
 @Data
 public class SearchHotelsParams {
+    private String name;
     private String destination;
     private Date startDate;
     private Date endDate;

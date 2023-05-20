@@ -3,19 +3,15 @@
         <ksession name="backExamples"/>
     </kbase>
 
-    <kbase name="porodicaExample" eventProcessingMode="stream" packages="porodica">
-        <ksession name="porodicaKlk"/>
-    </kbase>
-
-    <kbase name="porodica2Example" eventProcessingMode="stream" packages="porodica2">
-        <ksession name="porodica2Klk"/>
-    </kbase>
-
     <kbase name="baseTransfer" packages="flightTransfer">
         <ksession name="flighttransfersession"/>
     </kbase>
 
     <kbase name="baseFlightPrice" packages="flightPrice">
         <ksession name="flightpricesession"/>
+    </kbase>
+
+    <kbase name="searchHotels" packages="searchHotels">
+        <ksession name="searchHotelssession"/>
     </kbase>
 </kmodule>

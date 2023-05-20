@@ -1,4 +1,5 @@
 export class SearchHotelsParams {
+  name: string;
   destination: string;
   startDate: Date | undefined;
   endDate: Date | undefined;
@@ -14,6 +15,7 @@ export class SearchHotelsParams {
   meals: string[];
 
   constructor() {
+    this.name = '';
     this.destination = '';
     this.startDate = undefined;
     this.endDate = undefined;
