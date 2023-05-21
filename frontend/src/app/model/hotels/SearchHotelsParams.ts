@@ -5,7 +5,7 @@ export class SearchHotelsParams {
   endDate: Date | undefined;
   numAdults: number;
   numChildren: number;
-  reviewScore: number[];
+  reviewScore: number;
   starRating: number[];
   priceRangeStart: number;
   priceRangeEnd: number;
@@ -21,7 +21,7 @@ export class SearchHotelsParams {
     this.endDate = undefined;
     this.numAdults = 2;
     this.numChildren = 0;
-    this.reviewScore = [];
+    this.reviewScore = 1;
     this.starRating = [];
     this.priceRangeStart = 5;
     this.priceRangeEnd = 500;

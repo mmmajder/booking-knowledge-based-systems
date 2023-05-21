@@ -1,4 +1,4 @@
-package com.ftn.sbnz.backward.service.dto;
+package com.ftn.sbnz.backward.model.models.hotel;
 
 import lombok.*;
 
@@ -16,7 +16,7 @@ public class SearchHotelsParams {
     private Date endDate;
     private int numAdults;
     private int numChildren;
-    private int[] reviewScore;
+    private double reviewScore;
     private int[] starRating;
     private int priceRangeStart;
     private int priceRangeEnd;

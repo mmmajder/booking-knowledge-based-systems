@@ -1,34 +1,36 @@
-package searchHotels;
+package searchHotels
 
-import com.ftn.sbnz.backward.model.models.hotel;
+import com.ftn.sbnz.backward.model.models.hotel.*;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Collection;
+
+global List<Hotel> filteredHotels;
+
+rule "Hotel"
+    when
+        $hotel: Hotel($name: name)
+    then
+        System.out.println($name);
+end
 
 rule "Filter Hotels"
 when
+    $searchParams: SearchHotelsParams()
     $hotel: Hotel(
-        name.toLowerCase().contains(name.toLowerCase()),
-        city.toLowerCase().contains(destination.toLowerCase()),
-        country.toLowerCase().contains(destination.toLowerCase()),
-        $hotel.rating memberOf reviewScore,
-        $hotel.stars memberOf starRating,
-        $hotel.distanceFromCenter >= distanceStart,
-        $hotel.distanceFromCenter <= distanceEnd,
-        $hotel.facilities containsAll facilities
-    )
-    accumulate(
-        $room: HotelRoom(
-            hotel == $hotel,
-            available(startDate, endDate),
-            price >= priceRangeStart,
-            price <= priceRangeEnd
-        );
-        $totalPrice: sum($room.getPrice())
+        name.toLowerCase().contains($searchParams.name.toLowerCase()),
+        city.toLowerCase().contains($searchParams.destination.toLowerCase()) ||
+        country.toLowerCase().contains($searchParams.destination.toLowerCase()),
+        rating >= $searchParams.reviewScore,
+        stars memberOf $searchParams.starRating || $searchParams.starRating.length == 0,
+        distanceFromCenter >= $searchParams.distanceStart,
+        distanceFromCenter <= $searchParams.distanceEnd
     )
 then
-    $hotel.setTotalPrice($totalPrice);
-    insert($hotel);
+    filteredHotels.add($hotel);
 end
+
 //
 //
 //rule "Available room"
@@ -118,4 +120,3 @@ end
 //    LocalDate stayDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 //    long daysBetween = ChronoUnit.DAYS.between(currentDate, stayDate);
 //    return (int) daysBetween;
-}
