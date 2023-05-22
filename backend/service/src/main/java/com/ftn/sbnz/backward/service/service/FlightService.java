@@ -40,7 +40,6 @@ public class FlightService {
         FlightRequest flightRequest = new FlightRequest();
         flightRequest.setDepartureAirport(startAirport);
         flightRequest.setArrivalAirport(endAirport);
-        flightRequest.setConnectedFlights(new ArrayList<>());
 
         if (searchFlightsParams.isReturnTicket()) {
             flightRequest.setDepartureTime(searchFlightsParams.getDateRangeStart());

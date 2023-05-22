@@ -1,13 +1,16 @@
 package flightPrice;
 
 import com.ftn.sbnz.backward.model.models.events.PreviewFlightEvent;
+import com.ftn.sbnz.backward.model.models.events.AdditionalServicesRequestEvent;
 import com.ftn.sbnz.backward.model.models.flight.SeatClass;
 import com.ftn.sbnz.backward.model.models.flight.price.BasePrice;
+import com.ftn.sbnz.backward.model.models.flight.price.AdditionalServicesPrice;
 
 rule "Calculate base price"
     when
         $previewFlight: PreviewFlightEvent($flight: flight, $customer: customer, $numberOfAdults: numberOfAdults, $numberOfChildren: numberOfChildren, $seatClass: seatClass)
     then
+        System.out.println("Stigao u prvo prvilo");
         double basePrice = 0.0;
         switch($seatClass) {
           case ECONOMY:
@@ -27,11 +30,7 @@ rule "Calculate base price"
         }
         double coefficientForNumberOfPassengers = $previewFlight.getNumberOfAdults() + $previewFlight.getNumberOfChildren() * (1 - $flight.getPriceCatalog().getDiscountForChildren());
         double discountForNumberOfPassengers =  $flight.getPriceCatalog().calculateDiscountForMultipleTickets($numberOfAdults + $numberOfChildren);
-        System.out.println(basePrice);
-        System.out.println(coefficientForNumberOfPassengers);
-        System.out.println(discountForNumberOfPassengers);
         double result = basePrice * coefficientForNumberOfPassengers * (1-discountForNumberOfPassengers);
-        System.out.println(result);
         BasePrice price = new BasePrice();
         price.setSeatPrice(basePrice);
         price.setChildrenDiscount($flight.getPriceCatalog().getDiscountForChildren() * $numberOfChildren);
@@ -39,9 +38,32 @@ rule "Calculate base price"
         price.setNumberOfAdults($numberOfAdults);
         price.setDiscountForNumberOfPassengers(basePrice * coefficientForNumberOfPassengers * discountForNumberOfPassengers);
         price.setTotalPrice(result);
-        insert(price);
+
         modify($previewFlight){setBasePrice(price)};
 end
+
+
+rule "calculate price of additional services"
+    when
+        $previewFlight: PreviewFlightEvent(basePrice != null, $flight1: flight)
+        $additionalServicesRequest: AdditionalServicesRequestEvent(flight.getId() == $flight1.getId(), $luggageWeight: luggageWeight, $isPriorityBoarding: priorityBoarding, $isSpecificSeats: specificSeats, $seats: seats)
+    then
+        System.out.println("Stigao u drugo prvilo");
+        double luggagePrice = $flight1.getPriceCatalog().calculateLuggagePrice($luggageWeight);
+        double priorityBoardingPrice = ($additionalServicesRequest.isPriorityBoarding()) ? $flight1.getPriceCatalog().getPriorityBoardingPrice() : 0;
+        double specificSeatsPrice = ($additionalServicesRequest.isSpecificSeats()) ? $flight1.getPriceCatalog().getChooseSeatPrice() : 0;
+
+        AdditionalServicesPrice additionalServicesPrice = new AdditionalServicesPrice();
+        additionalServicesPrice.setLuggagePrice(luggagePrice);
+        additionalServicesPrice.setPriorityBoardingPrice(priorityBoardingPrice);
+        additionalServicesPrice.setSpecificSeatsPrice(specificSeatsPrice);
+        additionalServicesPrice.setTotalAdditionalPrice(luggagePrice + priorityBoardingPrice + specificSeatsPrice);
+
+        modify($additionalServicesRequest){setAdditionalServicesPrice(additionalServicesPrice)};
+end
+
+
+
 
 
 //rule

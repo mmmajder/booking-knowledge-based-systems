@@ -1,0 +1,22 @@
+template header
+minMoney
+maxMoney
+timeInMonths
+discount
+category
+
+package loyalty;
+
+import com.ftn.sbnz.backward.model.models.LastMinute;
+
+template "hotelsLastMinute"
+
+rule "Last Minute discount_@{row.rowNumber}"
+    when
+        $l: LastMinute(holiday == @{holiday}, daysStart >= @{daysStart}, daysEnd < @{daysEnd})
+    then
+        modify($l){setDiscount(@{discount});}
+end
+
+end template
+

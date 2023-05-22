@@ -16,4 +16,16 @@ public class BasePrice {
     private double numberOfAdults;
     private double discountForNumberOfPassengers;
     private double totalPrice;
+
+    @Override
+    public String toString() {
+        return "BasePrice{" +
+                "seatPrice=" + seatPrice +
+                ", childrenDiscount=" + childrenDiscount +
+                ", numberOfChildren=" + numberOfChildren +
+                ", numberOfAdults=" + numberOfAdults +
+                ", discountForNumberOfPassengers=" + discountForNumberOfPassengers +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
 }
