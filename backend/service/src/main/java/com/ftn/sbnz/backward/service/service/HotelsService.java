@@ -1,19 +1,15 @@
 package com.ftn.sbnz.backward.service.service;
 
-import com.ftn.sbnz.backward.model.models.LastMinute;
 import com.ftn.sbnz.backward.model.models.hotel.Hotel;
 import com.ftn.sbnz.backward.model.models.hotel.SearchHotelsParams;
 import com.ftn.sbnz.backward.service.dto.HotelResponse;
 import com.ftn.sbnz.backward.service.repository.HotelRepository;
-import org.drools.template.ObjectDataCompiler;
 import org.kie.api.KieServices;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
