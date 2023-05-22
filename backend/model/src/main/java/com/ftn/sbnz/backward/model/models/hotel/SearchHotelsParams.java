@@ -3,6 +3,7 @@ package com.ftn.sbnz.backward.model.models.hotel;
 import lombok.*;
 
 import java.util.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,11 +18,11 @@ public class SearchHotelsParams {
     private int numAdults;
     private int numChildren;
     private double reviewScore;
-    private int[] starRating;
+    private List<Integer> starRating;
     private int priceRangeStart;
     private int priceRangeEnd;
     private int distanceStart;
     private int distanceEnd;
-    private String[] facilities;
-    private String[] meals;
+    private List<String> facilities;
+    private List<String> meals;
 }
