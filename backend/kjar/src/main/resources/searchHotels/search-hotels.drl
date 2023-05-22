@@ -25,7 +25,8 @@ when
         rating >= $searchParams.reviewScore,
         stars memberOf $searchParams.starRating || $searchParams.starRating.length == 0,
         distanceFromCenter >= $searchParams.distanceStart,
-        distanceFromCenter <= $searchParams.distanceEnd
+        distanceFromCenter <= $searchParams.distanceEnd,
+//        $hotel.facilities.containsAll($searchParams.facilities) || $searchParams.facilities.length == 0
     )
 then
     filteredHotels.add($hotel);
