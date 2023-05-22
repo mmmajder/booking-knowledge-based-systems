@@ -11,13 +11,6 @@ import java.text.SimpleDateFormat;
 
 global List<Hotel> filteredHotels;
 
-rule "Hotel"
-    when
-        $hotel: Hotel($name: name)
-    then
-        System.out.println($name);
-end
-
 rule "Filter Hotels"
 when
     $searchParams: SearchHotelsParams()
@@ -35,32 +28,6 @@ then
     insert(new CalculateHotelPrice($hotel, $searchParams));
 end
 
-//
-//
-//rule "Available room"
-//when
-//    $hotel: Hotel(
-//        $hotel.hotelRooms exists (HotelRoom(
-//            available(startDate, endDate),
-//            occupancy.adults >= numAdults,
-//            occupancy.children >= numChildren
-//        ))
-//    )
-//    accumulate(
-//        $room: HotelRoom(
-//            hotel == $hotel,
-//            available(startDate, endDate),
-//            price >= priceRangeStart,
-//            price <= priceRangeEnd
-//        );
-//        $totalPrice: sum($room.getPrice())
-//    )
-//then
-//    $hotel.setTotalPrice($totalPrice);
-//    insert($hotel);
-//end
-//
-
 rule "Calculate Hotel Price"
 when
     $calculateHotelPrice: CalculateHotelPrice(
@@ -76,36 +43,46 @@ then
 
     // LAST MINUTE DISCOUNT
     int daysBeforeStay = calculateNumberOfNights(new Date(), $searchParams.getStartDate());
-    boolean isHolidayPeriod = isHolidayPeriod($searchParams.getStartDate());
-    double lastMinuteDiscount = holidayDiscount(daysBeforeStay, isHolidayPeriod);
-    double lastMinuteDiscountAmount = totalPrice * (lastMinuteDiscount / 100);
-    totalPrice -= lastMinuteDiscountAmount;
+    double lastMinuteDiscount = holidayDiscount(daysBeforeStay, isHolidayPeriod($searchParams.getStartDate()));
+    if(lastMinuteDiscount > 0.0) {
+        totalPrice -= totalPrice * (lastMinuteDiscount / 100);
+    }
+
+    System.out.println($hotel.getName() + ": " + totalPrice);
 
     if(totalPrice >= $searchParams.getPriceRangeStart() && $searchParams.getPriceRangeEnd() >= totalPrice) {
-        filteredHotels.add($hotel);
+        insert(new CheckRoomAvailability($hotel, $searchParams));
     }
 end
 
-function Double holidayDiscount(int daysBeforeStay, boolean isHolidayPeriod) {
+rule "Available room"
+when
+     $checkRoomAvailability: CheckRoomAvailability()
+then
+     filteredHotels.add($checkRoomAvailability.getHotel());
+end
+
+function double holidayDiscount(int daysBeforeStay, boolean holidayPeriod) {
     if (daysBeforeStay >= 16 && daysBeforeStay <= 25) {
-        if (isHolidayPeriod) {
+        if (holidayPeriod) {
             return 5.0;
         } else {
             return 10.0;
         }
     } else if (daysBeforeStay >= 6 && daysBeforeStay <= 15) {
-        if (isHolidayPeriod) {
+        if (holidayPeriod) {
             return 10.0;
         } else {
             return 15.0;
         }
     } else if (daysBeforeStay <= 5) {
-        if (isHolidayPeriod) {
+        if (holidayPeriod) {
             return 15.0;
         } else {
             return 20.0;
         }
     }
+    return 0.0;
 }
 
 function boolean isHolidayPeriod(Date date) {

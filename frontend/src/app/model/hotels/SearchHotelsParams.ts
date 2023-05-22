@@ -23,8 +23,8 @@ export class SearchHotelsParams {
     this.numChildren = 0;
     this.reviewScore = 1;
     this.starRating = [];
-    this.priceRangeStart = 5;
-    this.priceRangeEnd = 500;
+    this.priceRangeStart = 300;
+    this.priceRangeEnd = 1000;
     this.distanceStart = 0;
     this.distanceEnd = 5000;
     this.facilities = [];

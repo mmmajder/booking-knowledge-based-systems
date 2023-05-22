@@ -43,10 +43,12 @@ export class PropertiesContainerComponent {
 
   getCards() {
     console.log(this.searchParams)
-    this.propertiesService.getProperties(this.searchParams).subscribe({
-      next: (properties) => this.properties = properties,
-      error: err => console.error(err)
-    })
+    if (this.searchParams.startDate != undefined && this.searchParams.endDate != undefined) {
+      this.propertiesService.getProperties(this.searchParams).subscribe({
+        next: (properties) => this.properties = properties,
+        error: err => console.error(err)
+      })
+    }
   }
 
   remove(choice: number, list: number[]) {

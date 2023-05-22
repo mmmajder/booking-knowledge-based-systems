@@ -41,16 +41,6 @@ public class SearchHotelsTest {
 
         System.out.println(drl);
     }
-//
-//    public void fillHotels() {
-//        List<Hotel> hotels = hotelRepository.findAll();
-//
-//        KieSession ksession = this.createKieSessionFromDRL(drl);
-//        ksession.insert(hotels);
-//        ksession.fireAllRules();
-//
-//        assertEquals(20, hotels.size());
-//    }
 
     private KieSession createKieSessionFromDRL(String drl) {
         KieHelper kieHelper = new KieHelper();
