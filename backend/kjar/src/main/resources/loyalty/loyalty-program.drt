@@ -7,15 +7,41 @@ category
 
 package loyalty;
 
-import com.ftn.sbnz.backward.model.models.LastMinute;
+import com.ftn.sbnz.backward.model.models.Payment;
+import com.ftn.sbnz.backward.model.models.Customer;
+import com.ftn.sbnz.backward.model.models.Customer;
+import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgram;
+import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgramTier;
 
-template "hotelsLastMinute"
+template "loyalty-rools"
 
-rule "Last Minute discount_@{row.rowNumber}"
+rule "Loyalty discount_@{row.rowNumber}"
     when
-        $l: LastMinute(holiday == @{holiday}, daysStart >= @{daysStart}, daysEnd < @{daysEnd})
+        $c: Customer($email: email)
+        AdditionalServicesRequestEvent(additionalServicesPrice!=null)
+        Number(doubleValue >= @{minMoney} && doubleValue < @{maxMoney}) from accumulate(
+            $p: Payment(email == $email, $totalPrice: totalPrice)
+            over window: time(@{timeInMonths}* 30 * 24 * 60 * 60 * 1000L, TimeUnit.MILLISECONDS),
+            sum($totalPrice)
+        )
     then
-        modify($l){setDiscount(@{discount});}
+        System.out.println("EVO ME");
+        LoyaltyProgram loyaltyProgram = new LoyaltyProgram();
+        loyaltyProgram.setDiscount(@{discount});
+        switch("@{category}") {
+          case "BRONZE":
+            loyaltyProgram.setTier(LoyaltyProgramTier.BRONZE);
+            break;
+          case "SILVER":
+            loyaltyProgram.setTier(LoyaltyProgramTier.SILVER);
+            break;
+          case "GOLD":
+            loyaltyProgram.setTier(LoyaltyProgramTier.GOLD);
+            break;
+          default:
+            break;
+        }
+        modify($c){setLoyaltyProgram(loyaltyProgram);}
 end
 
 end template
