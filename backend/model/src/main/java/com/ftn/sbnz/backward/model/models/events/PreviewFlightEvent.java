@@ -3,6 +3,7 @@ package com.ftn.sbnz.backward.model.models.events;
 import com.ftn.sbnz.backward.model.models.Customer;
 import com.ftn.sbnz.backward.model.models.flight.Flight;
 import com.ftn.sbnz.backward.model.models.flight.SeatClass;
+import com.ftn.sbnz.backward.model.models.flight.price.BasePrice;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,4 +30,6 @@ public class PreviewFlightEvent implements Serializable {
     private SeatClass seatClass;
 
     private Date executionTime;
+
+    private BasePrice basePrice;
 }

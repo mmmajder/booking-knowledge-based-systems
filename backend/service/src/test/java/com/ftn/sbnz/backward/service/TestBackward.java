@@ -4,13 +4,13 @@ import com.ftn.sbnz.backward.model.models.flight.Airport;
 import com.ftn.sbnz.backward.model.models.flight.Flight;
 import com.ftn.sbnz.backward.model.models.flight.FlightRequest;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestBackward {
 
@@ -20,47 +20,114 @@ public class TestBackward {
         KieContainer kc = ks.newKieClasspathContainer();
         KieSession ksession = kc.newKieSession("flighttransfersession");
 
-        Airport airport1 = new Airport();
-        airport1.setId(1);
-        airport1.setCity("BG");
-        Airport airport2 = new Airport();
-        airport2.setId(2);
-        airport2.setCity("NIS");
+        Airport airportBG = new Airport();
+        airportBG.setId(1);
+        airportBG.setName("BG");
+        airportBG.setCode("BG");
+        Airport airportNIS = new Airport();
+        airportNIS.setId(2);
+        airportNIS.setName("NIS");
+        airportNIS.setCode("NIS");
 
-        Airport airport3 = new Airport();
-        airport3.setId(3);
-        airport3.setCity("Istanbul");
+        Airport airportISTANBUL = new Airport();
+        airportISTANBUL.setId(3);
+        airportISTANBUL.setName("Istanbul");
+        airportISTANBUL.setCode("Istanbul");
 
-        Airport airport4 = new Airport();
-        airport4.setId(4);
-        airport4.setCity("Paris");
+        Airport airportPARIS = new Airport();
+        airportPARIS.setId(4);
+        airportPARIS.setName("Paris");
+        airportPARIS.setCode("Paris");
 
-        Flight flight1 = new Flight();
-        flight1.setDepartureAirport(airport1);
-        flight1.setArrivalAirport(airport2);
-        flight1.setDepartureTime(Instant.parse("2023-07-01T11:19:42.12Z"));
-        flight1.setArrivalTime(Instant.parse("2023-07-01T13:19:42.12Z"));
+        Airport airportAMS = new Airport();
+        airportAMS.setId(5);
+        airportAMS.setName("Amsterdam");
+        airportAMS.setCode("Amsterdam");
 
-        Flight flight2 = new Flight();
-        flight2.setDepartureAirport(airport2);
-        flight2.setArrivalAirport(airport3);
-        flight2.setDepartureTime(Instant.parse("2023-07-01T13:59:42.12Z"));
-        flight2.setArrivalTime(Instant.parse("2023-07-01T15:19:42.12Z"));
+        Airport airportSOF = new Airport();
+        airportSOF.setId(6);
+        airportSOF.setName("SOFIA");
+        airportSOF.setCode("SOFIA");
 
-        Flight flight3 = new Flight();
-        flight3.setDepartureAirport(airport3);
-        flight3.setArrivalAirport(airport4);
-        flight3.setDepartureTime(Instant.parse("2023-07-01T16:19:42.12Z"));
-        flight3.setArrivalTime(Instant.parse("2023-07-01T19:19:42.12Z"));
+        Airport airportMIN = new Airport();
+        airportMIN.setId(7);
+        airportMIN.setName("MINHEN");
+        airportMIN.setCode("MINHEN");
 
-        ksession.insert(flight1);
-        ksession.insert(flight2);
-        ksession.insert(flight3);
+        Flight flightBGNIS = new Flight();
+        flightBGNIS.setDepartureAirport(airportBG);
+        flightBGNIS.setArrivalAirport(airportNIS);
+        flightBGNIS.setDepartureTime(Instant.parse("2023-07-01T11:19:42.12Z"));
+        flightBGNIS.setArrivalTime(Instant.parse("2023-07-01T13:19:42.12Z"));
+        flightBGNIS.setId(1L);
+
+        Flight flightNISIST = new Flight();
+        flightNISIST.setDepartureAirport(airportNIS);
+        flightNISIST.setArrivalAirport(airportISTANBUL);
+        flightNISIST.setDepartureTime(Instant.parse("2023-07-01T13:59:42.12Z"));
+        flightNISIST.setArrivalTime(Instant.parse("2023-07-01T15:19:42.12Z"));
+        flightNISIST.setId(2L);
+
+        Flight flightNISIST2 = new Flight();
+        flightNISIST2.setDepartureAirport(airportNIS);
+        flightNISIST2.setArrivalAirport(airportISTANBUL);
+        flightNISIST2.setDepartureTime(Instant.parse("2023-07-01T14:59:42.12Z"));
+        flightNISIST2.setArrivalTime(Instant.parse("2023-07-01T15:19:42.12Z"));
+        flightNISIST2.setId(3L);
+
+        Flight flightISTPAR = new Flight();
+        flightISTPAR.setDepartureAirport(airportISTANBUL);
+        flightISTPAR.setArrivalAirport(airportPARIS);
+        flightISTPAR.setDepartureTime(Instant.parse("2023-07-01T16:19:42.12Z"));
+        flightISTPAR.setArrivalTime(Instant.parse("2023-07-01T19:19:42.12Z"));
+        flightISTPAR.setId(4L);
+
+        Flight flightNISAMS = new Flight();
+        flightNISAMS.setDepartureAirport(airportNIS);
+        flightNISAMS.setArrivalAirport(airportAMS);
+        flightNISAMS.setDepartureTime(Instant.parse("2023-07-01T13:59:42.12Z"));
+        flightNISAMS.setArrivalTime(Instant.parse("2023-07-01T15:19:42.12Z"));
+        flightNISAMS.setId(5L);
+
+        Flight flightAMSPAR = new Flight();
+        flightAMSPAR.setDepartureAirport(airportAMS);
+        flightAMSPAR.setArrivalAirport(airportPARIS);
+        flightAMSPAR.setDepartureTime(Instant.parse("2023-07-01T16:19:42.12Z"));
+        flightAMSPAR.setArrivalTime(Instant.parse("2023-07-01T19:19:42.12Z"));
+        flightAMSPAR.setId(6L);
+
+        Flight flightBGSOF = new Flight();
+        flightBGSOF.setDepartureAirport(airportBG);
+        flightBGSOF.setArrivalAirport(airportSOF);
+        flightBGSOF.setDepartureTime(Instant.parse("2023-07-01T16:19:42.12Z"));
+        flightBGSOF.setArrivalTime(Instant.parse("2023-07-01T19:19:42.12Z"));
+        flightBGSOF.setId(7L);
+
+        Flight flightPARMIN = new Flight();
+        flightPARMIN.setDepartureAirport(airportPARIS);
+        flightPARMIN.setArrivalAirport(airportMIN);
+        flightPARMIN.setDepartureTime(Instant.parse("2023-07-01T20:19:42.12Z"));
+        flightPARMIN.setArrivalTime(Instant.parse("2023-07-01T21:19:42.12Z"));
+        flightPARMIN.setId(8L);
+
+
+        ksession.insert(flightBGNIS);
+        ksession.insert(flightNISIST);
+        ksession.insert(flightNISIST2);
+        ksession.insert(flightISTPAR);
+        ksession.insert(flightNISAMS);
+        ksession.insert(flightAMSPAR);
+        ksession.insert(flightBGSOF);
+        ksession.insert(flightPARMIN);
 
         FlightRequest flightRequest = new FlightRequest();
-        flightRequest.setDepartureAirport(airport1);
-        flightRequest.setArrivalAirport(airport4);
+        flightRequest.setDepartureAirport(airportBG);
+        flightRequest.setArrivalAirport(airportMIN);
         flightRequest.setDepartureTime(Instant.parse("2023-07-01T11:00:42.12Z"));
+
+        List<List<Flight>> order = new ArrayList<>();
+        ksession.setGlobal("order", order);
+
         ksession.insert(flightRequest);
 
         long ruleFireCount = ksession.fireAllRules();

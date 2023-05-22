@@ -4,13 +4,15 @@ import {MatDialog} from "@angular/material/dialog";
 import {MatPaginator} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {CertificateService} from "../../../../services/certificate.service";
-import {FormControl} from "@angular/forms";
+import {FormControl, FormGroup} from "@angular/forms";
 import {map, Observable, startWith} from "rxjs";
 import {Airport, airports} from "../../../../utils/Airports";
 import {MatAutocompleteSelectedEvent, MatAutocompleteTrigger} from "@angular/material/autocomplete";
-import {SeatClass} from "../../../../model/flight/SeatClass";
+import {SeatClass, seatClassReverseMapping} from "../../../../model/flight/SeatClass";
 import {PassengersDialogComponent} from "../../components/passengers-dialog/passengers-dialog.component";
-import {NumberOfStops} from "../../../../model/flight/NumberOfStops";
+import {NumberOfStops, numberOfStopsReverseMapping} from "../../../../model/flight/NumberOfStops";
+import {FlightService} from "../../../../services/flight.service";
+import {SearchFlightsParams} from "../../../../model/flight/SearchFlightsParams";
 
 @Component({
   selector: 'app-certificate-list',
@@ -40,7 +42,13 @@ export class FlightsContainerComponent implements OnInit {
   selectedNumberOfStops: NumberOfStops = NumberOfStops.ANY;
   possibleNumberOfStops = Object.values(NumberOfStops);
 
-  constructor(public dialog: MatDialog, private certificateService: CertificateService) {
+  dateRange = new FormGroup({
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
+  });
+  singleDate!: Date;
+
+  constructor(public dialog: MatDialog, private certificateService: CertificateService, private flightService: FlightService) {
     this.userRole = localStorage.getItem("userRole") || ""
     this.dataSource = new CertificateTableDataSource(certificateService, this.userRole);
     this.searchFilter = "";
@@ -83,7 +91,16 @@ export class FlightsContainerComponent implements OnInit {
   }
 
   search() {
+    console.log(this.dateRange.value)
+    console.log(this.singleDate)
+    console.log(this.seatClass)
+    // const exists = (value: string) => Object.values(SeatClass).includes(value as any);
+    // if (exists(this.seatClass)) {
+    const searchParams = new SearchFlightsParams(seatClassReverseMapping[this.seatClass], this.from, this.to, this.numberOfChildren,
+      this.numberOfAdults, numberOfStopsReverseMapping[this.selectedNumberOfStops], this.returnTicket, this.singleDate, this.dateRange.value.start!, this.dateRange.value.end!)
+    this.flightService.searchFlights(searchParams).subscribe((res) => {
 
+    })
   }
 
   openPassengersDialog() {

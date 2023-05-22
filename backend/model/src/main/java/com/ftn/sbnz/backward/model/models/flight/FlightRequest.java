@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.kie.api.definition.type.Position;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 @AllArgsConstructor
@@ -21,25 +22,7 @@ public class FlightRequest {
 
     @Position(2)
     private Instant departureTime;
-
-    @Override
-    public String toString() {
-        return "FlightRequest{" +
-                "departureAirport=" + departureAirport +
-                ", arrivalAirport=" + arrivalAirport +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FlightRequest that = (FlightRequest) o;
-        return Objects.equals(departureAirport, that.departureAirport) && Objects.equals(arrivalAirport, that.arrivalAirport);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(departureAirport, arrivalAirport);
-    }
+//
+//    @Position(3)
+//    private List<List<Flight>> connectedFlights;
 }

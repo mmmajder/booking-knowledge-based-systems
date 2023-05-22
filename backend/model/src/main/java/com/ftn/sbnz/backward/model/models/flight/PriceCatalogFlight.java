@@ -37,16 +37,16 @@ public class PriceCatalogFlight {
     private double holidaysPriceIncreaseInPercent;
 
     public double calculateDiscountForMultipleTickets(int numberOfTickets) {
-        double currentDiscount;
+        double currentDiscount = 0;
         discountForMultipleTickets.sort((d1, d2) -> Double.compare(d1.getDiscount(), d2.getDiscount()));
         for (DiscountForMultipleFlightTickets discount : discountForMultipleTickets) {
             if (numberOfTickets >= discount.getNumberOfTicketsThreshold()) {
                 currentDiscount = discount.getDiscount();
             } else {
-                break;
+                return currentDiscount;
             }
         }
-        return 0;
+        return currentDiscount;
     }
 
 }
