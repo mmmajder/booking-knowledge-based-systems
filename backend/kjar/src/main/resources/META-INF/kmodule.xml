@@ -7,7 +7,7 @@
         <ksession name="flighttransfersession"/>
     </kbase>
 
-    <kbase name="baseFlightPrice" packages="flightPrice">
+    <kbase name="baseFlightPrice" eventProcessingMode="stream"  packages="flightPrice">
         <ksession name="flightpricesession"/>
     </kbase>
 

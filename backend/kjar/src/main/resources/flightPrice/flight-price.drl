@@ -5,6 +5,11 @@ import com.ftn.sbnz.backward.model.models.events.AdditionalServicesRequestEvent;
 import com.ftn.sbnz.backward.model.models.flight.SeatClass;
 import com.ftn.sbnz.backward.model.models.flight.price.BasePrice;
 import com.ftn.sbnz.backward.model.models.flight.price.AdditionalServicesPrice;
+import com.ftn.sbnz.backward.model.models.Payment;
+import com.ftn.sbnz.backward.model.models.Customer
+import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgram;
+import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgramTier;
+
 
 rule "Calculate base price"
     when
@@ -62,24 +67,52 @@ rule "calculate price of additional services"
         modify($additionalServicesRequest){setAdditionalServicesPrice(additionalServicesPrice)};
 end
 
+rule "Loyalty discount"
+    when
+        $c: Customer($email: email)
+        AdditionalServicesRequestEvent(additionalServicesPrice!=null)
+        Number(doubleValue >= 500 && doubleValue < 1000) from accumulate(
+            $p: Payment(email == $email, $totalPrice: totalPrice)
+            over window: time(129600m),
+            sum($totalPrice)
+        )
+    then
+        System.out.println("Trece pravilo se aktiviralo");
+        LoyaltyProgram loyaltyProgram = new LoyaltyProgram();
+        loyaltyProgram.setDiscount(5);
+        switch("BRONZE") {
+          case "BRONZE":
+            loyaltyProgram.setTier(LoyaltyProgramTier.BRONZE);
+            break;
+          case "SILVER":
+            loyaltyProgram.setTier(LoyaltyProgramTier.SILVER);
+            break;
+          case "GOLD":
+            loyaltyProgram.setTier(LoyaltyProgramTier.GOLD);
+            break;
+          default:
+            break;
+        }
+        modify($c){setLoyaltyProgram(loyaltyProgram);}
+end
 
-
-
-
-//rule
-
-// at the end add loyalty program discount
-//rule "Calculate loyalty program discount"
+//rule "Loyalty discount"
 //    when
-//        $t1: CalculateLoyaltyProgramPriceEvent($cId: customerId, )
-//                Number(intValue >= 10) from accumulate(
-//                    $t2: TransactionEvent(
-//                        this != $t1,
-//                        customerId == $cId,
-//                        this meets[1h] $t1
-//                    ),
-//                    count($t2)
-//                )
+//        $c: Customer($email: email)
+//        AdditionalServicesRequestEvent(additionalServicesPrice!=null)
+//        Number(doubleValue >= 500) from accumulate(
+//            $p: Payment(email == $email, $totalPrice: totalPrice)
+//            over window: time(10m),
+//            sum($totalPrice)
+//        )
 //    then
-//
+//        System.out.println("EVE ME");
+//        LoyaltyProgramTier l = LoyaltyProgramTier.BRONZE;
+//        LoyaltyProgram loyaltyProgram = new LoyaltyProgram();
+//        switch (l) {
+//            case
+//        }
+//        loyaltyProgram.setDiscount();
+//        loyaltyProgram.setTier();
+//        modify($c){setLoyaltyProgram(@{discount});}
 //end

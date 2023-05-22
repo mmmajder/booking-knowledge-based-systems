@@ -1,10 +1,14 @@
 package com.ftn.sbnz.backward.service;
 
 import com.ftn.sbnz.backward.model.models.Customer;
+import com.ftn.sbnz.backward.model.models.Payment;
 import com.ftn.sbnz.backward.model.models.events.AdditionalServicesRequestEvent;
 import com.ftn.sbnz.backward.model.models.events.PreviewFlightEvent;
 import com.ftn.sbnz.backward.model.models.flight.*;
 import org.drools.decisiontable.ExternalSpreadsheetCompiler;
+import org.drools.template.DataProvider;
+import org.drools.template.ObjectDataCompiler;
+import org.drools.template.objects.ArrayDataProvider;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.Message;
@@ -99,21 +103,52 @@ public class CalculateFlightPriceTest {
         additionalServicesRequestEvent.setSeats(null);
         additionalServicesRequestEvent.setExecutionTime(Date.from(Instant.now()));
 
-
         ksession.insert(previewFlightEvent);
         ksession.insert(additionalServicesRequestEvent);
+
+
+        Payment payment = new Payment();
+        payment.setId(1L);
+        payment.setExecutionTime(Date.from(Instant.now()));
+        payment.setEmail(customer.getEmail());
+        payment.setTotalPrice(300.0);
+        payment.setIsAcceptedPayment(true);
+
+        Payment payment2 = new Payment();
+        payment2.setId(2L);
+        payment2.setExecutionTime(Date.from(Instant.now()));
+        payment2.setEmail(customer.getEmail());
+        payment2.setTotalPrice(300.0);
+        payment2.setIsAcceptedPayment(true);
+
+        ksession.insert(customer);
+        ksession.insert(payment);
+        ksession.insert(payment2);
+
         long ruleFireCount = ksession.fireAllRules();
         System.out.println(ruleFireCount);
         System.out.println(previewFlightEvent.getBasePrice());
         System.out.println(additionalServicesRequestEvent.getAdditionalServicesPrice());
 
-
-
 //        InputStream template = CalculateFlightPriceTest.class.getResourceAsStream("/loyalty/loyalty-program.drt");
-//        InputStream data = CalculateFlightPriceTest.class.getResourceAsStream("/loyalty/flightLoyaltyProgram.xls");
 //
-//        ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-//        String drl = converter.compile(data, template, 3, 2);
+//        List<ClassificationTemplateModel> data = new ArrayList<ClassificationTemplateModel>();
+//
+//        data.add(new ClassificationTemplateModel(500, 1000 , 3, 5, "BRONZE"));
+//        data.add(new ClassificationTemplateModel(1000, 2000 , 6, 5, "BRONZE"));
+//        data.add(new ClassificationTemplateModel(2000, 4000 , 12, 5, "BRONZE"));
+//
+//        data.add(new ClassificationTemplateModel(1000, 2000 , 3, 10, "SILVER"));
+//        data.add(new ClassificationTemplateModel(2000, 4000 , 6, 10, "SILVER"));
+//        data.add(new ClassificationTemplateModel(4000, 8000 , 12, 10, "SILVER"));
+//
+//        data.add(new ClassificationTemplateModel(2000, 4000 , 3, 15, "GOLD"));
+//        data.add(new ClassificationTemplateModel(4000, 8000 , 6, 15, "GOLD"));
+//        data.add(new ClassificationTemplateModel(8000, 999999999 , 12, 15, "GOLD"));
+//
+//
+//        ObjectDataCompiler converter = new ObjectDataCompiler();
+//        String drl = converter.compile(data, template);
 //
 //        System.out.println(drl);
     }

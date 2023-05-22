@@ -1,5 +1,6 @@
 package com.ftn.sbnz.backward.model.models;
 
+import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgram;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -15,6 +16,8 @@ import javax.persistence.Entity;
 public class Customer extends User {
     private double numberOfTokens;
     private boolean isActive;
+
+    private LoyaltyProgram loyaltyProgram;
 
     public Customer(String email) {
         super(email);
