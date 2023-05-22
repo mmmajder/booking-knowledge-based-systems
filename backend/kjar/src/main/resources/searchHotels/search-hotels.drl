@@ -2,9 +2,12 @@ package searchHotels
 
 import com.ftn.sbnz.backward.model.models.hotel.*;
 import java.time.LocalDate;
+import java.util.Date;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Collection;
+import java.time.ZoneId;
+import java.text.SimpleDateFormat;
 
 global List<Hotel> filteredHotels;
 
@@ -23,12 +26,13 @@ when
         city.toLowerCase().contains($searchParams.destination.toLowerCase()) ||
         country.toLowerCase().contains($searchParams.destination.toLowerCase()),
         rating >= $searchParams.reviewScore,
-        stars memberOf $searchParams.starRating || $searchParams.starRating.length == 0,
+        stars memberOf $searchParams.starRating || $searchParams.starRating.size() == 0,
         distanceFromCenter >= $searchParams.distanceStart,
-        distanceFromCenter <= $searchParams.distanceEnd
+        distanceFromCenter <= $searchParams.distanceEnd,
+        $hotel.facilities.containsAll($searchParams.facilities) || $searchParams.facilities.size() == 0
     )
 then
-    filteredHotels.add($hotel);
+    insert(new CalculateHotelPrice($hotel, $searchParams));
 end
 
 //
@@ -56,67 +60,76 @@ end
 //    insert($hotel);
 //end
 //
-//
-//rule "Calculate Hotel Price"
-//when
-//    $hotel: Hotel()
-//    $room: HotelRoom(hotel == $hotel)
-//then
-//    // Calculate the basic room price
-//    double basicPrice = $room.getBasePrice() * $hotel.getStars() * $hotel.getNumNights() * (1 - $hotel.getNightStayDiscount());
-//
-//    // Calculate the meal price
-//    double mealPrice = $room.getNumGuests() * $hotel.getMealServicePrice() * $hotel.getNumNights() * $hotel.getStars();
-//
-//    // Calculate the additional services price
-//    double additionalServicesPrice = $hotel.getAdditionalServicesPrice() * $room.getNumGuests();
-//
-//    // Calculate the holiday surcharge
-//    double holidaySurcharge = $hotel.getHolidaySurcharge() * $hotel.getNumNights();
-//
-//    // Calculate the final total price
-//    double totalPrice = basicPrice + mealPrice + additionalServicesPrice + holidaySurcharge;
-//
-//    // Apply Last Minute discounts based on the number of days before the stay
-//    int daysBeforeStay = calculateDaysBeforeStay($hotel.getStartDate());
-//    double lastMinuteDiscount = 0.0;
-//
-//    if (daysBeforeStay >= 16 && daysBeforeStay <= 25) {
-//        if ($hotel.isHolidayPeriod()) {
-//            lastMinuteDiscount = 5.0;
-//        } else {
-//            lastMinuteDiscount = 10.0;
-//        }
-//    } else if (daysBeforeStay >= 6 && daysBeforeStay <= 15) {
-//        if ($hotel.isHolidayPeriod()) {
-//            lastMinuteDiscount = 10.0;
-//        } else {
-//            lastMinuteDiscount = 15.0;
-//        }
-//    } else if (daysBeforeStay <= 5) {
-//        if ($hotel.isHolidayPeriod()) {
-//            lastMinuteDiscount = 15.0;
-//        } else {
-//            lastMinuteDiscount = 20.0;
-//        }
-//    }
-//
-//    // Apply the Last Minute discount
-//    double lastMinuteDiscountAmount = totalPrice * (lastMinuteDiscount / 100);
-//    totalPrice -= lastMinuteDiscountAmount;
-//
-//    // Set the calculated total price in the hotel object
-//    $hotel.setTotalPrice(totalPrice);
-//
-//    // Update the room price in the hotel object
-//    $hotel.setRoomPrice($room.getBasePrice());
-//
-//    // Insert the updated hotel object
-//    insert($hotel);
-//end
-//
-//function int calculateDaysBeforeStay(Date startDate) {
-//    LocalDate currentDate = LocalDate.now();
-//    LocalDate stayDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-//    long daysBetween = ChronoUnit.DAYS.between(currentDate, stayDate);
-//    return (int) daysBetween;
+
+rule "Calculate Hotel Price"
+when
+    $calculateHotelPrice: CalculateHotelPrice(
+        $hotel: hotel,
+        $searchParams: searchHotelsParams
+    )
+then
+    // CALCULATE DISCOUNT
+    double numOfNights = calculateNumberOfNights($searchParams.getStartDate(), $searchParams.getEndDate());
+    double basicPrice = 10.0 * $hotel.getStars() * numOfNights;
+    double mealPrice = ($searchParams.getNumAdults() + $searchParams.getNumChildren()) * 10.0 * numOfNights * $hotel.getStars();
+    double totalPrice = basicPrice + mealPrice;
+
+    // LAST MINUTE DISCOUNT
+    int daysBeforeStay = calculateNumberOfNights(new Date(), $searchParams.getStartDate());
+    boolean isHolidayPeriod = isHolidayPeriod($searchParams.getStartDate());
+    double lastMinuteDiscount = holidayDiscount(daysBeforeStay, isHolidayPeriod);
+    double lastMinuteDiscountAmount = totalPrice * (lastMinuteDiscount / 100);
+    totalPrice -= lastMinuteDiscountAmount;
+
+    if(totalPrice >= $searchParams.getPriceRangeStart() && $searchParams.getPriceRangeEnd() >= totalPrice) {
+        filteredHotels.add($hotel);
+    }
+end
+
+function Double holidayDiscount(int daysBeforeStay, boolean isHolidayPeriod) {
+    if (daysBeforeStay >= 16 && daysBeforeStay <= 25) {
+        if (isHolidayPeriod) {
+            return 5.0;
+        } else {
+            return 10.0;
+        }
+    } else if (daysBeforeStay >= 6 && daysBeforeStay <= 15) {
+        if (isHolidayPeriod) {
+            return 10.0;
+        } else {
+            return 15.0;
+        }
+    } else if (daysBeforeStay <= 5) {
+        if (isHolidayPeriod) {
+            return 15.0;
+        } else {
+            return 20.0;
+        }
+    }
+}
+
+function boolean isHolidayPeriod(Date date) {
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd");
+    String formattedDate = dateFormat.format(date);
+    String[] holidayPeriods = {
+        "01-01", // New Year's Day
+        "12-25", // Christmas
+        "07-04", // Independence Day
+        "10-31", // Halloween
+        "11-11", // Veterans Day
+    };
+
+    for (String holiday : holidayPeriods) {
+        if (formattedDate.equals(holiday)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function int calculateNumberOfNights(Date startD, Date endD) {
+    LocalDate startDate = startD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    LocalDate endDate = endD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    long daysBetween = ChronoUnit.DAYS.between(startDate, endDate);
+    return (int) daysBetween;
+}
