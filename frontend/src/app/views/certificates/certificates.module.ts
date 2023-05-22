@@ -20,11 +20,13 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
 import {MatNativeDateModule} from "@angular/material/core";
 import {MatDividerModule} from "@angular/material/divider";
 import { PassengersDialogComponent } from './components/passengers-dialog/passengers-dialog.component';
+import { FlightCardComponent } from './components/flight-card/flight-card.component';
 
 @NgModule({
   declarations: [
     FlightsContainerComponent,
-    PassengersDialogComponent
+    PassengersDialogComponent,
+    FlightCardComponent
   ],
   imports: [
     MatFormFieldModule,

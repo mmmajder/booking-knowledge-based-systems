@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Data
@@ -37,16 +38,31 @@ public class PriceCatalogFlight {
     private double holidaysPriceIncreaseInPercent;
 
     public double calculateDiscountForMultipleTickets(int numberOfTickets) {
-        double currentDiscount;
-        discountForMultipleTickets.sort((d1, d2) -> Double.compare(d1.getDiscount(), d2.getDiscount()));
+        double currentDiscount = 0;
+        discountForMultipleTickets.sort(Comparator.comparingDouble(DiscountForMultipleFlightTickets::getDiscount));
         for (DiscountForMultipleFlightTickets discount : discountForMultipleTickets) {
             if (numberOfTickets >= discount.getNumberOfTicketsThreshold()) {
                 currentDiscount = discount.getDiscount();
             } else {
-                break;
+                return currentDiscount;
             }
         }
-        return 0;
+        return currentDiscount;
+    }
+
+    public double calculateLuggagePrice(double weight) {
+        double price = 0;
+        luggagePrices.sort(Comparator.comparingDouble(LuggagePrice::getWeightThreshold));
+        for (int i = 0; i < luggagePrices.size(); i++) {
+            if (weight < luggagePrices.get(i).getWeightThreshold()) {
+                if (i == 0) {
+                    return 0;
+                } else {
+                    return luggagePrices.get(i - 1).getPrice();
+                }
+            }
+        }
+        return luggagePrices.get(luggagePrices.size() - 1).getPrice();
     }
 
 }

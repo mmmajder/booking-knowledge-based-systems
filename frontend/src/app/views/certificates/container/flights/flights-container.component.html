@@ -2,14 +2,17 @@
 <div style="position: relative; text-align: center; color: white;">
   <img src="../../../../../assets/images/line.jpg" class="dashboard-background" alt="dashboard-background"/>
 </div>
-<div style="margin-left: 90px; margin-right: 10px; margin-top: -80px; position: absolute">
-  <h1 style="font-weight: 500; margin-left: 10px; color: white">Flights</h1>
-  <span style="display: flex; flex-direction: column; align-items: start">
-  <div style="display: flex; flex-direction: column; margin-top: 50px;">
+
+<div class="row" style="margin-left: 90px; margin-top: 20px; margin-bottom: 20px; height: 90%">
+  <div class="col-5">
+    <h2>
+      <mat-icon color="primary">search</mat-icon>
+      Search flights
+    </h2>
     <section>
       <mat-checkbox [color]="'primary'" class="example-margin" [(ngModel)]="returnTicket">Return ticket</mat-checkbox>
     </section>
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" style="width: 100%;">
       <mat-label>From</mat-label>
       <input type="text"
              placeholder="From"
@@ -30,7 +33,7 @@
     <!--      <mat-icon style="margin-left: 10px">import_export</mat-icon>-->
     <!--    </button>-->
     <!--    </div>-->
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" style="width: 100%;">
       <mat-label>To</mat-label>
       <input type="text"
              placeholder="To"
@@ -44,9 +47,17 @@
         </mat-option>
       </mat-autocomplete>
     </mat-form-field>
-    <mat-form-field *ngIf="!returnTicket" appearance="outline" class="example-form-field">
+
+    <div
+      style="border: 1px solid #ccc; padding: 10px; border-radius: 4px; align-items: center; margin-left: 5px; margin-right: -5px; margin-bottom: 20px;"
+      (click)="openPassengersDialog()">
+      <mat-icon>supervisor_account</mat-icon>
+      {{numberOfAdults + numberOfChildren}} passenger, {{seatClass}}
+    </div>
+
+    <mat-form-field *ngIf="!returnTicket" appearance="outline" class="example-form-field" style="width: 100%;">
       <mat-label>Choose a date</mat-label>
-      <input matInput [matDatepicker]="datepicker">
+      <input matInput [matDatepicker]="datepicker" [(ngModel)]="singleDate">
       <mat-hint>MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
       <mat-datepicker #datepicker>
@@ -57,11 +68,11 @@
       </mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field *ngIf="returnTicket" appearance="outline" class="example-form-field">
+    <mat-form-field *ngIf="returnTicket" appearance="outline" class="example-form-field" style="width: 100%;">
       <mat-label>Enter a date range</mat-label>
-      <mat-date-range-input [rangePicker]="rangePicker">
-        <input matStartDate placeholder="Start date">
-        <input matEndDate placeholder="End date">
+      <mat-date-range-input [rangePicker]="rangePicker" [formGroup]="dateRange">
+        <input matStartDate placeholder="Start date" formControlName="start">
+        <input matEndDate placeholder="End date" formControlName="end">
       </mat-date-range-input>
       <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
       <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>
@@ -73,12 +84,8 @@
       </mat-date-range-picker>
     </mat-form-field>
 
-    <div style="border: 1px solid #ccc; padding: 10px; border-radius: 4px; align-items: center;"
-         (click)="openPassengersDialog()">
-        <mat-icon>supervisor_account</mat-icon>
-      {{numberOfAdults + numberOfChildren}} passenger, {{seatClass}}
-    </div>
-    <mat-form-field appearance="outline" style="margin-top: 20px">
+
+    <mat-form-field appearance="outline" style="margin-top: 20px; width: 100%">
       <mat-label>Stops</mat-label>
       <mat-select [(ngModel)]="selectedNumberOfStops" name="food">
         <mat-option *ngFor="let numberOfStops of possibleNumberOfStops" [value]="numberOfStops">
@@ -89,10 +96,124 @@
 
     <button style="font-size: 12px; margin-top: 20px; width: 100%" mat-raised-button
             (click)="search()" color="primary">
-        Search
+      Search
     </button>
-
   </div>
-  </span>
 
+  <div class="col-7" style="border-left: 1px solid gray; padding-left: 20px;">
+    <!--    <div class="row">-->
+    <!--      <div class="col-6" *ngFor="let o of properties">-->
+    <!--        <app-property-card [property]="o" (updateDisplay)="getCards()"></app-property-card>-->
+    <!--      </div>-->
+    <!--    </div>-->
+    <!--    <div *ngIf="properties.length === 0" class="d-flex justify-content-center" style="width: 100%">-->
+    <!--      <p>No hotels with these parameters!</p>-->
+    <!--    </div>-->
+    <!--  </div>-->
+  </div>
 </div>
+
+
+<!--<app-sidebar currentPage="flights"></app-sidebar>-->
+<!--<div style="position: relative; text-align: center; color: white;">-->
+<!--  <img src="../../../../../assets/images/line.jpg" class="dashboard-background" alt="dashboard-background"/>-->
+<!--</div>-->
+<!--<div style="display: flex; flex-direction: row; height: 85%">-->
+<!--  <div style="margin-left: 90px; margin-right: 10px; margin-top: -80px; position: absolute">-->
+<!--    <h1 style="font-weight: 500; margin-left: 10px; color: white">Flights</h1>-->
+<!--    <span style="display: flex; flex-direction: column; align-items: start">-->
+<!--    <div style="display: flex; flex-direction: column; margin-top: 50px;">-->
+<!--      <section>-->
+<!--        <mat-checkbox [color]="'primary'" class="example-margin" [(ngModel)]="returnTicket">Return ticket</mat-checkbox>-->
+<!--      </section>-->
+<!--      <mat-form-field appearance="outline">-->
+<!--        <mat-label>From</mat-label>-->
+<!--        <input type="text"-->
+<!--               placeholder="From"-->
+<!--               aria-label="From"-->
+<!--               matInput-->
+<!--               [formControl]="myControlFrom"-->
+<!--               [matAutocomplete]="autoFrom"-->
+<!--               [ngModel]="from">-->
+<!--        <mat-autocomplete autoActiveFirstOption #autoFrom="matAutocomplete" (optionSelected)='fromSelected($event)'>-->
+<!--          <mat-option *ngFor="let option of filteredOptionsFrom | async" [value]="option">-->
+<!--            {{option}}-->
+<!--          </mat-option>-->
+<!--        </mat-autocomplete>-->
+<!--      </mat-form-field>-->
+<!--      &lt;!&ndash;    <div style="display: flex; flex-direction: row;">&ndash;&gt;-->
+<!--      &lt;!&ndash;    <mat-divider></mat-divider>&ndash;&gt;-->
+<!--      &lt;!&ndash;    <button mat-raised-button (click)="reverseAirports()" style="margin-bottom: 20px">&ndash;&gt;-->
+<!--      &lt;!&ndash;      <mat-icon style="margin-left: 10px">import_export</mat-icon>&ndash;&gt;-->
+<!--      &lt;!&ndash;    </button>&ndash;&gt;-->
+<!--      &lt;!&ndash;    </div>&ndash;&gt;-->
+<!--      <mat-form-field appearance="outline">-->
+<!--        <mat-label>To</mat-label>-->
+<!--        <input type="text"-->
+<!--               placeholder="To"-->
+<!--               aria-label="To"-->
+<!--               matInput-->
+<!--               [formControl]="myControlTo"-->
+<!--               [matAutocomplete]="autoTo">-->
+<!--        <mat-autocomplete #autoTo="matAutocomplete" (optionSelected)='toSelected($event)'>-->
+<!--          <mat-option *ngFor="let option of filteredOptionsTo | async" [value]="option">-->
+<!--            {{option}}-->
+<!--          </mat-option>-->
+<!--        </mat-autocomplete>-->
+<!--      </mat-form-field>-->
+<!--      <mat-form-field *ngIf="!returnTicket" appearance="outline" class="example-form-field">-->
+<!--        <mat-label>Choose a date</mat-label>-->
+<!--        <input matInput [matDatepicker]="datepicker">-->
+<!--        <mat-hint>MM/DD/YYYY</mat-hint>-->
+<!--        <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>-->
+<!--        <mat-datepicker #datepicker>-->
+<!--          <mat-datepicker-actions>-->
+<!--            <button mat-button matDatepickerCancel>Cancel</button>-->
+<!--            <button mat-raised-button color="primary" matDatepickerApply>Apply</button>-->
+<!--          </mat-datepicker-actions>-->
+<!--        </mat-datepicker>-->
+<!--      </mat-form-field>-->
+
+<!--      <mat-form-field *ngIf="returnTicket" appearance="outline" class="example-form-field">-->
+<!--        <mat-label>Enter a date range</mat-label>-->
+<!--        <mat-date-range-input [rangePicker]="rangePicker">-->
+<!--          <input matStartDate placeholder="Start date">-->
+<!--          <input matEndDate placeholder="End date">-->
+<!--        </mat-date-range-input>-->
+<!--        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>-->
+<!--        <mat-datepicker-toggle matIconSuffix [for]="rangePicker"></mat-datepicker-toggle>-->
+<!--        <mat-date-range-picker #rangePicker>-->
+<!--          <mat-date-range-picker-actions>-->
+<!--            <button mat-button matDateRangePickerCancel>Cancel</button>-->
+<!--            <button mat-raised-button color="primary" matDateRangePickerApply>Apply</button>-->
+<!--          </mat-date-range-picker-actions>-->
+<!--        </mat-date-range-picker>-->
+<!--      </mat-form-field>-->
+
+<!--      <div style="border: 1px solid #ccc; padding: 10px; border-radius: 4px; align-items: center;"-->
+<!--           (click)="openPassengersDialog()">-->
+<!--          <mat-icon>supervisor_account</mat-icon>-->
+<!--        {{numberOfAdults + numberOfChildren}} passenger, {{seatClass}}-->
+<!--      </div>-->
+<!--      <mat-form-field appearance="outline" style="margin-top: 20px">-->
+<!--        <mat-label>Stops</mat-label>-->
+<!--        <mat-select [(ngModel)]="selectedNumberOfStops" name="food">-->
+<!--          <mat-option *ngFor="let numberOfStops of possibleNumberOfStops" [value]="numberOfStops">-->
+<!--            {{numberOfStops}}-->
+<!--          </mat-option>-->
+<!--        </mat-select>-->
+<!--      </mat-form-field>-->
+
+<!--      <button style="font-size: 12px; margin-top: 20px; width: 100%" mat-raised-button-->
+<!--              (click)="search()" color="primary">-->
+<!--          Search-->
+<!--      </button>-->
+
+<!--    </div>-->
+<!--    </span>-->
+<!--  </div>-->
+<!--  <div class="col-7" style="border-left: 1px solid gray; padding-left: 20px; margin-left: 400px; height: 100%; margin-top: 10px">-->
+<!--    evo-->
+<!--    <app-flight-card></app-flight-card>-->
+<!--  </div>-->
+<!--</div>-->

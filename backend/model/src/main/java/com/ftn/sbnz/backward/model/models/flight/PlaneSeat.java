@@ -10,14 +10,13 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Airport {
+public class PlaneSeat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
     private long id;
 
-    private String name;
-    private String country;
-    private String code;
+    private int number;
+    private SeatClass seatClass;
 }
