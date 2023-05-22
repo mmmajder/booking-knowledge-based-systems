@@ -18,4 +18,6 @@ public class HotelRoom {
 
     private String roomNumber;
     private RoomType roomType;
+    private int numberOfAdults;
+    private int numberOfChildren;
 }

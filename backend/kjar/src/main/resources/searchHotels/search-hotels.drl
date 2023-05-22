@@ -1,0 +1,122 @@
+package searchHotels
+
+import com.ftn.sbnz.backward.model.models.hotel.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Collection;
+
+global List<Hotel> filteredHotels;
+
+rule "Hotel"
+    when
+        $hotel: Hotel($name: name)
+    then
+        System.out.println($name);
+end
+
+rule "Filter Hotels"
+when
+    $searchParams: SearchHotelsParams()
+    $hotel: Hotel(
+        name.toLowerCase().contains($searchParams.name.toLowerCase()),
+        city.toLowerCase().contains($searchParams.destination.toLowerCase()) ||
+        country.toLowerCase().contains($searchParams.destination.toLowerCase()),
+        rating >= $searchParams.reviewScore,
+        stars memberOf $searchParams.starRating || $searchParams.starRating.length == 0,
+        distanceFromCenter >= $searchParams.distanceStart,
+        distanceFromCenter <= $searchParams.distanceEnd
+    )
+then
+    filteredHotels.add($hotel);
+end
+
+//
+//
+//rule "Available room"
+//when
+//    $hotel: Hotel(
+//        $hotel.hotelRooms exists (HotelRoom(
+//            available(startDate, endDate),
+//            occupancy.adults >= numAdults,
+//            occupancy.children >= numChildren
+//        ))
+//    )
+//    accumulate(
+//        $room: HotelRoom(
+//            hotel == $hotel,
+//            available(startDate, endDate),
+//            price >= priceRangeStart,
+//            price <= priceRangeEnd
+//        );
+//        $totalPrice: sum($room.getPrice())
+//    )
+//then
+//    $hotel.setTotalPrice($totalPrice);
+//    insert($hotel);
+//end
+//
+//
+//rule "Calculate Hotel Price"
+//when
+//    $hotel: Hotel()
+//    $room: HotelRoom(hotel == $hotel)
+//then
+//    // Calculate the basic room price
+//    double basicPrice = $room.getBasePrice() * $hotel.getStars() * $hotel.getNumNights() * (1 - $hotel.getNightStayDiscount());
+//
+//    // Calculate the meal price
+//    double mealPrice = $room.getNumGuests() * $hotel.getMealServicePrice() * $hotel.getNumNights() * $hotel.getStars();
+//
+//    // Calculate the additional services price
+//    double additionalServicesPrice = $hotel.getAdditionalServicesPrice() * $room.getNumGuests();
+//
+//    // Calculate the holiday surcharge
+//    double holidaySurcharge = $hotel.getHolidaySurcharge() * $hotel.getNumNights();
+//
+//    // Calculate the final total price
+//    double totalPrice = basicPrice + mealPrice + additionalServicesPrice + holidaySurcharge;
+//
+//    // Apply Last Minute discounts based on the number of days before the stay
+//    int daysBeforeStay = calculateDaysBeforeStay($hotel.getStartDate());
+//    double lastMinuteDiscount = 0.0;
+//
+//    if (daysBeforeStay >= 16 && daysBeforeStay <= 25) {
+//        if ($hotel.isHolidayPeriod()) {
+//            lastMinuteDiscount = 5.0;
+//        } else {
+//            lastMinuteDiscount = 10.0;
+//        }
+//    } else if (daysBeforeStay >= 6 && daysBeforeStay <= 15) {
+//        if ($hotel.isHolidayPeriod()) {
+//            lastMinuteDiscount = 10.0;
+//        } else {
+//            lastMinuteDiscount = 15.0;
+//        }
+//    } else if (daysBeforeStay <= 5) {
+//        if ($hotel.isHolidayPeriod()) {
+//            lastMinuteDiscount = 15.0;
+//        } else {
+//            lastMinuteDiscount = 20.0;
+//        }
+//    }
+//
+//    // Apply the Last Minute discount
+//    double lastMinuteDiscountAmount = totalPrice * (lastMinuteDiscount / 100);
+//    totalPrice -= lastMinuteDiscountAmount;
+//
+//    // Set the calculated total price in the hotel object
+//    $hotel.setTotalPrice(totalPrice);
+//
+//    // Update the room price in the hotel object
+//    $hotel.setRoomPrice($room.getBasePrice());
+//
+//    // Insert the updated hotel object
+//    insert($hotel);
+//end
+//
+//function int calculateDaysBeforeStay(Date startDate) {
+//    LocalDate currentDate = LocalDate.now();
+//    LocalDate stayDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//    long daysBetween = ChronoUnit.DAYS.between(currentDate, stayDate);
+//    return (int) daysBetween;

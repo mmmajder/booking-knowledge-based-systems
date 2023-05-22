@@ -10,6 +10,11 @@
       </h2>
 
       <mat-form-field appearance="outline" style="width: 100%;">
+        <mat-label>Hotel name</mat-label>
+        <input [(ngModel)]="searchParams.name" name="name" matInput type="text">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" style="width: 100%;">
         <mat-label>Destination</mat-label>
         <input [(ngModel)]="searchParams.destination" name="destination" matInput type="text">
       </mat-form-field>
@@ -36,15 +41,16 @@
         </mat-form-field>
       </p>
 
-      <section>
-        <h4>Review Score</h4>
-        <div *ngFor="let choice of reviewScores">
-          <mat-checkbox [value]="choice.value.toString()"
-                        (change)="$event.checked ? searchParams.reviewScore.push(choice.value) : searchParams.starRating = remove(choice.value, searchParams.reviewScore)">
-            {{choice.description}}
-          </mat-checkbox>
-        </div>
-      </section>
+      <p>
+        <mat-form-field appearance="outline" style="width: 100%">
+          <mat-label>Review Score</mat-label>
+          <mat-select [(ngModel)]="searchParams.reviewScore" name="reviewScore">
+            <mat-option *ngFor="let choice of reviewScores" [value]="choice.value.toString()">
+              {{choice.description}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </p>
 
       <section>
         <h4>Hotel star rating</h4>
@@ -57,7 +63,7 @@
         </div>
       </section>
 
-      <div class="example-label-container">
+      <div class="example-label-container" style="width: 100%">
         <label class="example-name-label">Price range: </label>
         <label class="example-value-label">{{searchParams.priceRangeStart}} - {{searchParams.priceRangeEnd}}</label>
       </div>
@@ -66,7 +72,7 @@
         <input [(ngModel)]="searchParams.priceRangeEnd" name="priceEnd" matSliderEndThumb>
       </mat-slider>
 
-      <div class="example-label-container">
+      <div class="example-label-container" style="width: 100%">
         <label class="example-name-label">Distance from beach/city center (m): </label>
         <label class="example-value-label">{{searchParams.distanceStart}} - {{searchParams.distanceEnd}}</label>
       </div>

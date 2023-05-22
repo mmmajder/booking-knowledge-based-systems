@@ -31,10 +31,10 @@ export class PropertiesContainerComponent {
     "All inclusive"
   ];
   reviewScores = [
-    {"value": 9, "description": "Excellent 9+"},
-    {"value": 8, "description": "Very good 8+"},
-    {"value": 7, "description": "Good 7+"},
-    {"value": 6, "description": "Pleasant 6+"},
+    {"value": 9.0, "description": "Excellent 9+"},
+    {"value": 8.0, "description": "Very good 8+"},
+    {"value": 7.0, "description": "Good 7+"},
+    {"value": 6.0, "description": "Pleasant 6+"},
   ];
 
   constructor(private propertiesService: PropertyService) {

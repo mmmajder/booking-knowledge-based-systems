@@ -1,10 +1,11 @@
 export class SearchHotelsParams {
+  name: string;
   destination: string;
   startDate: Date | undefined;
   endDate: Date | undefined;
   numAdults: number;
   numChildren: number;
-  reviewScore: number[];
+  reviewScore: number;
   starRating: number[];
   priceRangeStart: number;
   priceRangeEnd: number;
@@ -14,12 +15,13 @@ export class SearchHotelsParams {
   meals: string[];
 
   constructor() {
+    this.name = '';
     this.destination = '';
     this.startDate = undefined;
     this.endDate = undefined;
     this.numAdults = 2;
     this.numChildren = 0;
-    this.reviewScore = [];
+    this.reviewScore = 1;
     this.starRating = [];
     this.priceRangeStart = 5;
     this.priceRangeEnd = 500;

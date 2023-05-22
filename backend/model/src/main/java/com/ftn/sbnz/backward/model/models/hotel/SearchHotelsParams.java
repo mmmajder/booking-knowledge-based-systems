@@ -1,4 +1,4 @@
-package com.ftn.sbnz.backward.service.dto;
+package com.ftn.sbnz.backward.model.models.hotel;
 
 import lombok.*;
 
@@ -10,12 +10,13 @@ import java.util.Date;
 @Setter
 @Data
 public class SearchHotelsParams {
+    private String name;
     private String destination;
     private Date startDate;
     private Date endDate;
     private int numAdults;
     private int numChildren;
-    private int[] reviewScore;
+    private double reviewScore;
     private int[] starRating;
     private int priceRangeStart;
     private int priceRangeEnd;
