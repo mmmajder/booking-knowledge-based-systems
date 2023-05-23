@@ -1,19 +1,47 @@
-<div style="padding: 20px">
-  <h2>
-    <mat-icon style="color: var(--blue)">house</mat-icon>
-    Property details
-  </h2>
-  <p style="margin-top: -15px"><i>Property id: {{property.id}}</i>
-    <span *ngIf="loggedUser && property && property.owner && loggedUser.id===property.owner.id">
-    </span>
-  </p>
-  <hr>
-  <div class="row">
-    <div class="label">Name:</div>
-    <div class="value">{{property.name}}</div>
-  </div>
-  <div class="row">
-    <div class="label">Address:</div>
-    <div class="value">{{property.address}}</div>
+<div>
+  <img [src]="property.imageUrl" style="width: 100%; object-fit: cover; height: 200px" alt="image">
+  <div style="padding: 20px">
+    <h2>
+      {{property.name}}
+      <mat-icon *ngFor="let i of range(property.stars)" style="color: var(--yellow)">star</mat-icon>
+    </h2>
+    <hr>
+    <div class="row">
+      <div class="label">Location:</div>
+      <div class="value">{{property.city}}, {{property.country}} ({{property.address}})</div>
+    </div>
+    <div class="row">
+      <div class="label">Distance from centar:</div>
+      <div class="value">{{property.distanceFromCenter}}m</div>
+    </div>
+    <div class="row">
+      <div class="label">User rating:</div>
+      <div class="value">{{property.rating}}/10.0</div>
+    </div>
+    <div class="row">
+      <div class="label">Facilities:</div>
+      <div class="value">
+        <div *ngFor="let f of property.facilities" [matTooltip]="'{{f.additionalPrice}}$'"
+             style="padding: 5px; margin: 5px; border-radius: 5px; background-color: var(--gray)">{{f.facility}}
+        </div>
+        <div *ngIf="property.facilities.length == 0">
+          No facilities
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="label">Reviews:</div>
+      <div class="value">
+        <div *ngFor="let r of property.reviews"
+             style="padding: 5px; border-radius: 5px; background-color: var(--gray)">{{r}}</div>
+        <div *ngIf="property.reviews.length == 0">
+          No reviews
+        </div>
+      </div>
+    </div>
+    <div style="width: 100%; display: flex">
+      <button mat-raised-button style="width: 49%">Review</button>
+      <button mat-raised-button style="width: 49%; margin-left: 5px" color="primary">Reserve</button>
+    </div>
   </div>
 </div>

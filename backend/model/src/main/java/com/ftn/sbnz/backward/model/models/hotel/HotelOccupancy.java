@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -17,11 +18,8 @@ public class HotelOccupancy {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
     private Long id;
-
-    @OneToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = "room_occupancy_mapping",
-//            joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
-//            inverseJoinColumns = {@JoinColumn(name = "item_id", referencedColumnName = "id")})
-//    @MapKeyJoinColumn(name = "seller_id")
-    private Map<HotelRoom, RoomOccupancy> occupancies;
+    @OneToOne
+    private HotelRoom hotelRoom;
+    @OneToMany
+    private List<RoomOccupancy> occupancies;
 }

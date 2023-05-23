@@ -17,7 +17,6 @@ import {MatSortModule} from "@angular/material/sort";
 import {MatInputModule} from "@angular/material/input";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {HotelModule} from "./views/dashboard/hotel.module";
 import {CertificatesModule} from "./views/certificates/certificates.module";
 import {CsrModule} from "./views/csr/csr.module";
 import {MatCardModule} from "@angular/material/card";
@@ -56,7 +55,6 @@ import {MatFormFieldModule} from "@angular/material/form-field";
     MatSortModule,
     MatInputModule,
     FormsModule,
-    HotelModule,
     CertificatesModule,
     CsrModule,
     MatCardModule,

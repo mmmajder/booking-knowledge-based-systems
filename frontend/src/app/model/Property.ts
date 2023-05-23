@@ -1,5 +1,3 @@
-import {User} from "./User";
-
 export class HotelResponse {
   id: number;
   name: string;
@@ -23,13 +21,17 @@ export class HotelResponse {
 }
 
 export class PropertyDetails {
-  id: string = "";
-  image: string = "";
-  address: string = "";
+  id: number = 0;
   name: string = "";
-  type: PropertyType = PropertyType.HOUSE;
-  owner: User = new User();
-  tenants: User[] = [];
+  address: string = "";
+  imageUrl: string = "";
+  country: string = "";
+  city: string = "";
+  rating: number = 0;
+  stars: number = 5;
+  reviews: any = [];
+  facilities: any = [];
+  distanceFromCenter: number = 0;
 }
 
 export enum PropertyType {

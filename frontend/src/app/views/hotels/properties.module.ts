@@ -16,9 +16,6 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {PropertiesContainerComponent} from './container/properties-container/properties-container.component';
 import {PropertyCardComponent} from './components/property-card/property-card.component';
 import {MatTooltipModule} from "@angular/material/tooltip";
-import {
-  PropertyEditFormDialogComponent
-} from './components/property-details-dialog/property-edit-form-dialog.component';
 import {PropertyDetailsComponent} from './components/property-details/property-details.component';
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatCheckboxModule} from "@angular/material/checkbox";
@@ -29,7 +26,6 @@ import {MatDatepickerModule} from "@angular/material/datepicker";
   declarations: [
     PropertiesContainerComponent,
     PropertyCardComponent,
-    PropertyEditFormDialogComponent,
     PropertyDetailsComponent,
   ],
   imports: [

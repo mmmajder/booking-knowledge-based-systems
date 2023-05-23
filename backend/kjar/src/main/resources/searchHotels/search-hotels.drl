@@ -10,6 +10,7 @@ import java.time.ZoneId;
 import java.text.SimpleDateFormat;
 
 global List<Hotel> filteredHotels;
+global List<Hotel> popularHotels;
 
 rule "Filter Hotels"
 when
@@ -60,6 +61,85 @@ when
      $checkRoomAvailability: CheckRoomAvailability()
 then
      filteredHotels.add($checkRoomAvailability.getHotel());
+end
+
+rule "Hotel - Number of Views"
+when
+  $event: HotelEvent(hotelEventType == HotelEventType.VIEW, $user: user, $hotel: hotel)
+  accumulate(
+    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.VIEW) over window:time(5h) from $events: List(),
+    $points: ( $events.size() < 3 ? -1 :
+               $events.size() > 10 ? 1 :
+               $events.size() > 30 ? 5 :
+               $events.size() > 100 ? 10 :
+               0 )
+  )
+then
+  $hotel.addPoints($points);
+  insert(new ReloadPopularHotelsEvent())
+end
+
+rule "Hotel - Number of Bookings"
+when
+  $event: HotelEvent(hotelEventType == HotelEventType.RESERVATION, $user: user, $hotel: hotel)
+  accumulate(
+    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.BOOKING) over window:time(24h) from $events: List(),
+    $points: ( $events.size() > 3 ? 1 :
+               $events.size() > 10 ? 5 :
+               $events.size() > 15 ? 10 :
+               0 )
+  )
+then
+  $hotel.addPoints($points);
+  insert(new ReloadPopularHotelsEvent())
+end
+
+rule "Hotel - Number of Positive Reviews"
+when
+  $event: HotelEvent(hotelEventType == HotelEventType.POSITIVE_REVIEW, $user: user, $hotel: hotel)
+  accumulate(
+    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.POSITIVE_REVIEW) over window:time(1h) from $events: List(),
+    $points: ( $events.size() > 3 ? 1 :
+               $events.size() > 5 ? 5 :
+               $events.size() > 10 ? 10 :
+               0 )
+  )
+then
+  $hotel.addPoints($points);
+end
+
+rule "Hotel - Number of Negative Reviews"
+when
+  $event: HotelEvent(hotelEventType == HotelEventType.NEGATIVE_REVIEW, $user: user, $hotel: hotel)
+  accumulate(
+    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.NEGATIVE_REVIEW) over window:time(24h) from $events: List(),
+    $points: ( $events.size() > 3 ? -5 :
+               $events.size() > 10 ? -$negativeReviews :
+               0 )
+  )
+then
+  $hotel.addPoints($points);
+end
+
+rule "Sort and Select Top 10 Hotels"
+when
+  ReloadPopularHotelsEvent()
+  $hotel: Hotel()
+  not Hotel(this != $hotel, points > $hotel.points) // Ensure unique hotels with top points
+then
+  modify($hotel) {
+    setPoints(-$hotel.getPoints()) // Negate points for descending order sorting
+  };
+  popularHotels.add($hotel);
+end
+
+query "Get Top 10 Hotels"
+$hotels: List(size > 0) from accumulate(
+  $hotel: Hotel() from collect(Hotel() over window:length(10) from popularHotels),
+  init($hotels = new ArrayList<Hotel>()),
+  action($hotels.add($hotel)),
+  reverse
+)
 end
 
 function double holidayDiscount(int daysBeforeStay, boolean holidayPeriod) {

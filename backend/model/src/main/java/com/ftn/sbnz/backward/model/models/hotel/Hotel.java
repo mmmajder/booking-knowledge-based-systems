@@ -23,14 +23,19 @@ public class Hotel {
     private String country;
     @OneToMany
     private List<HotelRoom> hotelRooms;
-    @OneToOne
-    private HotelOccupancy hotelOccupancy;
+    @OneToMany
+    private List<HotelOccupancy> hotelOccupancy;
     private double rating;
     private int stars;
+    private int points;
     private String imageUrl;
     @OneToMany
     private List<HotelFacility> facilities;
     @OneToMany
     private List<Review> reviews;
     private double distanceFromCenter;
+
+    public void addPoints(int num) {
+        this.points += num;
+    }
 }

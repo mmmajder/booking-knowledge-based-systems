@@ -1,7 +1,6 @@
 package com.ftn.sbnz.backward.service.controllers;
 
 import com.ftn.sbnz.backward.service.service.CreateReviewDTO;
-import com.ftn.sbnz.backward.service.service.ReviewService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

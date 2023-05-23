@@ -1,28 +1,20 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {HotelResponse} from "../../../../model/Property";
 import {MatDialog} from "@angular/material/dialog";
 import {PropertyDetailsComponent} from "../property-details/property-details.component";
-import {AuthService} from "../../../../services/auth.service";
 
 @Component({
   selector: 'app-property-card',
   templateUrl: './property-card.component.html',
   styleUrls: ['./property-card.component.css']
 })
-export class PropertyCardComponent implements OnInit {
+export class PropertyCardComponent {
   @Output() updateDisplay: EventEmitter<any> = new EventEmitter();
   @Input() property!: HotelResponse;
-  loggedUserId!: string;
   userRole!: string;
 
-  constructor(private dialog: MatDialog, private authService: AuthService) {
+  constructor(private dialog: MatDialog) {
     this.userRole = localStorage.getItem("userRole") || ""
-  }
-
-  ngOnInit() {
-    this.authService.getCurrentlyLoggedUser().subscribe((user) => {
-      this.loggedUserId = user.id;
-    })
   }
 
   objectDetails(id: number) {

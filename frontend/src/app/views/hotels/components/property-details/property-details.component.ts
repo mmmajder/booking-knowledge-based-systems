@@ -20,10 +20,7 @@ export class PropertyDetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authService.getCurrentlyLoggedUser().subscribe((user) => {
-      this.loggedUser = user;
-      this.loadProperty();
-    });
+    this.loadProperty();
   }
 
   loadProperty() {
@@ -34,5 +31,15 @@ export class PropertyDetailsComponent implements OnInit {
       },
       error: err => console.error(err)
     });
+  }
+
+  range(stars: number) {
+    let list = [];
+    let i = 1;
+    while(i <= stars) {
+      list.push(1);
+      i += 1;
+    }
+    return list;
   }
 }

@@ -16,6 +16,6 @@ public class HotelFacility {
     @Column(unique = true)
     private Long id;
 
-    private Facilities facility;
+    private String facility;
     private Double additionalPrice;
 }

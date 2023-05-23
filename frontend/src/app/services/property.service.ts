@@ -22,8 +22,6 @@ export class PropertyService {
   }
 
   getProperty(id: number): Observable<PropertyDetails> {
-    let queryParams = new HttpParams();
-    queryParams = queryParams.append("id", id);
-    return this.http.get<PropertyDetails>(this.propertiesUrl, AuthService.getHttpOptions(queryParams));
+    return this.http.get<PropertyDetails>(this.propertiesUrl + "/" + id, AuthService.getHttpOptions());
   }
 }
