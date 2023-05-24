@@ -8,7 +8,7 @@ import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
   styleUrls: ['./passengers-dialog.component.css']
 })
 export class PassengersDialogComponent implements OnInit {
-  selectedClass: SeatClass = SeatClass.ECONOMIC;
+  selectedClass: SeatClass = SeatClass.ECONOMY;
   seatClasses = Object.values(SeatClass);
   numberOfChildren: number = 0;
   numberOfAdults: number = 1;

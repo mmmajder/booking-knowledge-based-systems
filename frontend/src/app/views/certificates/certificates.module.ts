@@ -21,36 +21,40 @@ import {MatNativeDateModule} from "@angular/material/core";
 import {MatDividerModule} from "@angular/material/divider";
 import { PassengersDialogComponent } from './components/passengers-dialog/passengers-dialog.component';
 import { FlightCardComponent } from './components/flight-card/flight-card.component';
+import { RouteDetailedViewComponent } from './components/route-detailed-view/route-detailed-view.component';
+import {MatStepperModule} from "@angular/material/stepper";
 
 @NgModule({
   declarations: [
     FlightsContainerComponent,
     PassengersDialogComponent,
-    FlightCardComponent
+    FlightCardComponent,
+    RouteDetailedViewComponent
   ],
-  imports: [
-    MatFormFieldModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatDialogModule,
-    FormsModule,
-    CommonModule,
-    MatSnackBarModule,
-    ReactiveFormsModule,
-    MatMenuModule,
-    SharedModule,
-    MatSelectModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatAutocompleteModule,
-    MatCheckboxModule,
-    MatNativeDateModule,
-    MatDatepickerModule,
-    MatDividerModule,
-  ],
+    imports: [
+        MatFormFieldModule,
+        MatIconModule,
+        MatButtonModule,
+        MatCardModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatDialogModule,
+        FormsModule,
+        CommonModule,
+        MatSnackBarModule,
+        ReactiveFormsModule,
+        MatMenuModule,
+        SharedModule,
+        MatSelectModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatAutocompleteModule,
+        MatCheckboxModule,
+        MatNativeDateModule,
+        MatDatepickerModule,
+        MatDividerModule,
+        MatStepperModule,
+    ],
   exports: [
     FlightsContainerComponent
   ],

@@ -1,11 +1,8 @@
 package com.ftn.sbnz.backward.model.models.events;
 
-import com.ftn.sbnz.backward.model.models.Customer;
 import com.ftn.sbnz.backward.model.models.flight.Flight;
 import com.ftn.sbnz.backward.model.models.flight.PlaneSeat;
-import com.ftn.sbnz.backward.model.models.flight.SeatClass;
 import com.ftn.sbnz.backward.model.models.flight.price.AdditionalServicesPrice;
-import com.ftn.sbnz.backward.model.models.flight.price.BasePrice;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
