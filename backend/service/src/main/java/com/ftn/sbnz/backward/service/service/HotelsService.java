@@ -1,11 +1,10 @@
 package com.ftn.sbnz.backward.service.service;
 
+import com.ftn.sbnz.backward.model.models.User;
 import com.ftn.sbnz.backward.model.models.hotel.*;
 import com.ftn.sbnz.backward.service.dto.HotelResponse;
 import com.ftn.sbnz.backward.service.dto.PropertyDetailsResponse;
 import com.ftn.sbnz.backward.service.repository.*;
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,28 +26,30 @@ public class HotelsService {
     private RoomOccupancyRepository roomOccupancyRepository;
     @Autowired
     private HotelOccupancyRepository hotelOccupancyRepository;
+    @Autowired
+    private KieSession hotelsKieSession;
 
     public List<HotelResponse> searchHotels(SearchHotelsParams searchHotelsParams) {
-        KieServices ks = KieServices.Factory.get();
-        KieContainer kc = ks.newKieClasspathContainer();
-        KieSession ksession = kc.newKieSession("searchhotelssession");
+//        KieServices ks = KieServices.Factory.get();
+//        KieContainer kc = ks.newKieClasspathContainer();
+//        KieSession ksession = kc.newKieSession("searchhotelssession");
 
         List<Hotel> filteredHotels = new ArrayList<>();
-        ksession.setGlobal("filteredHotels", filteredHotels);
+        hotelsKieSession.setGlobal("filteredHotels", filteredHotels);
 
         for (Hotel h : hotelRepository.findAll()) {
-            ksession.insert(h);
+            hotelsKieSession.insert(h);
         }
 
-        ksession.insert(searchHotelsParams);
-        ksession.fireAllRules();
+        hotelsKieSession.insert(searchHotelsParams);
+        hotelsKieSession.fireAllRules();
 
         List<HotelResponse> hotelResponses = new ArrayList<>();
         for (Hotel h : filteredHotels) {
             hotelResponses.add(new HotelResponse(h));
         }
 
-        ksession.dispose();
+//        ksession.dispose();
         return hotelResponses;
     }
 
@@ -66,8 +67,10 @@ public class HotelsService {
     }
 
     public void reviewHotel(ReviewHotelParams reviewHotelParams) {
+        User user = userRepository.findByEmail(reviewHotelParams.getUserEmail()).get();
+
         Review review = new Review();
-        review.setUser(userRepository.findByEmail(reviewHotelParams.getUserEmail()).get());
+        review.setUser(user);
         review.setRating(reviewHotelParams.getStars());
         review.setComment(reviewHotelParams.getComment());
         review.setPosted(new Date());
@@ -76,6 +79,10 @@ public class HotelsService {
         Hotel hotel = findById(reviewHotelParams.getHotelId());
         hotel.getReviews().add(review);
         hotelRepository.save(hotel);
+
+        HotelEventType type = review.getRating() > 3 ? HotelEventType.POSITIVE_REVIEW : HotelEventType.NEGATIVE_REVIEW;
+        hotelsKieSession.insert(new HotelEvent(hotel, type, user));
+        hotelsKieSession.fireAllRules();
     }
 
     public boolean reserveHotel(ReserveHotelParams reserveHotelParams) {
@@ -92,6 +99,23 @@ public class HotelsService {
         hotelOccupancy.getOccupancies().add(roomOccupancy);
         hotelOccupancyRepository.save(hotelOccupancy);
 
+//        hotelsKieSession.insert(new HotelEvent(hotel, HotelEventType.RESERVATION, user));
+
         return true;
+    }
+
+    public List<HotelResponse> popularHotels() {
+        List<Hotel> popular = new ArrayList<>();
+        hotelsKieSession.setGlobal("popular", popular);
+
+        hotelsKieSession.insert(new ReloadPopularHotelsEvent());
+        hotelsKieSession.fireAllRules();
+
+        List<HotelResponse> hotelResponses = new ArrayList<>();
+        for (Hotel h : popular) {
+            hotelResponses.add(new HotelResponse(h));
+        }
+
+        return hotelResponses;
     }
 }

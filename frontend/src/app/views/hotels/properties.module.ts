@@ -21,12 +21,14 @@ import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatCheckboxModule} from "@angular/material/checkbox";
 import {MatSliderModule} from "@angular/material/slider";
 import {MatDatepickerModule} from "@angular/material/datepicker";
+import { PopularHotelComponent } from './components/popular-hotel/popular-hotel.component';
 
 @NgModule({
   declarations: [
     PropertiesContainerComponent,
     PropertyCardComponent,
     PropertyDetailsComponent,
+    PopularHotelComponent,
   ],
   imports: [
     MatFormFieldModule,

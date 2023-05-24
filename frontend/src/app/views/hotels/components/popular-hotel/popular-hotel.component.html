@@ -1,0 +1,15 @@
+<mat-card style="cursor: pointer; margin-bottom: 10px; max-width: 300px" [matTooltip]="'View details'" (click)="objectDetails(property.id)">
+  <img mat-card-image [src]="property.image" style="object-fit: cover; height: 200px" alt="Property Photo">
+  <div style="position: absolute; top: 5px; left: 5px; padding: 5px; z-index: 1;">
+    <span class="tag">{{property.stars}}<mat-icon>star</mat-icon></span>
+    <span class="dark-tag">Rating: {{property.rating}}<mat-icon>star</mat-icon></span>
+  </div>
+  <div style="padding: 10px">
+    <h2>{{property.name}}</h2>
+    <span>
+      <mat-icon>location_pin</mat-icon>
+      {{property.city}}, {{property.country}}
+    </span>
+    <br>
+  </div>
+</mat-card>

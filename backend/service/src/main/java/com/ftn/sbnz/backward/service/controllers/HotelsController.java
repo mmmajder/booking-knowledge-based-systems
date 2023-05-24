@@ -23,6 +23,11 @@ public class HotelsController {
         return hotelsService.searchHotels(searchHotelsParams);
     }
 
+    @GetMapping("/popular")
+    public List<HotelResponse> popularHotels() {
+        return hotelsService.popularHotels();
+    }
+
     @GetMapping("/{id}")
     public PropertyDetailsResponse getHotel(@PathVariable Long id) {
         // baci event HotelViewed
