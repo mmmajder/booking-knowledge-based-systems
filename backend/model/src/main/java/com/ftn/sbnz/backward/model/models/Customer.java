@@ -17,6 +17,7 @@ import javax.persistence.OneToOne;
 public class Customer extends User {
     private double numberOfTokens;
     private boolean isActive;
+
     @OneToOne
     private LoyaltyProgram loyaltyProgram;
 
