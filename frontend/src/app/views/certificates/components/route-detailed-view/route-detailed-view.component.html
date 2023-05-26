@@ -81,7 +81,7 @@
                   (+{{(seats[i].value?.length || 0) - 1}} {{seats[i].value?.length === 2 ? 'other' : 'others'}})
                 </span>
                 </mat-select-trigger>
-                <mat-option *ngFor="let seat of seatList" [value]="seat">{{seat}}</mat-option>
+                <mat-option *ngFor="let seat of seatList" [value]="seat" [disabled]="isDisabledSeat(seat)">{{seat}}</mat-option>
               </mat-select>
             </mat-form-field>
 
