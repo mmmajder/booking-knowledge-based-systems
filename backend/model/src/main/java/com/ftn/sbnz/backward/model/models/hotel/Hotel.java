@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -41,5 +42,20 @@ public class Hotel {
 
     public void addPoints(Long num) {
         this.points += num;
+    }
+
+    public Hotel(String name, String address, String city, String country, List<HotelFacility> facilities, List<HotelRoom> hotelRooms, double rating, int stars, String image_url, int distance_from_center) {
+        this.name = name;
+        this.address = address;
+        this.city = city;
+        this.country = country;
+        this.rating = rating;
+        this.stars = stars;
+        this.imageUrl = image_url;
+        this.distanceFromCenter = distance_from_center;
+        this.points = 0;
+        this.facilities = facilities;
+        this.hotelRooms = hotelRooms;
+        this.hotelOccupancy = new ArrayList<>();
     }
 }

@@ -33,7 +33,6 @@ when
         $hotel.facilities.containsAll($searchParams.facilities) || $searchParams.facilities.size() == 0
     )
 then
-    System.out.println($searchParams.getDistanceEnd());
     insert(new CalculateHotelPrice($hotel, $searchParams));
 end
 
