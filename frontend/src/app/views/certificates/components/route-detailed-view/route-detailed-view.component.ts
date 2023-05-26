@@ -101,4 +101,10 @@ export class RouteDetailedViewComponent {
     })
 
   }
+
+  isDisabledSeat(seat: number) {
+    console.log("CAOOO")
+    console.log(this.route)
+    return false;
+  }
 }

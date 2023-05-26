@@ -16,9 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,6 +116,57 @@ public class FlightService {
 
 
     private void insertFlights(KieSession ksession) {
+        PriceCatalogFlight priceCatalogFlight = new PriceCatalogFlight();
+        priceCatalogFlight.setBusinessPrice(150);
+        priceCatalogFlight.setDiscountForChildren(0.2);
+        priceCatalogFlight.setChooseSeatPrice(30);
+        priceCatalogFlight.setEconomyPrice(100);
+        priceCatalogFlight.setFirstClassPrice(170);
+        priceCatalogFlight.setHolidaysPriceIncreaseInPercent(25);
+        priceCatalogFlight.setPremiumPrice(200);
+        priceCatalogFlight.setPriorityBoardingPrice(20);
+
+        DiscountForMultipleFlightTickets discount = new DiscountForMultipleFlightTickets();
+        discount.setDiscount(0.1);
+        discount.setNumberOfTicketsThreshold(5);
+
+        DiscountForMultipleFlightTickets discount2 = new DiscountForMultipleFlightTickets();
+        discount.setDiscount(0.2);
+        discount.setNumberOfTicketsThreshold(10);
+
+        priceCatalogFlight.setDiscountForMultipleTickets(new ArrayList<>(Arrays.asList(discount, discount2)));
+
+        PlaneSeatType planeSeatType1 = new PlaneSeatType();
+        planeSeatType1.setSeatClass(SeatClass.ECONOMY);
+        planeSeatType1.setNumberOfCols(10);
+        planeSeatType1.setNumberOfRows(10);
+
+        PlaneSeatType planeSeatType2 = new PlaneSeatType();
+        planeSeatType2.setSeatClass(SeatClass.BUSINESS);
+        planeSeatType2.setNumberOfCols(5);
+        planeSeatType2.setNumberOfRows(5);
+
+        Plane plane = new Plane();
+        plane.setAirlineAgency("Air Serbia");
+        plane.setPlaneSeatTypes(new ArrayList<>(Arrays.asList(planeSeatType1, planeSeatType2)));
+
+        Customer customer = new Customer();
+        customer.setEmail("aca@gmail.com");
+
+        Set<FlightTickets> tickets = new HashSet<>();
+        FlightTickets flightTickets = new FlightTickets();
+        flightTickets.setName("Pera");
+        flightTickets.setSurname("Peric");
+        flightTickets.setSeatClass(SeatClass.BUSINESS);
+        flightTickets.setRow(4);
+        flightTickets.setCol(3);
+        flightTickets.setResponsibleUser(customer.getEmail());
+
+        PlaneBusyness planeBusyness = new PlaneBusyness();
+        planeBusyness.setPlane(plane);
+        planeBusyness.setTickets(tickets);
+
+
         Flight flightBGNIS = new Flight();
         flightBGNIS.setDepartureAirport(airportService.findByCode("BEG"));
         flightBGNIS.setArrivalAirport(airportService.findByCode("INI"));
@@ -125,6 +174,8 @@ public class FlightService {
         flightBGNIS.setArrivalTime(Instant.parse("2023-07-01T13:19:42.12Z"));
         flightBGNIS.setAirline("Air Serbia");
         flightBGNIS.setId(1L);
+        flightBGNIS.setPriceCatalog(priceCatalogFlight);
+        flightBGNIS.setPlaneBusyness(planeBusyness);
 
         Flight flightNISIST = new Flight();
         flightNISIST.setDepartureAirport(airportService.findByCode("INI"));
@@ -133,6 +184,9 @@ public class FlightService {
         flightNISIST.setArrivalTime(Instant.parse("2023-07-01T15:19:42.12Z"));
         flightNISIST.setAirline("Air Serbia");
         flightNISIST.setId(2L);
+        flightNISIST.setPriceCatalog(priceCatalogFlight);
+        flightNISIST.setPlaneBusyness(planeBusyness);
+
 
         Flight flightNISIST2 = new Flight();
         flightNISIST2.setDepartureAirport(airportService.findByCode("INI"));
@@ -141,6 +195,8 @@ public class FlightService {
         flightNISIST2.setArrivalTime(Instant.parse("2023-07-01T15:19:42.12Z"));
         flightNISIST2.setAirline("Turkish Airlines");
         flightNISIST2.setId(3L);
+        flightNISIST2.setPriceCatalog(priceCatalogFlight);
+        flightNISIST2.setPlaneBusyness(planeBusyness);
 
         Flight flightISTPAR = new Flight();
         flightISTPAR.setDepartureAirport(airportService.findByCode("IST"));
@@ -149,6 +205,9 @@ public class FlightService {
         flightISTPAR.setArrivalTime(Instant.parse("2023-07-01T19:19:42.12Z"));
         flightISTPAR.setAirline("Turkish Airlines");
         flightISTPAR.setId(4L);
+        flightISTPAR.setPriceCatalog(priceCatalogFlight);
+        flightISTPAR.setPlaneBusyness(planeBusyness);
+
 
         Flight flightNISAMS = new Flight();
         flightNISAMS.setDepartureAirport(airportService.findByCode("INI"));
@@ -157,6 +216,9 @@ public class FlightService {
         flightNISAMS.setArrivalTime(Instant.parse("2023-07-01T15:19:42.12Z"));
         flightNISAMS.setAirline("Air Serbia");
         flightNISAMS.setId(5L);
+        flightNISAMS.setPriceCatalog(priceCatalogFlight);
+        flightNISAMS.setPlaneBusyness(planeBusyness);
+
 
         Flight flightAMSPAR = new Flight();
         flightAMSPAR.setDepartureAirport(airportService.findByCode("AMS"));
@@ -165,6 +227,9 @@ public class FlightService {
         flightAMSPAR.setArrivalTime(Instant.parse("2023-07-01T19:19:42.12Z"));
         flightAMSPAR.setAirline("Air France");
         flightAMSPAR.setId(6L);
+        flightAMSPAR.setPriceCatalog(priceCatalogFlight);
+        flightAMSPAR.setPlaneBusyness(planeBusyness);
+
 
         Flight flightBGSOF = new Flight();
         flightBGSOF.setDepartureAirport(airportService.findByCode("BEG"));
@@ -173,6 +238,9 @@ public class FlightService {
         flightBGSOF.setArrivalTime(Instant.parse("2023-07-01T19:19:42.12Z"));
         flightBGSOF.setAirline("Air Serbia");
         flightBGSOF.setId(7L);
+        flightBGSOF.setPriceCatalog(priceCatalogFlight);
+        flightBGSOF.setPlaneBusyness(planeBusyness);
+
 
         Flight flightPARMIN = new Flight();
         flightPARMIN.setDepartureAirport(airportService.findByCode("PAR"));
@@ -181,7 +249,8 @@ public class FlightService {
         flightPARMIN.setArrivalTime(Instant.parse("2023-07-01T21:19:42.12Z"));
         flightPARMIN.setAirline("Air France");
         flightPARMIN.setId(8L);
-
+        flightPARMIN.setPriceCatalog(priceCatalogFlight);
+        flightPARMIN.setPlaneBusyness(planeBusyness);
 
         ksession.insert(flightBGNIS);
         ksession.insert(flightNISIST);
