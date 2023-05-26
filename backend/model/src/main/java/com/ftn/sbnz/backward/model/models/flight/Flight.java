@@ -37,6 +37,16 @@ public class Flight {
 
     private String airline;
 
+
+    public Flight(Airport departureAirport, Airport arrivalAirport, Instant departureTime, Instant arrivalTime, String airline, PriceCatalogFlight priceCatalog) {
+        this.departureAirport = departureAirport;
+        this.arrivalAirport = arrivalAirport;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.priceCatalog = priceCatalog;
+        this.airline = airline;
+    }
+
     public Flight(Airport departureAirport, Airport arrivalAirport) {
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;

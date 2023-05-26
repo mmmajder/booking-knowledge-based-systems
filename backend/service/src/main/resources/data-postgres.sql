@@ -119,35 +119,35 @@ values (1, 9, 'Great hotel with beautiful views!', '2023-05-01'),
 
 
 
-INSERT INTO AIRPORT(CODE, COUNTRY, NAME)
-VALUES
-    ('BEG', 'Serbia', 'Belgrad (Beograd) - Belgrade Nikola Tesla International'),
-    ('SOF', 'Bulgaria', 'Sofia - Vrazhdebna'),
-    ('INI', 'Serbia', 'Nis'),
-    ('IST', 'Turkey', 'Istanbul - Istanbul Atatürk Airport'),
-    ('AMS', 'Netherlands', 'Amsterdam - Amsterdam Airport Schiphol'),
-    ('PAR', 'France', 'Paris'),
-    ('MUC', 'Germany', 'Muenchen (Munich) - Franz Josef Strauss'),
-    ('AAR', 'Denmark', 'Aarhus'),
-    ('ZRH', 'Switzerland', 'Zurich (Zürich) - Kloten');
-
-insert into price_catalog_flight(business_price, choose_seat_price, discount_for_children, economy_price, first_class_price, holidays_price_increase_in_percent, premium_price, priority_boarding_price)
-values (150, 30, 0.2, 100, 170, 25, 200, 20);
-
-insert into discount_for_multiple_flight_tickets(discount, number_of_tickets_threshold)
-values (0.1, 5),
-       (0.2, 10);
-
-insert into price_catalog_flight_discount_for_multiple_tickets(price_catalog_flight_id, discount_for_multiple_tickets_id)
-values (1, 1);
-
-INSERT INTO flight (departure_airport_id, arrival_airport_id, departure_time, arrival_time, airline, price_catalog_id)
-VALUES (1, 3, '2023-07-01 11:19:42.12', '2023-07-01 13:19:42.12', 'Air Serbia', 1),
-       (3, 4, '2023-07-01T13:59:42.12Z', '2023-07-01T15:19:42.12Z', 'Air Serbia', 1),
-       (3, 4, '2023-07-01 14:59:42.12', '2023-07-01 15:19:42.12', 'Turkish Airlines', 1),
-        (4, 6, '2023-07-01 16:19:42.12', '2023-07-01 19:19:42.12', 'Turkish Airlines', 1),
-        (3, 5, '2023-07-01 13:59:42.12', '2023-07-01 15:19:42.12', 'Air Serbia', 1),
-        (5, 6, '2023-07-01 16:19:42.12', '2023-07-01 19:19:42.12', 'Air France', 1),
-        (1, 2, '2023-07-01 16:19:42.12', '2023-07-01 19:19:42.12', 'Air Serbia', 1),
-        (6, 7, '2023-07-01 20:19:42.12', '2023-07-01 21:19:42.12', 'Air France', 1);
+-- INSERT INTO AIRPORT(CODE, COUNTRY, NAME)
+-- VALUES
+--     ('BEG', 'Serbia', 'Belgrad (Beograd) - Belgrade Nikola Tesla International'),
+--     ('SOF', 'Bulgaria', 'Sofia - Vrazhdebna'),
+--     ('INI', 'Serbia', 'Nis'),
+--     ('IST', 'Turkey', 'Istanbul - Istanbul Atatürk Airport'),
+--     ('AMS', 'Netherlands', 'Amsterdam - Amsterdam Airport Schiphol'),
+--     ('PAR', 'France', 'Paris'),
+--     ('MUC', 'Germany', 'Muenchen (Munich) - Franz Josef Strauss'),
+--     ('AAR', 'Denmark', 'Aarhus'),
+--     ('ZRH', 'Switzerland', 'Zurich (Zürich) - Kloten');
+--
+-- insert into price_catalog_flight(business_price, choose_seat_price, discount_for_children, economy_price, first_class_price, holidays_price_increase_in_percent, premium_price, priority_boarding_price)
+-- values (150, 30, 0.2, 100, 170, 25, 200, 20);
+--
+-- insert into discount_for_multiple_flight_tickets(discount, number_of_tickets_threshold)
+-- values (0.1, 5),
+--        (0.2, 10);
+--
+-- insert into price_catalog_flight_discount_for_multiple_tickets(price_catalog_flight_id, discount_for_multiple_tickets_id)
+-- values (1, 1);
+--
+-- INSERT INTO flight (departure_airport_id, arrival_airport_id, departure_time, arrival_time, airline, price_catalog_id)
+-- VALUES (1, 3, '2023-07-01 11:19:42.12', '2023-07-01 13:19:42.12', 'Air Serbia', 1),
+--        (3, 4, '2023-07-01T13:59:42.12Z', '2023-07-01T15:19:42.12Z', 'Air Serbia', 1),
+--        (3, 4, '2023-07-01 14:59:42.12', '2023-07-01 15:19:42.12', 'Turkish Airlines', 1),
+--         (4, 6, '2023-07-01 16:19:42.12', '2023-07-01 19:19:42.12', 'Turkish Airlines', 1),
+--         (3, 5, '2023-07-01 13:59:42.12', '2023-07-01 15:19:42.12', 'Air Serbia', 1),
+--         (5, 6, '2023-07-01 16:19:42.12', '2023-07-01 19:19:42.12', 'Air France', 1),
+--         (1, 2, '2023-07-01 16:19:42.12', '2023-07-01 19:19:42.12', 'Air Serbia', 1),
+--         (6, 7, '2023-07-01 20:19:42.12', '2023-07-01 21:19:42.12', 'Air France', 1);
 

@@ -31,7 +31,10 @@ public class FlightService {
     @Autowired
     private UserService userService;
 
-    private static KieSession flighttransfersession = KieService.getKieSession("flighttransfersession");
+    @Autowired
+    private KieSession flightsKieSession;
+
+//    private static KieSession flighttransfersession = KieService.getKieSession("flighttransfersession");
     private static KieSession flightpricesession = KieService.getKieSession("flightpricesession");
 
 
@@ -47,7 +50,6 @@ public class FlightService {
     }
 
     private List<List<Flight>> searchFlights(String from, String to, NumberOfStops numberOfStops, Instant depatureTime) {
-        KieSession ksession = flighttransfersession;
         Airport startAirport = airportService.getAirportFromFullName(from);
         Airport endAirport = airportService.getAirportFromFullName(to);
 
@@ -57,11 +59,11 @@ public class FlightService {
         flightRequest.setNumberOfStops(numberOfStops);
         flightRequest.setDepartureTime(depatureTime);
 
-        insertFlights(ksession);
+//        insertFlights(flightsKieSession);
         List<List<Flight>> order = new ArrayList<>();
-        ksession.setGlobal("order", order);
-        ksession.insert(flightRequest);
-        ksession.fireAllRules();
+        flightsKieSession.setGlobal("order", order);
+        flightsKieSession.insert(flightRequest);
+        flightsKieSession.fireAllRules();
         return flightRequest.getRoutes();
     }
 

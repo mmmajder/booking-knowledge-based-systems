@@ -37,6 +37,17 @@ public class PriceCatalogFlight {
 
     private double holidaysPriceIncreaseInPercent;
 
+    public PriceCatalogFlight(double economyPrice, double premiumPrice, double businessPrice, double firstClassPrice, double discountForChildren, double priorityBoardingPrice, double chooseSeatPrice, double holidaysPriceIncreaseInPercent) {
+        this.economyPrice = economyPrice;
+        this.premiumPrice = premiumPrice;
+        this.businessPrice = businessPrice;
+        this.firstClassPrice = firstClassPrice;
+        this.discountForChildren = discountForChildren;
+        this.priorityBoardingPrice = priorityBoardingPrice;
+        this.chooseSeatPrice = chooseSeatPrice;
+        this.holidaysPriceIncreaseInPercent = holidaysPriceIncreaseInPercent;
+    }
+
     public double calculateDiscountForMultipleTickets(int numberOfTickets) {
         double currentDiscount = 0;
         discountForMultipleTickets.sort(Comparator.comparingDouble(DiscountForMultipleFlightTickets::getDiscount));

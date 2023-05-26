@@ -95,7 +95,7 @@ public class HotelsService {
         roomOccupancyRepository.save(roomOccupancy);
 
         HotelOccupancy hotelOccupancy = hotelOccupancyRepository.findByHotelRoom_Id(hotelRoom.getId());
-        hotelOccupancy.getOccupancies().add(roomOccupancy);
+        hotelOccupancy.getRoomOccupancies().add(roomOccupancy);
         hotelOccupancyRepository.save(hotelOccupancy);
 
 //        hotelsKieSession.insert(new HotelEvent(hotel, HotelEventType.RESERVATION, user));

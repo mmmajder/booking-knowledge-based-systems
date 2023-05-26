@@ -20,4 +20,10 @@ public class Airport {
     private String name;
     private String country;
     private String code;
+
+    public Airport(String code, String country, String name) {
+        this.name = name;
+        this.country = country;
+        this.code = code;
+    }
 }
