@@ -1,13 +1,14 @@
 export enum SeatClass {
-  ECONOMIC = "Economy class",
+  ECONOMY = "Economy class",
   PREMIUM = "Premium class",
   BUSINESS = "Business class",
   FIRST = "First class"
 }
 
 export const seatClassReverseMapping: { [key: string]: string } = {
-  "Economy class": "ECONOMIC",
+  "Economy class": "ECONOMY",
   "Premium class": "PREMIUM",
   "Business class": "BUSINESS",
   "First class": "FIRST"
 };
+

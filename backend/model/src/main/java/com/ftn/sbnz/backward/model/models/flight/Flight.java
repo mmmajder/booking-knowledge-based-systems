@@ -35,6 +35,8 @@ public class Flight {
     @OneToOne
     private PlaneBusyness planeBusyness;
 
+    private String airline;
+
     public Flight(Airport departureAirport, Airport arrivalAirport) {
         this.departureAirport = departureAirport;
         this.arrivalAirport = arrivalAirport;

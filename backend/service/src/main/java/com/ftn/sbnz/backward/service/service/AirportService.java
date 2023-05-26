@@ -14,4 +14,8 @@ public class AirportService {
         String code = fullName.split(":")[0];
         return airportRepository.findByCode(code);
     }
+
+    public Airport findByCode(String code) {
+        return airportRepository.findByCode(code);
+    }
 }

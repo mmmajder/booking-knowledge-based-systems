@@ -2,6 +2,7 @@ package flightTransfer;
 import com.ftn.sbnz.backward.model.models.flight.Airport;
 import com.ftn.sbnz.backward.model.models.flight.Flight;
 import com.ftn.sbnz.backward.model.models.flight.FlightRequest;
+import com.ftn.sbnz.backward.model.models.flight.NumberOfStops;
 import java.time.Instant
 import java.time.Duration;
 import java.util.List;
@@ -18,7 +19,7 @@ query isConnectedTo(Airport startLocation, Airport endLocation, boolean isFirst,
     or
     ( $f: Flight( startLocation, z, followingDepartureTime, followingArrivalTime; )
     and eval(startLocation.getId()!= endLocation.getId())
-    and eval(checkRange(departureTime, arrivalTime, isFirst, order, $f, connected))
+    and eval(updateRoutes(departureTime, arrivalTime, isFirst, order, $f, connected))
     and isConnectedTo( startLocation: z, endLocation: endLocation, isFirst: false, departureTime: followingDepartureTime, arrivalTime: followingArrivalTime, connected: connected ) )
 end
 
@@ -28,6 +29,7 @@ function boolean saveOrder(Object connected, List order, Airport endLocation) {
         if (order.size()==0) {
             for (List<Flight> flightList : orderFlight) {
                 List<Flight> orderListItem = new ArrayList<>();
+                int depth = 0;
                 for (Flight flight : flightList) {
                     if (flight.getArrivalAirport().getId() == endLocation.getId()) {
                         orderListItem.add(flight);
@@ -43,78 +45,78 @@ function boolean saveOrder(Object connected, List order, Airport endLocation) {
     return true;
 }
 
-function boolean checkRange(Instant departureTime, Instant arrivalTime, boolean isFirst, List order, Flight followingFlight, Object connected) {
+function boolean updateRoutes(Instant departureTime, Instant arrivalTime, boolean isFirst, List order, Flight followingFlight, Object connected) {
     if (isWithinRange(followingFlight.getDepartureTime(), followingFlight.getArrivalTime(), departureTime, arrivalTime, isFirst)) {
-        boolean added = false;
-        if (connected instanceof List) {
-            List<List<Flight>> orderFlight = (List<List<Flight>>) connected;
-            List<List<Flight>> update = new ArrayList<>();
+        List<List<Flight>> orderFlight = (List<List<Flight>>) connected;
+        List<List<Flight>> newRoutes = new ArrayList<>();
 
-            // prodji kroz sve putanje
-            if (isFirst) {
-                List<Flight> newRoute = new ArrayList<>();
-                newRoute.add(followingFlight);
-                orderFlight.add(newRoute);
-            }
-            else {
-                for (List<Flight> flights : orderFlight) {
+        // ako let krece sa pocetne lokacije, kreiraj novu rutu
+        if (isFirst) {
+            List<Flight> newRoute = new ArrayList<>();
+            newRoute.add(followingFlight);
+            orderFlight.add(newRoute);
+        }
+        // ako ne, updajtuj postojece rute
+        else {
+            for (List<Flight> flights : orderFlight) {
 
-                    // i za svali let u putanji
-                    for (int i=0; i<flights.size(); i++) {
-                        Flight flight = flights.get(i);
+                // za svali let u ruti
+                for (int i=0; i<flights.size(); i++) {
+                    Flight flight = flights.get(i);
 
-                        // proveri da li se dati let zavrsava tamo gde novi treba da pocne
-                        if (flight.getArrivalAirport().getCode().equals(followingFlight.getDepartureAirport().getCode())) {
+                    // proveri da li se dati let zavrsava tamo gde novi treba da pocne
+                    if (flight.getArrivalAirport().getCode().equals(followingFlight.getDepartureAirport().getCode())) {
 
-                            // i ako se vreme poklapa
-                            if (isWithinRange(followingFlight.getDepartureTime(), followingFlight.getArrivalTime(), flight.getDepartureTime(), flight.getArrivalTime(), i==0)) {
+                        // i ako se vreme poklapa
+                        if (isWithinRange(followingFlight.getDepartureTime(), followingFlight.getArrivalTime(), flight.getDepartureTime(), flight.getArrivalTime(), i==0)) {
 
-                                // ako nije na poslednjoj poziciji kreiraj novu putanju
-                                if (i!=flights.size()-1) {
-                                    List<Flight> newList = new ArrayList<>();
+                            // ako nije na poslednjoj poziciji u ruti, kreiraj novu rutu sa predjasnjim letovima
+                            if (i!=flights.size()-1) {
+                                List<Flight> newList = new ArrayList<>();
 
-                                    // koja ce imati sve letove pre njega
-                                    for (int j=0; j<=i; j++) {
-                                        newList.add(flights.get(j));
-                                    }
-
-                                    // i novi let
-                                    newList.add(followingFlight);
-
-                                    update.add(newList);
+                                // ruta ce imati sve letove pre njega
+                                for (int j=0; j<=i; j++) {
+                                    newList.add(flights.get(j));
                                 }
-                                else {
-                                    // ako je posle poslednjeg leta u nizu, dodaj let na kraj niza
-                                    flights.add(followingFlight);
-                                }
+
+                                // i novi let
+                                newList.add(followingFlight);
+
+                                newRoutes.add(newList);
+                            }
+                            else {
+                                // ako je novi let posle poslednjeg leta u nizu, dodaj let na kraj niza
+                                flights.add(followingFlight);
                             }
                         }
+                    }
 
+                }
+            }
+
+            // provera da li nova ruta koja se dodaje vec postoji u postojecim rutama
+            for (List<Flight> newRouteFlights : newRoutes) {
+                boolean isDuplicate = false;
+                for (List<Flight> orderList : orderFlight) {
+                    boolean isOrderElementDuplicate = true;
+                    for (Flight updateElem : newRouteFlights) {
+                        boolean isMatch = false;
+                        for (Flight orderElem : orderList) {
+                            if (Objects.equals(orderElem.getId(),updateElem.getId())) {
+                                isMatch = true;
+                                break;
+                            }
+                        }
+                        if (!isMatch) {
+                            isOrderElementDuplicate = false;
+                        }
+                    }
+                    if (isOrderElementDuplicate) {
+                        isDuplicate = true;
                     }
                 }
-                for (List<Flight> updateList : update) {
-                    boolean isDuplicate = false;
-                    for (List<Flight> orderList : orderFlight) {
-                        boolean isOrderElementDuplicate = true;
-                        for (Flight updateElem : updateList) {
-                            boolean isMatch = false;
-                            for (Flight orderElem : orderList) {
-                                if (Objects.equals(orderElem.getId(),updateElem.getId())) {
-                                    isMatch = true;
-                                    break;
-                                }
-                            }
-                            if (!isMatch) {
-                                isOrderElementDuplicate = false;
-                            }
-                        }
-                        if (isOrderElementDuplicate) {
-                            isDuplicate = true;
-                        }
-                    }
-                    if (!isDuplicate) {
-                        orderFlight.add(updateList);
-                    }
+                if (!isDuplicate) {
+                    orderFlight.add(newRouteFlights);
                 }
             }
         }
@@ -136,7 +138,7 @@ function boolean isWithinRange(Instant followingDepartureTime, Instant following
 }
 
 rule "check connection"
-no-loop
+lock-on-active
 when
     $fr: FlightRequest($startLocation: departureAirport, $endLocation: arrivalAirport, $departureTime: departureTime)
     isConnectedTo(startLocation: $startLocation, endLocation: $endLocation, isFirst: true, departureTime: $departureTime, arrivalTime: $departureTime, connected: new ArrayList())
@@ -148,4 +150,37 @@ then
     System.out.println($departureTime);
     System.out.println(order);
     System.out.println("----------");
+
+    modify($fr){setRoutes(order);}
+
+end
+
+
+rule "check duplicate"
+no-loop
+when
+    $fr: FlightRequest(routes != null, $numberOfStops: numberOfStops)
+then
+    if ($numberOfStops.equals(NumberOfStops.NONE)) {
+        List<List<Flight>> newList = new ArrayList<>();
+        for (List<Flight> route : $fr.getRoutes()) {
+            if (route.size() == 1) {
+                newList.add(route);
+            }
+        }
+        modify($fr){setRoutes(newList);}
+    }
+
+    if ($numberOfStops.equals(NumberOfStops.ONE_MAX)) {
+            List<List<Flight>> newList = new ArrayList<>();
+            for (List<Flight> route : $fr.getRoutes()) {
+                if (route.size() < 3) {
+                    newList.add(route);
+                }
+            }
+            modify($fr){setRoutes(newList);}
+        }
+    System.out.println("Treba da se proveri sta vec ne");
+    System.out.println($fr.getRoutes());
+
 end

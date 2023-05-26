@@ -96,6 +96,14 @@ rule "Loyalty discount"
         modify($c){setLoyaltyProgram(loyaltyProgram);}
 end
 
+
+//rule "Bronze loyalty program"
+//    when
+//
+//    then
+//
+//end
+
 //rule "Loyalty discount"
 //    when
 //        $c: Customer($email: email)

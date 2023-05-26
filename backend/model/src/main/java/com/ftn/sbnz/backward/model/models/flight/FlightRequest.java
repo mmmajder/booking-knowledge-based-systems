@@ -8,7 +8,6 @@ import org.kie.api.definition.type.Position;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,7 +21,10 @@ public class FlightRequest {
 
     @Position(2)
     private Instant departureTime;
-//
-//    @Position(3)
-//    private List<List<Flight>> connectedFlights;
+
+    @Position(3)
+    private NumberOfStops numberOfStops;
+
+    @Position(4)
+    private List<List<Flight>> routes;
 }

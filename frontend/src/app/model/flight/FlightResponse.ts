@@ -1,26 +1,30 @@
 import {Airport} from "../../utils/Airports";
+import {PriceCatalogFlight} from "./PriceCatalogFlight";
+import {PlaneBusyness} from "./PlaneBusyness";
 
 export class FlightResponse {
-  private fromDate: Date;
-  private toDate: Date;
-  private startAirport: Airport;
-  private endAirport: Airport;
-  private numberOfStops: number;
-  private airlines: string[];
+  id: number;
+  departureTime: number;
+  arrivalTime: number;
+  departureAirport: Airport;
+  arrivalAirport: Airport;
+  airline: string;
+  priceCatalog: PriceCatalogFlight | null = null;
+  planeBusyness: PlaneBusyness | null = null;
 
   constructor(
-    fromDate: Date,
-    toDate: Date,
+    id: number,
+    fromDate: number,
+    toDate: number,
     startAirport: Airport,
     endAirport: Airport,
-    numberOfStops: number,
-    airlines: string[]
+    airline: string,
   ) {
-    this.fromDate = fromDate;
-    this.toDate = toDate;
-    this.startAirport = startAirport;
-    this.endAirport = endAirport;
-    this.numberOfStops = numberOfStops;
-    this.airlines = airlines;
+    this.id = id;
+    this.departureTime = fromDate;
+    this.arrivalTime = toDate;
+    this.departureAirport = startAirport;
+    this.arrivalAirport = endAirport;
+    this.airline = airline;
   }
 }

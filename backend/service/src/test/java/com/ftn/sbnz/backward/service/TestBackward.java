@@ -3,6 +3,7 @@ package com.ftn.sbnz.backward.service;
 import com.ftn.sbnz.backward.model.models.flight.Airport;
 import com.ftn.sbnz.backward.model.models.flight.Flight;
 import com.ftn.sbnz.backward.model.models.flight.FlightRequest;
+import com.ftn.sbnz.backward.model.models.flight.NumberOfStops;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
@@ -121,16 +122,19 @@ public class TestBackward {
         ksession.insert(flightPARMIN);
 
         FlightRequest flightRequest = new FlightRequest();
-        flightRequest.setDepartureAirport(airportBG);
+        flightRequest.setDepartureAirport(airportNIS);
         flightRequest.setArrivalAirport(airportMIN);
         flightRequest.setDepartureTime(Instant.parse("2023-07-01T11:00:42.12Z"));
+        flightRequest.setNumberOfStops(NumberOfStops.ONE_MAX);
 
         List<List<Flight>> order = new ArrayList<>();
         ksession.setGlobal("order", order);
 
+
         ksession.insert(flightRequest);
 
         long ruleFireCount = ksession.fireAllRules();
-        System.out.println(ruleFireCount);
+        System.out.println("Kraj");
+        System.out.println(flightRequest.getRoutes());
     }
 }
