@@ -11,6 +11,8 @@ import {SearchHotelsParams} from "../../../../model/hotels/SearchHotelsParams";
 export class PropertiesContainerComponent {
   searchParams = new SearchHotelsParams();
   properties: HotelResponse[] = [];
+  popularHotels: HotelResponse[] = [];
+
   facilities = [
     "WiFi",
     "Parking",
@@ -39,6 +41,7 @@ export class PropertiesContainerComponent {
 
   constructor(private propertiesService: PropertyService) {
     this.getCards();
+    this.updatePopularHotels();
   }
 
   getCards() {
@@ -51,11 +54,23 @@ export class PropertiesContainerComponent {
     }
   }
 
+  update() {
+    this.getCards();
+    this.updatePopularHotels();
+  }
+
   remove(choice: number, list: number[]) {
     return list.filter(item => item !== choice);
   }
 
   removeString(choice: string, list: string[]) {
     return list.filter(item => item !== choice);
+  }
+
+  private updatePopularHotels() {
+    this.propertiesService.getPopularHotels().subscribe({
+      next: (hotels) => this.popularHotels = hotels,
+      error: err => console.error(err)
+    })
   }
 }

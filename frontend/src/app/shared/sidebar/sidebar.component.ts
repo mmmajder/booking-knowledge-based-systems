@@ -19,13 +19,7 @@ export class SidebarComponent {
 
   constructor(private router: Router, public dialog: MatDialog, private customerService: CustomerService, private authService: AuthService) {
     this.userRole = localStorage.getItem("userRole")!;
-    this.authService.getCurrentlyLoggedUser().subscribe((res) => {
-        this.loggedUser = res;
-        if (this.userRole === "CUSTOMER") {
-          this.getNumberOfTokens();
-        }
-      }
-    )
+    this.getNumberOfTokens();
   }
 
   navigate(page: string) {

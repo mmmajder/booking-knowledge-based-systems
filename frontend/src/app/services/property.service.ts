@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {Observable} from "rxjs";
 import {AuthService} from "./auth.service";
 import {environment} from "../environment.development";
@@ -22,8 +22,10 @@ export class PropertyService {
   }
 
   getProperty(id: number): Observable<PropertyDetails> {
-    let queryParams = new HttpParams();
-    queryParams = queryParams.append("id", id);
-    return this.http.get<PropertyDetails>(this.propertiesUrl, AuthService.getHttpOptions(queryParams));
+    return this.http.get<PropertyDetails>(this.propertiesUrl + "/" + id, AuthService.getHttpOptions());
+  }
+
+  getPopularHotels() {
+    return this.http.get<HotelResponse[]>(this.propertiesUrl + "/popular", AuthService.getHttpOptions());
   }
 }

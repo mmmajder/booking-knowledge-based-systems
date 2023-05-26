@@ -11,7 +11,7 @@
         <ksession name="flightpricesession"/>
     </kbase>
 
-    <kbase name="searchHotelsBase" packages="searchHotels">
+    <kbase name="searchHotelsBase" eventProcessingMode="stream" packages="searchHotels">
         <ksession name="searchhotelssession"/>
     </kbase>
 </kmodule>

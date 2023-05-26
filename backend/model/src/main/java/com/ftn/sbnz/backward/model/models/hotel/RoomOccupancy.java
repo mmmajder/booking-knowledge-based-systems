@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.Instant;
+import java.util.Date;
 
 @Data
 @Entity
@@ -18,8 +18,6 @@ public class RoomOccupancy {
     @Column(unique = true)
     private Long id;
 
-    @OneToOne
-    private HotelRoom room;
-    private Instant startTime;
-    private Instant endTime;
+    private Date start;
+    private Date end;
 }

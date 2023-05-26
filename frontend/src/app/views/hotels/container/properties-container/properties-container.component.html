@@ -1,5 +1,12 @@
 <app-sidebar currentPage="hotels"></app-sidebar>
 
+<div class="row" style="margin-left: 90px; margin-top: 20px">
+  <div *ngFor="let p of popularHotels">
+    <app-popular-hotel [property]="p"></app-popular-hotel>
+  </div>
+  <button class="scroll-button">Scroll</button>
+</div>
+
 <div class="row" style="margin-left: 90px; margin-top: 20px; margin-bottom: 20px; height: 90%">
   <div class="col-5">
     <form style="margin: 0 auto; overflow-y: scroll; overflow-x: hidden; height: 100%">

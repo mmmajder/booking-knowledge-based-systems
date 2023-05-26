@@ -39,10 +39,6 @@ export class AuthService {
     return this.http.post<void>(this.authUrl + '/logout', {}, AuthService.getHttpOptions());
   }
 
-  public getCurrentlyLoggedUser(): Observable<User> {
-    return this.http.get<User>(this.authUrl + '/me', AuthService.getHttpOptions());
-  }
-
   public getIsPasswordSet(verificationCode: String): Observable<boolean> {
     return this.http.get<boolean>(this.authUrl + '/is-password-set/' + verificationCode, AuthService.getHttpOptions());
   }
