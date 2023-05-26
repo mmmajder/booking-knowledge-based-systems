@@ -21,5 +21,5 @@ public class HotelOccupancy {
     @OneToOne
     private HotelRoom hotelRoom;
     @OneToMany
-    private List<RoomOccupancy> occupancies;
+    private List<RoomOccupancy> roomOccupancies;
 }

@@ -34,12 +34,12 @@ public class HotelsController {
         return hotelsService.getHotel(id);
     }
 
-    @PostMapping()
+    @PostMapping("/review")
     public void reviewHotel(@RequestBody ReviewHotelParams reviewHotelParams) {
         hotelsService.reviewHotel(reviewHotelParams);
     }
 
-    @PostMapping()
+    @PostMapping("/reserve")
     public boolean reserveHotel(@RequestBody ReserveHotelParams reserveHotelParams) {
         return hotelsService.reserveHotel(reserveHotelParams);
     }

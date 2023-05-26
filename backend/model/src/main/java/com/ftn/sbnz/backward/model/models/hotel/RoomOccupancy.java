@@ -18,8 +18,6 @@ public class RoomOccupancy {
     @Column(unique = true)
     private Long id;
 
-    @OneToOne
-    private HotelRoom room;
     private Date start;
     private Date end;
 }

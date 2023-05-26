@@ -35,7 +35,11 @@ public class Hotel {
     private List<Review> reviews;
     private double distanceFromCenter;
 
-    public void addPoints(int num) {
+    public void addPoints(Integer num) {
+        this.points += num;
+    }
+
+    public void addPoints(Long num) {
         this.points += num;
     }
 }

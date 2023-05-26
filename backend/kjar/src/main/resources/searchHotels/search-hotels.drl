@@ -74,7 +74,7 @@ when
 //               accumulate($v: $viewEvent; count($v) > 100), 10;
 //               0 )
 //  )
-  $numberOfViews: Number() from accumulate(
+  $numberOfViews: Long() from accumulate(
       $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.VIEW)
       over window: time(5h),
       count($v)
@@ -82,14 +82,14 @@ when
 then
     // TODO: numberOfViews -> points
     System.out.println("NUM OF VIEWS: " + $numberOfViews);
-  $hotel.addPoints(Integer.parseInt($numberOfViews));
+//  $hotel.addPoints($numberOfViews);
   insert(new ReloadPopularHotelsEvent());
 end
 
 rule "Hotel - Number of Bookings"
 when
   $event: HotelEvent(hotelEventType == HotelEventType.RESERVATION, $user: user, $hotel: hotel)
-    $numberOfViews: Number(intValue) from accumulate(
+    $numberOfViews: Long() from accumulate(
         $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.RESERVATION)
         over window: time(24h),
         count($v)
@@ -102,14 +102,14 @@ when
 //               0 )
 //  )
 then
-  $hotel.addPoints($numberOfViews);
-  insert(new ReloadPopularHotelsEvent())
+//  $hotel.addPoints($numberOfViews);
+  insert(new ReloadPopularHotelsEvent());
 end
 
 rule "Hotel - Number of Positive Reviews"
 when
   $event: HotelEvent(hotelEventType == HotelEventType.POSITIVE_REVIEW, $user: user, $hotel: hotel)
-      $numberOfViews: Number(intValue) from accumulate(
+      $numberOfViews: Long() from accumulate(
           $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.POSITIVE_REVIEW)
           over window: time(24h),
           count($v)
@@ -122,14 +122,14 @@ when
 //               0 )
 //  )
 then
-  $hotel.addPoints($numberOfViews);
-    insert(new ReloadPopularHotelsEvent());
+//  $hotel.addPoints($numberOfViews);
+  insert(new ReloadPopularHotelsEvent());
 end
 
 rule "Hotel - Number of Negative Reviews"
 when
   $event: HotelEvent(hotelEventType == HotelEventType.NEGATIVE_REVIEW, $user: user, $hotel: hotel)
-       $numberOfViews: Number(intValue) from accumulate(
+       $numberOfViews: Long() from accumulate(
             $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.NEGATIVE_REVIEW)
             over window: time(24h),
             count($v)
@@ -141,8 +141,8 @@ when
 //               0 )
 //  )
 then
-  $hotel.addPoints($numberOfViews);
-    insert(new ReloadPopularHotelsEvent());
+//  $hotel.addPoints($numberOfViews);
+  insert(new ReloadPopularHotelsEvent());
 end
 
 rule "Sort and Select Top 10 Hotels"
