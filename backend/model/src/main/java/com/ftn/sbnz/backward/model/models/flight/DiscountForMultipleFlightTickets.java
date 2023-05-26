@@ -19,4 +19,9 @@ public class DiscountForMultipleFlightTickets {
 
     private int numberOfTicketsThreshold;
     private double discount;
+
+    public DiscountForMultipleFlightTickets(double discount, int numberOfTicketsThreshold) {
+        this.numberOfTicketsThreshold = numberOfTicketsThreshold;
+        this.discount = discount;
+    }
 }
