@@ -9,14 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
-
 @Configuration
 public class DroolsConfiguration {
-    @Autowired
-    private HotelRepository hotelRepository;
 
     @Bean
     public KieSession hotelsKieSession() {
@@ -31,14 +25,4 @@ public class DroolsConfiguration {
         KieContainer kc = ks.newKieClasspathContainer();
         return kc.newKieSession("flighttransfersession");
     }
-
-//    @PostConstruct
-//    private void fillData() {
-//        List<Hotel> filteredHotels = new ArrayList<>();
-//        hotelsKieSession().setGlobal("filteredHotels", filteredHotels);
-//
-//        for (Hotel h : hotelRepository.findAll()) {
-//            hotelsKieSession().insert(h);
-//        }
-//    }
 }
