@@ -30,16 +30,8 @@ public class HotelsService {
     private KieSession hotelsKieSession;
 
     public List<HotelResponse> searchHotels(SearchHotelsParams searchHotelsParams) {
-//        KieServices ks = KieServices.Factory.get();
-//        KieContainer kc = ks.newKieClasspathContainer();
-//        KieSession ksession = kc.newKieSession("searchhotelssession");
-
         List<Hotel> filteredHotels = new ArrayList<>();
         hotelsKieSession.setGlobal("filteredHotels", filteredHotels);
-
-        for (Hotel h : hotelRepository.findAll()) {
-            hotelsKieSession.insert(h);
-        }
 
         hotelsKieSession.insert(searchHotelsParams);
         hotelsKieSession.fireAllRules();
@@ -49,7 +41,6 @@ public class HotelsService {
             hotelResponses.add(new HotelResponse(h));
         }
 
-//        ksession.dispose();
         return hotelResponses;
     }
 
@@ -95,7 +86,7 @@ public class HotelsService {
         roomOccupancyRepository.save(roomOccupancy);
 
         HotelOccupancy hotelOccupancy = hotelOccupancyRepository.findByHotelRoom_Id(hotelRoom.getId());
-        hotelOccupancy.getRoomOccupancies().add(roomOccupancy);
+//        hotelOccupancy.getOccupancies().add(roomOccupancy);
         hotelOccupancyRepository.save(hotelOccupancy);
 
 //        hotelsKieSession.insert(new HotelEvent(hotel, HotelEventType.RESERVATION, user));
