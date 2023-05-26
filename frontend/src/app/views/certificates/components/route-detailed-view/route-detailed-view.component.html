@@ -3,7 +3,7 @@
     <mat-step>
       <mat-card *ngFor="let route of routePrices" style="padding: 10px; margin-bottom: 20px">
         <div style="display: flex; flex-direction: column; border-bottom: 1px solid #ccc;">
-          <div style="display: flex; flex-direction: row; text-align: center; justify-content: space-evenly;">
+          <div style="display: flex; flex-direction: row; text-align: center; justify-content: space-between;">
             <div>
               <p>{{displayDate(route.flight.departureTime)}}</p>
               <h1>{{route.flight.departureAirport.code}}</h1>
@@ -37,42 +37,77 @@
         <p><b>Total price: {{totalPrice | number : '1.2-2'}}</b></p>
       </div>
     </mat-step>
+<!--   step 2  -->
     <mat-step>
       <h1>Additional services</h1>
-      <p>Number of
+      <p *ngIf="routePrices">Number of
         passengers: {{routePrices[0].basePrice.numberOfChildren + routePrices[0].basePrice.numberOfAdults}}</p>
-      <p>Select if you want some specific seats. Those seats will be charged additionally.</p>
-      <span>
-        <mat-form-field>
-          <mat-label>Seats</mat-label>
-          <mat-select [formControl]="seats" multiple>
-            <mat-select-trigger>
-              {{seats.value?.[0] || ''}}
-              <span *ngIf="(seats.value?.length || 0) > 1" class="example-additional-selection">
-                (+{{(seats.value?.length || 0) - 1}} {{seats.value?.length === 2 ? 'other' : 'others'}})
-              </span>
-            </mat-select-trigger>
-            <mat-option *ngFor="let seat of seatList" [value]="seat">{{seat}}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <label style="margin-left: 20px">Price: {{100}}</label>
-      </span>
+
       <div>
+        <p>Enter total luggage weight for all passengers</p>
         <mat-form-field class="example-full-width" appearance="outline">
-          <mat-label>Total luggage weight for all passengers</mat-label>
+          <mat-label>Total luggage weight</mat-label>
           <input matInput type="number" [(ngModel)]="totalWeight" min="0">
         </mat-form-field>
       </div>
-      <section>
-        <mat-checkbox [color]="'primary'" class="example-margin" [(ngModel)]="priorityBoarding">Priority boarding</mat-checkbox>
-      </section>
 
+      <mat-card *ngFor="let route of additionalPrices; index as i" style="padding: 10px; margin-bottom: 20px">
+        <div style="display: flex; flex-direction: column; border-bottom: 1px solid #ccc;">
+          <div style="display: flex; flex-direction: row; text-align: center; justify-content: space-evenly;">
+            <div>
+              <p>{{displayDate(route.flight.departureTime)}}</p>
+              <h1>{{route.flight.departureAirport.code}}</h1>
+            </div>
+            <div style="align-items: center;">
+              <p
+                style="border-bottom: 1px solid #ccc; ">{{calculateTime(route.flight.arrivalTime, route.flight.departureTime)}}
+                h</p>
+            </div>
+            <div>
+              <p>{{displayDate(route.flight.arrivalTime)}}</p>
+              <h1>{{route.flight.arrivalAirport.code}}</h1>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: row;" [style.justify-content]="displayAdditionalPrice ? 'space-evenly' : null">
+          <div>
+            <p>Select if you want some specific seats. Those seats will be charged additionally.</p>
+            <mat-form-field>
+              <mat-label>Seats</mat-label>
+              <mat-select [formControl]="seats[i]" multiple>
+                <mat-select-trigger>
+                  {{seats[i].value?.[0] || ''}}
+                  <span *ngIf="(seats[i].value?.length || 0) > 1" class="example-additional-selection">
+                  (+{{(seats[i].value?.length || 0) - 1}} {{seats[i].value?.length === 2 ? 'other' : 'others'}})
+                </span>
+                </mat-select-trigger>
+                <mat-option *ngFor="let seat of seatList" [value]="seat">{{seat}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <section>
+              <mat-checkbox [color]="'primary'" class="example-margin" [(ngModel)]="route.priorityBoarding">Priority
+                boarding
+              </mat-checkbox>
+            </section>
+          </div>
+          <div *ngIf="displayAdditionalPrice && route.additionalServicesPrice">
+            <h1>Price</h1>
+            <p>Specific seats price (per number of selected seats): {{route.additionalServicesPrice.specificSeatsPrice | number : '1.2-2'}}</p>
+            <p>Luggage price (per person): {{route.additionalServicesPrice.luggagePrice}}</p>
+            <p>Priority boarding price (per person): {{route.additionalServicesPrice.priorityBoardingPrice}}</p>
+            <p>Total price: <b>{{route.additionalServicesPrice.totalAdditionalPrice | number : '1.2-2'}}</b></p>
+          </div>
+          <div></div>
+        </div>
+      </mat-card>
+      <button style="font-size: 12px; margin-bottom: 20px" mat-raised-button
+              (click)="calculateAdditionalServicePrice()" color="primary">
+        Calculate additional service price
+      </button>
     </mat-step>
-    <mat-step></mat-step>
+    <mat-step>
+      <app-reserve-flight-screen [totalPrice]="totalPrice" [additionalPrices]="additionalPrices"></app-reserve-flight-screen>
+    </mat-step>
   </mat-stepper>
-  <!--    <button style="font-size: 12px; margin-top: 20px; width: 100%" mat-raised-button-->
-  <!--            (click)="openAdditionalExpensesDialog()" color="primary">-->
-  <!--      Order flight-->
-  <!--    </button>-->
-
 </div>

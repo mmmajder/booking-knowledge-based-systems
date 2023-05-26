@@ -1,5 +1,6 @@
 package com.ftn.sbnz.backward.service.controllers;
 
+import com.ftn.sbnz.backward.model.models.events.AdditionalServicesRequestEvent;
 import com.ftn.sbnz.backward.model.models.flight.Flight;
 import com.ftn.sbnz.backward.service.dto.FlightBasePriceResponse;
 import com.ftn.sbnz.backward.service.dto.FlightPriceRequest;
@@ -27,5 +28,10 @@ public class FlightController {
     @PostMapping("/base-price")
     public List<FlightBasePriceResponse> getFlightBasePrices(@RequestBody FlightPriceRequest flightPriceRequest, Authentication authentication) {
         return flightService.getFlightBasePrices(flightPriceRequest, authentication);
+    }
+
+    @PostMapping("/additional-services")
+    public List<AdditionalServicesRequestEvent> getAdditionalServicesPrice(@RequestBody List<AdditionalServicesRequestEvent> additionalServicesRequestEvent) {
+        return flightService.getAdditionalServicesPrice(additionalServicesRequestEvent);
     }
 }

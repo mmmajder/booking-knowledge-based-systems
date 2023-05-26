@@ -7,6 +7,7 @@ import {SearchFlightsParams} from "../model/flight/SearchFlightsParams";
 import {FlightResponse} from "../model/flight/FlightResponse";
 import {FlightBasePriceResponse} from "../model/flight/FlightBasePriceResponse";
 import {FlightPriceRequest} from "../model/flight/FlightPriceRequest";
+import {AdditionalServicesRequestEvent} from "../model/flight/AdditionalServicesRequestEvent";
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,11 @@ export class FlightService {
   public getBasePrice(requestBody: FlightPriceRequest): Observable<FlightBasePriceResponse[]> {
     return this.http.post<FlightBasePriceResponse[]>(this.flightUrl + "/base-price", requestBody, AuthService.getHttpOptions());
   }
+
+  public getAdditionalServicesPrice(requestBody: AdditionalServicesRequestEvent[]): Observable<AdditionalServicesRequestEvent[]> {
+    return this.http.post<AdditionalServicesRequestEvent[]>(this.flightUrl + "/additional-services", requestBody, AuthService.getHttpOptions());
+  }
+
 
   // addTokens(tokens: number) {
   //   return this.http.put<number>(this.customerUrl + "/tokens", {numberOfTokens: tokens}, AuthService.getHttpOptions());

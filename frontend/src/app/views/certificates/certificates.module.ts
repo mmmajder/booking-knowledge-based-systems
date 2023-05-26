@@ -23,13 +23,15 @@ import { PassengersDialogComponent } from './components/passengers-dialog/passen
 import { FlightCardComponent } from './components/flight-card/flight-card.component';
 import { RouteDetailedViewComponent } from './components/route-detailed-view/route-detailed-view.component';
 import {MatStepperModule} from "@angular/material/stepper";
+import { ReserveFlightScreenComponent } from './components/reserve-flight-screen/reserve-flight-screen.component';
 
 @NgModule({
   declarations: [
     FlightsContainerComponent,
     PassengersDialogComponent,
     FlightCardComponent,
-    RouteDetailedViewComponent
+    RouteDetailedViewComponent,
+    ReserveFlightScreenComponent
   ],
     imports: [
         MatFormFieldModule,
