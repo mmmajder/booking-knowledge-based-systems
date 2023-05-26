@@ -90,7 +90,6 @@ public class HotelsService {
         HotelRoom hotelRoom = new HotelRoom();
 
         RoomOccupancy roomOccupancy = new RoomOccupancy();
-        roomOccupancy.setRoom(hotelRoom);
         roomOccupancy.setStart(reserveHotelParams.getStart());
         roomOccupancy.setEnd(reserveHotelParams.getEnd());
         roomOccupancyRepository.save(roomOccupancy);
@@ -106,7 +105,7 @@ public class HotelsService {
 
     public List<HotelResponse> popularHotels() {
         List<Hotel> popular = new ArrayList<>();
-        hotelsKieSession.setGlobal("popular", popular);
+        hotelsKieSession.setGlobal("popularHotels", popular);
 
         hotelsKieSession.insert(new ReloadPopularHotelsEvent());
         hotelsKieSession.fireAllRules();
