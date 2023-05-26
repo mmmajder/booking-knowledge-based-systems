@@ -44,7 +44,8 @@ public class Hotel {
         this.points += num;
     }
 
-    public Hotel(String name, String address, String city, String country, List<HotelFacility> facilities, List<HotelRoom> hotelRooms, double rating, int stars, String image_url, int distance_from_center) {
+    public Hotel(Long id, String name, String address, String city, String country, List<HotelFacility> facilities, List<HotelRoom> hotelRooms, double rating, int stars, String image_url, int distance_from_center) {
+        this.id = id;
         this.name = name;
         this.address = address;
         this.city = city;
@@ -57,5 +58,6 @@ public class Hotel {
         this.facilities = facilities;
         this.hotelRooms = hotelRooms;
         this.hotelOccupancy = new ArrayList<>();
+        this.reviews = new ArrayList<>();
     }
 }

@@ -30,7 +30,6 @@ public class HotelsController {
 
     @GetMapping("/{id}")
     public PropertyDetailsResponse getHotel(@PathVariable Long id) {
-        // baci event HotelViewed
         return hotelsService.getHotel(id);
     }
 

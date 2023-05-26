@@ -48,15 +48,10 @@ export class PropertiesContainerComponent {
     console.log(this.searchParams)
     if (this.searchParams.startDate != undefined && this.searchParams.endDate != undefined) {
       this.propertiesService.getProperties(this.searchParams).subscribe({
-        next: (properties) => this.properties = properties,
+        next: (properties) => { this.properties = properties; console.log(properties) },
         error: err => console.error(err)
       })
     }
-  }
-
-  update() {
-    this.getCards();
-    this.updatePopularHotels();
   }
 
   remove(choice: number, list: number[]) {

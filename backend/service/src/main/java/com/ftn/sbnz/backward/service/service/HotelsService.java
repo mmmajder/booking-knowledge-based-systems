@@ -54,7 +54,10 @@ public class HotelsService {
     }
 
     public PropertyDetailsResponse getHotel(Long id) {
-        return new PropertyDetailsResponse(findById(id));
+        Hotel hotel = findById(id);
+        hotelsKieSession.insert(new HotelEvent(hotel, HotelEventType.VIEW, null));
+        hotelsKieSession.fireAllRules();
+        return new PropertyDetailsResponse(hotel);
     }
 
     public void reviewHotel(ReviewHotelParams reviewHotelParams) {
@@ -95,14 +98,14 @@ public class HotelsService {
     }
 
     public List<HotelResponse> popularHotels() {
-        List<Hotel> popular = new ArrayList<>();
-        hotelsKieSession.setGlobal("popularHotels", popular);
+        List<Hotel> popularHotels = new ArrayList<>();
+        hotelsKieSession.setGlobal("popularHotels", popularHotels);
 
         hotelsKieSession.insert(new ReloadPopularHotelsEvent());
         hotelsKieSession.fireAllRules();
 
         List<HotelResponse> hotelResponses = new ArrayList<>();
-        for (Hotel h : popular) {
+        for (Hotel h : popularHotels) {
             hotelResponses.add(new HotelResponse(h));
         }
 
