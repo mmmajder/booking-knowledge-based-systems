@@ -1,12 +1,21 @@
 <app-sidebar currentPage="hotels"></app-sidebar>
 
-<div class="row" style="margin-left: 90px; margin-top: 20px">
-  <div *ngFor="let p of popularHotels">
-    <app-popular-hotel [property]="p"></app-popular-hotel>
+<div *ngIf="popularHotels.length > 0" style="margin-left: 100px; margin-top: 20px;">
+  <h2>
+    <mat-icon color="primary">auto_awesome</mat-icon>
+    Popular hotels
+  </h2>
+  <br>
+  <div class="row" style="overflow-x: scroll; margin-left: 10px; margin-top: -15px; white-space: nowrap;">
+    <div class="scrollable-row">
+      <ng-container *ngFor="let p of popularHotels">
+        <div class="popular-hotel">
+          <app-popular-hotel [property]="p"></app-popular-hotel>
+        </div>
+      </ng-container>
+    </div>
   </div>
-  <button class="scroll-button">Scroll</button>
 </div>
-
 <div class="row" style="margin-left: 90px; margin-top: 20px; margin-bottom: 20px; height: 90%">
   <div class="col-5">
     <form style="margin: 0 auto; overflow-y: scroll; overflow-x: hidden; height: 100%">

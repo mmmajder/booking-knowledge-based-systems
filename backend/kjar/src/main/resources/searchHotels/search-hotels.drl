@@ -7,19 +7,20 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Collection;
 import java.time.ZoneId;
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat
+import java.util.ArrayList
+import java.util.HashSet
+import java.util.Comparator;
 
-global List<Hotel> filteredHotels;
-global List<Hotel> popularHotels;
-
-rule "Add hotel"
-when
-    $hotel: Hotel()
-then
-    System.out.println("HOTEL " + $hotel.getName());
-end
+//rule "Add hotel"
+//when
+//    $hotel: Hotel()
+//then
+//    System.out.println("HOTEL " + $hotel.getName());
+//end
 
 rule "Filter Hotels"
+no-loop
 when
     $searchParams: SearchHotelsParams()
     $hotel: Hotel(
@@ -33,11 +34,11 @@ when
         $hotel.facilities.containsAll($searchParams.facilities) || $searchParams.facilities.size() == 0
     )
 then
-    System.out.println($searchParams.getDistanceEnd());
     insert(new CalculateHotelPrice($hotel, $searchParams));
 end
 
 rule "Calculate Hotel Price"
+no-loop
 when
     $calculateHotelPrice: CalculateHotelPrice(
         $hotel: hotel,
@@ -60,119 +61,118 @@ then
     System.out.println($hotel.getName() + ": " + totalPrice);
 
     if(totalPrice >= $searchParams.getPriceRangeStart() && $searchParams.getPriceRangeEnd() >= totalPrice) {
-        insert(new CheckRoomAvailability($hotel, $searchParams));
+        modify($searchParams){addHotel(new HotelResponse($hotel, totalPrice));}
     }
 end
 
 rule "Available room"
 when
-     $checkRoomAvailability: CheckRoomAvailability()
+    $checkRoomAvailability: CheckRoomAvailability($hotel: hotel, $params: reserveHotelParams)
+    $room: HotelRoom($roomOccupancies: roomOccupancies, $hotel.getId() == hotelId, numberOfAdults >= $params.getNumberOfAdults(), numberOfChildren >= $params.getNumberOfChildren())
+    not(RoomOccupancy(isBetween($params.getStart(), $params.getEnd(), startDate), isBetween($params.getStart(), $params.getEnd(), endDate)) from $roomOccupancies)
 then
-     filteredHotels.add($checkRoomAvailability.getHotel());
+    System.out.println("THERE IS A ROOM");
+    modify($checkRoomAvailability){setHotelRoom($room);}
 end
 
-//rule "Hotel - Number of Views"
-//when
-//  $event: HotelEvent(hotelEventType == HotelEventType.VIEW, $user: user, $hotel: hotel)
-////  accumulate(
-////    $viewEvent: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.VIEW) over window:time(5h),
-////    $points: ( accumulate($v: $viewEvent; count($v) < 3), -1;
-////               accumulate($v: $viewEvent; count($v) > 10), 1;
-////               accumulate($v: $viewEvent; count($v) > 30), 5;
-////               accumulate($v: $viewEvent; count($v) > 100), 10;
-////               0 )
-////  )
-//  $numberOfViews: Long() from accumulate(
-//      $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.VIEW)
-//      over window: time(5h),
-//      count($v)
+rule "Hotel - Number of Views"
+no-loop
+when
+  $event: HotelEvent(hotelEventType == HotelEventType.VIEW, $hotel: hotel)
+  $h: Hotel(id == $hotel.getId())
+//  accumulate(
+//    $viewEvent: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.VIEW) over window:time(5h),
+//    $points: ( accumulate($v: $viewEvent; count($v) < 3), -1;
+//               accumulate($v: $viewEvent; count($v) > 10), 1;
+//               accumulate($v: $viewEvent; count($v) > 30), 5;
+//               accumulate($v: $viewEvent; count($v) > 100), 10;
+//               0 )
 //  )
-//then
-//    // TODO: numberOfViews -> points
-//    System.out.println("NUM OF VIEWS: " + $numberOfViews);
-////  $hotel.addPoints($numberOfViews);
-//  insert(new ReloadPopularHotelsEvent());
-//end
-//
-//rule "Hotel - Number of Bookings"
-//when
-//  $event: HotelEvent(hotelEventType == HotelEventType.RESERVATION, $user: user, $hotel: hotel)
-//    $numberOfViews: Long() from accumulate(
-//        $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.RESERVATION)
-//        over window: time(24h),
-//        count($v)
-//    )
-////  accumulate(
-////    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.BOOKING) over window:time(24h) from $events: List(),
-////    $points: ( $events.size() > 3 ? 1 :
-////               $events.size() > 10 ? 5 :
-////               $events.size() > 15 ? 10 :
-////               0 )
-////  )
-//then
-////  $hotel.addPoints($numberOfViews);
-//  insert(new ReloadPopularHotelsEvent());
-//end
-//
-//rule "Hotel - Number of Positive Reviews"
-//when
-//  $event: HotelEvent(hotelEventType == HotelEventType.POSITIVE_REVIEW, $user: user, $hotel: hotel)
-//      $numberOfViews: Long() from accumulate(
-//          $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.POSITIVE_REVIEW)
-//          over window: time(24h),
-//          count($v)
-//      )
-////  accumulate(
-////    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.POSITIVE_REVIEW) over window:time(1h) from $events: List(),
-////    $points: ( $events.size() > 3 ? 1 :
-////               $events.size() > 5 ? 5 :
-////               $events.size() > 10 ? 10 :
-////               0 )
-////  )
-//then
-////  $hotel.addPoints($numberOfViews);
-//  insert(new ReloadPopularHotelsEvent());
-//end
-//
-//rule "Hotel - Number of Negative Reviews"
-//when
-//  $event: HotelEvent(hotelEventType == HotelEventType.NEGATIVE_REVIEW, $user: user, $hotel: hotel)
-//       $numberOfViews: Long() from accumulate(
-//            $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.NEGATIVE_REVIEW)
-//            over window: time(24h),
-//            count($v)
-//        )
-////  accumulate(
-////    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.NEGATIVE_REVIEW) over window:time(24h) from $events: List(),
-////    $points: ( $events.size() > 3 ? -5 :
-////               $events.size() > 10 ? -$negativeReviews :
-////               0 )
-////  )
-//then
-////  $hotel.addPoints($numberOfViews);
-//  insert(new ReloadPopularHotelsEvent());
-//end
-//
-//rule "Sort and Select Top 10 Hotels"
-//when
-//  ReloadPopularHotelsEvent()
-//  $hotel: Hotel()
-//  not Hotel(this != $hotel, points > $hotel.points) // Ensure unique hotels with top points
-//then
-//  modify($hotel) {
-//    setPoints(-$hotel.getPoints()) // Negate points for descending order sorting
-//  };
-//  popularHotels.add($hotel);
-//end
+  $numberOfViews: Long() from accumulate(
+      $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.VIEW)
+      over window: time(5h),
+      count($v)
+  )
+then
+    // TODO: numberOfViews -> points
+  System.out.println("HOTEL VIEWED");
+  modify($h){addPoints($numberOfViews)};
+  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
+end
 
-//query "Get Top 10 Hotels"
-//$hotels: List(size > 0) from accumulate(
-//  $hotel: Hotel() from collect(Hotel() over window:length(10) from popularHotels),
-//  init($hotels = new ArrayList<Hotel>()),
-//  action($hotels.add($hotel)),
-//  reverse
-//)
-//end
+rule "Hotel - Number of Bookings"
+when
+  $event: HotelEvent(hotelEventType == HotelEventType.RESERVATION, $user: user, $hotel: hotel)
+    $numberOfViews: Long() from accumulate(
+        $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.RESERVATION)
+        over window: time(24h),
+        count($v)
+    )
+//  accumulate(
+//    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.BOOKING) over window:time(24h) from $events: List(),
+//    $points: ( $events.size() > 3 ? 1 :
+//               $events.size() > 10 ? 5 :
+//               $events.size() > 15 ? 10 :
+//               0 )
+//  )
+then
+  System.out.println("HOTEL BOOKED");
+  modify($hotel){addPoints($numberOfViews)};
+  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
+end
+
+rule "Hotel - Number of Positive Reviews"
+when
+  $event: HotelEvent(hotelEventType == HotelEventType.POSITIVE_REVIEW, $user: user, $hotel: hotel)
+      $numberOfViews: Long() from accumulate(
+          $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.POSITIVE_REVIEW)
+          over window: time(24h),
+          count($v)
+      )
+//  accumulate(
+//    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.POSITIVE_REVIEW) over window:time(1h) from $events: List(),
+//    $points: ( $events.size() > 3 ? 1 :
+//               $events.size() > 5 ? 5 :
+//               $events.size() > 10 ? 10 :
+//               0 )
+//  )
+then
+  modify($hotel){addPoints($numberOfViews)};
+  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
+end
+
+rule "Hotel - Number of Negative Reviews"
+when
+  $event: HotelEvent(hotelEventType == HotelEventType.NEGATIVE_REVIEW, $user: user, $hotel: hotel)
+       $numberOfViews: Long() from accumulate(
+            $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.NEGATIVE_REVIEW)
+            over window: time(24h),
+            count($v)
+        )
+//  accumulate(
+//    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.NEGATIVE_REVIEW) over window:time(24h) from $events: List(),
+//    $points: ( $events.size() > 3 ? -5 :
+//               $events.size() > 10 ? -$negativeReviews :
+//               0 )
+//  )
+then
+  modify($hotel){addPoints($numberOfViews)};
+  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
+end
+
+rule "Sort and Select Top 10 Hotels"
+no-loop
+when
+    $event: ReloadPopularHotelsEvent()
+    $hotels: List() from collect(Hotel(points > 0))
+then
+    $hotels.sort(Comparator.comparing(Hotel::getPoints).reversed());
+    modify($event){setHotels($hotels);}
+end
+
+function boolean isBetween(Date min, Date max, Date d) {
+    return d.after(min) && d.before(max);
+}
 
 function double holidayDiscount(int daysBeforeStay, boolean holidayPeriod) {
     if (daysBeforeStay >= 16 && daysBeforeStay <= 25) {

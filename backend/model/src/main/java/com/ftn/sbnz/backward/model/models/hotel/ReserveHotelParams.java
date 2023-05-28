@@ -1,9 +1,6 @@
 package com.ftn.sbnz.backward.model.models.hotel;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
@@ -11,6 +8,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 public class ReserveHotelParams {
     private Long hotelId;
     private String userEmail;

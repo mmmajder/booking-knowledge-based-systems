@@ -5,6 +5,7 @@ import {AuthService} from "./auth.service";
 import {environment} from "../environment.development";
 import {HotelResponse, PropertyDetails} from "../model/Property";
 import {SearchHotelsParams} from "../model/hotels/SearchHotelsParams";
+import {ReserveHotelParams, ReviewHotelParams} from "../model/hotels/ReserveParams";
 
 @Injectable({
   providedIn: 'root'
@@ -27,5 +28,13 @@ export class PropertyService {
 
   getPopularHotels() {
     return this.http.get<HotelResponse[]>(this.propertiesUrl + "/popular", AuthService.getHttpOptions());
+  }
+
+  reserve(params: ReserveHotelParams) {
+    return this.http.post<boolean>(this.propertiesUrl + "/reserve", params, AuthService.getHttpOptions());
+  }
+
+  review(params: ReviewHotelParams) {
+    return this.http.post<void>(this.propertiesUrl + "/review", params, AuthService.getHttpOptions());
   }
 }

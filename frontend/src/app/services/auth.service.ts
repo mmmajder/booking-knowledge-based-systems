@@ -61,7 +61,4 @@ export class AuthService {
   public isLoggedIn(): boolean {
     return localStorage.getItem('userRole') !== null;
   }
-
-
-
 }

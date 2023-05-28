@@ -7,6 +7,7 @@ export class HotelResponse {
   city: string;
   rating: number;
   stars: number;
+  price: number = 0;
 
   constructor(id: number, name: string, address: string, image: string, country: string, city: string, rating: number, stars: number) {
     this.id = id;

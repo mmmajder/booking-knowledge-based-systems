@@ -1,5 +1,3 @@
-import {UserRole} from "./User";
-
 export class UserTokenState {
   accessToken: string = "";
   expiresIn: number = 10000;

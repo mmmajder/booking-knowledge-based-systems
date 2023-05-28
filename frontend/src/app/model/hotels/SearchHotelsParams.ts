@@ -17,13 +17,15 @@ export class SearchHotelsParams {
   constructor() {
     this.name = '';
     this.destination = '';
-    this.startDate = undefined;
-    this.endDate = undefined;
+    this.startDate = new Date();
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    this.endDate = tomorrow;
     this.numAdults = 2;
     this.numChildren = 0;
     this.reviewScore = 1;
     this.starRating = [];
-    this.priceRangeStart = 300;
+    this.priceRangeStart = 0;
     this.priceRangeEnd = 1000;
     this.distanceStart = 0;
     this.distanceEnd = 5000;

@@ -1,9 +1,9 @@
 package com.ftn.sbnz.backward.service.controllers;
 
+import com.ftn.sbnz.backward.model.models.hotel.HotelResponse;
 import com.ftn.sbnz.backward.model.models.hotel.ReserveHotelParams;
 import com.ftn.sbnz.backward.model.models.hotel.ReviewHotelParams;
 import com.ftn.sbnz.backward.model.models.hotel.SearchHotelsParams;
-import com.ftn.sbnz.backward.service.dto.HotelResponse;
 import com.ftn.sbnz.backward.service.dto.PropertyDetailsResponse;
 import com.ftn.sbnz.backward.service.service.HotelsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +25,11 @@ public class HotelsController {
 
     @GetMapping("/popular")
     public List<HotelResponse> popularHotels() {
-        return hotelsService.popularHotels();
+        return hotelsService.getPopularHotels();
     }
 
     @GetMapping("/{id}")
     public PropertyDetailsResponse getHotel(@PathVariable Long id) {
-        // baci event HotelViewed
         return hotelsService.getHotel(id);
     }
 
