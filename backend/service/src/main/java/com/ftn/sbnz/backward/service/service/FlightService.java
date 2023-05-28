@@ -278,12 +278,22 @@ public class FlightService {
         return response;
     }
 
-    public List<AdditionalServicesRequestEvent> getAdditionalServicesPrice(List<AdditionalServicesRequestEvent> additionalServicesRequestEvent) {
+    public List<AdditionalServicesRequestEvent> getAdditionalServicesPrice(List<AdditionalServicesRequestEvent> additionalServicesRequestEvent, Authentication authentication) {
+        Customer user = (Customer) userService.getLoggedUser(authentication);
+        if (user == null) {
+            throw new BadRequestException("User does not exist");
+        }
+
         for (AdditionalServicesRequestEvent additionalServicePrice : additionalServicesRequestEvent) {
+            additionalServicePrice.setCustomer(user);
             flightPriceKieSession.insert(additionalServicePrice);
+//            flightLoyaltyKieSession.insert(additionalServicePrice);
+        }
+        flightPriceKieSession.fireAllRules();
+        for (AdditionalServicesRequestEvent additionalServicePrice : additionalServicesRequestEvent) {
             flightLoyaltyKieSession.insert(additionalServicePrice);
-            flightPriceKieSession.fireAllRules();
         }
         return additionalServicesRequestEvent;
     }
+
 }

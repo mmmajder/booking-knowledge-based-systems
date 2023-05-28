@@ -1,5 +1,5 @@
 <div style="padding: 20px">
-  <mat-stepper labelPosition="bottom" #stepper>
+  <mat-stepper labelPosition="bottom" #stepper (selectionChange)="onStepSelection($event)">
     <mat-step>
       <mat-card *ngFor="let route of routePrices" style="padding: 10px; margin-bottom: 20px">
         <div style="display: flex; flex-direction: column; border-bottom: 1px solid #ccc;">
@@ -81,7 +81,8 @@
                   (+{{(seats[i].value?.length || 0) - 1}} {{seats[i].value?.length === 2 ? 'other' : 'others'}})
                 </span>
                 </mat-select-trigger>
-                <mat-option *ngFor="let seat of seatList" [value]="seat" [disabled]="isDisabledSeat(seat)">{{seat}}</mat-option>
+<!--                <mat-option *ngFor="let seat of seatList" [value]="seat" [disabled]="isDisabledSeat(seat)">{{seat}}</mat-option>-->
+                <mat-option *ngFor="let seat of seatList" [value]="seat">{{seat}}</mat-option>
               </mat-select>
             </mat-form-field>
 
@@ -94,8 +95,8 @@
           <div *ngIf="displayAdditionalPrice && route.additionalServicesPrice">
             <h1>Price</h1>
             <p>Specific seats price (per number of selected seats): {{route.additionalServicesPrice.specificSeatsPrice | number : '1.2-2'}}</p>
-            <p>Luggage price (per person): {{route.additionalServicesPrice.luggagePrice}}</p>
-            <p>Priority boarding price (per person): {{route.additionalServicesPrice.priorityBoardingPrice}}</p>
+            <p>Luggage price: {{route.additionalServicesPrice.luggagePrice}}</p>
+            <p>Priority boarding price: {{route.additionalServicesPrice.priorityBoardingPrice}}</p>
             <p>Total price: <b>{{route.additionalServicesPrice.totalAdditionalPrice | number : '1.2-2'}}</b></p>
           </div>
           <div></div>
@@ -107,7 +108,7 @@
       </button>
     </mat-step>
     <mat-step>
-      <app-reserve-flight-screen [totalPrice]="totalPrice" [additionalPrices]="additionalPrices"></app-reserve-flight-screen>
+      <app-reserve-flight-screen [basePrice]="routePrices" [additionalPrices]="additionalPrices"></app-reserve-flight-screen>
     </mat-step>
   </mat-stepper>
 </div>

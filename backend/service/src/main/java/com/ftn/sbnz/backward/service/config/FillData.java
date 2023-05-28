@@ -1,6 +1,7 @@
 package com.ftn.sbnz.backward.service.config;
 
 import com.ftn.sbnz.backward.model.models.Customer;
+import com.ftn.sbnz.backward.model.models.Payment;
 import com.ftn.sbnz.backward.model.models.UserAuth;
 import com.ftn.sbnz.backward.model.models.enums.UserRole;
 import com.ftn.sbnz.backward.model.models.flight.*;
@@ -17,6 +18,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -53,6 +55,26 @@ public class FillData implements CommandLineRunner {
         fillHotelsData();
         fillFlightData();
         fillUserData();
+        fillPayments();
+    }
+
+    private void fillPayments() {
+        Payment payment1 = new Payment();
+        payment1.setIsAcceptedPayment(true);
+        payment1.setTotalPrice(1000.0);
+        payment1.setEmail("customer@gmail.com");
+        payment1.setExecutionTime(new Date());
+        payment1.setDeleted(false);
+
+        Payment payment2 = new Payment();
+        payment2.setIsAcceptedPayment(true);
+        payment2.setTotalPrice(500.0);
+        payment2.setEmail("customer@gmail.com");
+        payment2.setExecutionTime(new Date());
+        payment2.setDeleted(false);
+
+        flightLoyaltyKieSession.insert(payment1);
+        flightLoyaltyKieSession.insert(payment2);
     }
 
     private void fillUserData() {

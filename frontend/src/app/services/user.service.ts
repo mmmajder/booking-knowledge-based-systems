@@ -5,6 +5,7 @@ import {User, UserDetails} from '../model/User';
 import {environment} from "../environment.development";
 import {AuthService} from "./auth.service";
 import {CreateUserCredentials} from "../model/RegisterCredentials";
+import {LoyaltyProgram} from "../model/flight/LoyaltyProgram";
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +13,11 @@ import {CreateUserCredentials} from "../model/RegisterCredentials";
 export class UserService {
 
   private readonly userUrl: string;
+  private readonly customerUrl: string;
 
   constructor(private http: HttpClient) {
     this.userUrl = environment.apiUrl + '/user';
+    this.customerUrl = environment.apiUrl + '/customer';
   }
 
   public getPropertyOwners(): Observable<User[]> {
@@ -33,5 +36,7 @@ export class UserService {
     return this.http.put<string>(this.userUrl, requestBody, AuthService.getHttpOptions());
   }
 
-
+  public getLoyaltyProgramDiscount(): Observable<LoyaltyProgram> {
+    return this.http.get<LoyaltyProgram>(this.customerUrl + '/get-loyalty-program', AuthService.getHttpOptions());
+  }
 }

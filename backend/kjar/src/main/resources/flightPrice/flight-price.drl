@@ -12,6 +12,7 @@ import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgramTier;
 
 
 rule "Calculate base price"
+lock-on-active
     when
         $previewFlight: PreviewFlightEvent($flight: flight, $customer: customer, $numberOfAdults: numberOfAdults, $numberOfChildren: numberOfChildren, $seatClass: seatClass)
     then
@@ -43,27 +44,29 @@ rule "Calculate base price"
         price.setNumberOfAdults($numberOfAdults);
         price.setDiscountForNumberOfPassengers(basePrice * coefficientForNumberOfPassengers * discountForNumberOfPassengers);
         price.setTotalPrice(result);
-
+        System.out.println(price);
         modify($previewFlight){setBasePrice(price)};
 end
 
 
 rule "calculate price of additional services"
     when
-        $previewFlight: PreviewFlightEvent(basePrice != null, $flight1: flight)
-        $additionalServicesRequest: AdditionalServicesRequestEvent(flight.getId() == $flight1.getId(), $luggageWeight: luggageWeight, $isPriorityBoarding: priorityBoarding, $isSpecificSeats: specificSeats, $seats: seats)
+        $previewFlight: PreviewFlightEvent(basePrice != null, $flight1: flight, $customer: customer)
+        $additionalServicesRequest: AdditionalServicesRequestEvent($customer.getEmail() == customer.getEmail(), flight.getId() == $flight1.getId(), $luggageWeight: luggageWeight, $isPriorityBoarding: priorityBoarding, $isSpecificSeats: specificSeats, $seats: seats)
     then
         System.out.println("Stigao u drugo prvilo");
-        double luggagePrice = $flight1.getPriceCatalog().calculateLuggagePrice($luggageWeight);
-        double priorityBoardingPrice = ($additionalServicesRequest.isPriorityBoarding()) ? $flight1.getPriceCatalog().getPriorityBoardingPrice() : 0;
-        double specificSeatsPrice = ($additionalServicesRequest.isSpecificSeats()) ? $flight1.getPriceCatalog().getChooseSeatPrice() : 0;
+        int numberOfPassengers = $previewFlight.getBasePrice().getNumberOfAdults() + $previewFlight.getBasePrice().getNumberOfChildren();
+        System.out.println(numberOfPassengers);
+        double luggagePrice = $flight1.getPriceCatalog().calculateLuggagePrice($luggageWeight / numberOfPassengers);
+        double priorityBoardingPrice = ($additionalServicesRequest.isPriorityBoarding()) ? $flight1.getPriceCatalog().getPriorityBoardingPrice() * numberOfPassengers : 0;
+        double specificSeatsPrice = ($additionalServicesRequest.isSpecificSeats()) ? $flight1.getPriceCatalog().getChooseSeatPrice() * $additionalServicesRequest.getSeats().size() : 0;
 
         AdditionalServicesPrice additionalServicesPrice = new AdditionalServicesPrice();
         additionalServicesPrice.setLuggagePrice(luggagePrice);
         additionalServicesPrice.setPriorityBoardingPrice(priorityBoardingPrice);
         additionalServicesPrice.setSpecificSeatsPrice(specificSeatsPrice);
         additionalServicesPrice.setTotalAdditionalPrice(luggagePrice + priorityBoardingPrice + specificSeatsPrice);
-
+        System.out.println(additionalServicesPrice);
         modify($additionalServicesRequest){setAdditionalServicesPrice(additionalServicesPrice)};
 end
 

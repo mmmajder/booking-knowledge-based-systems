@@ -31,7 +31,7 @@ public class FlightController {
     }
 
     @PostMapping("/additional-services")
-    public List<AdditionalServicesRequestEvent> getAdditionalServicesPrice(@RequestBody List<AdditionalServicesRequestEvent> additionalServicesRequestEvent) {
-        return flightService.getAdditionalServicesPrice(additionalServicesRequestEvent);
+    public List<AdditionalServicesRequestEvent> getAdditionalServicesPrice(@RequestBody List<AdditionalServicesRequestEvent> additionalServicesRequestEvent, Authentication authentication) {
+        return flightService.getAdditionalServicesPrice(additionalServicesRequestEvent, authentication);
     }
 }

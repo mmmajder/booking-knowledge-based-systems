@@ -11,18 +11,20 @@ import com.ftn.sbnz.backward.model.models.Payment;
 import com.ftn.sbnz.backward.model.models.Customer;
 import com.ftn.sbnz.backward.model.models.Customer;
 import com.ftn.sbnz.backward.model.models.events.AdditionalServicesRequestEvent;
+import com.ftn.sbnz.backward.model.models.events.CalculateLoyaltyEvent;
 import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgram;
 import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgramTier;
 
 template "loyalty-rools"
 
 rule "Loyalty discount_@{row.rowNumber}"
+lock-on-active
     when
-        $c: Customer($email: email)
-        AdditionalServicesRequestEvent(additionalServicesPrice!=null)
+        $cl: CalculateLoyaltyEvent()
+        $c: Customer(email == $cl.getCustomer().getEmail())
         Number(doubleValue >= @{minMoney} && doubleValue < @{maxMoney}) from accumulate(
-            $p: Payment(email == $email, $totalPrice: totalPrice)
-            over window: time(129600m, TimeUnit.MILLISECONDS),
+            $p: Payment(email == $c.getEmail(), $totalPrice: totalPrice)
+            over window: time(129600, TimeUnit.MILLISECONDS),
             sum($totalPrice)
         )
     then
@@ -42,23 +44,10 @@ rule "Loyalty discount_@{row.rowNumber}"
           default:
             break;
         }
+        System.out.println($c);
         modify($c){setLoyaltyProgram(loyaltyProgram);}
-end
-
-rule "add cutomer_@{row.rowNumber}"
-when
-        $c: Customer($email: email)
-then
-    System.out.println("New customer");
-    System.out.println($c.getName());
-end
-
-rule "add additional_price@{row.rowNumber}"
-when
-        $c: AdditionalServicesRequestEvent()
-then
-    System.out.println("New additional price event");
-    System.out.println($c);
+        modify($cl){setCustomer($c);}
+        System.out.println($cl);
 end
 
 end template

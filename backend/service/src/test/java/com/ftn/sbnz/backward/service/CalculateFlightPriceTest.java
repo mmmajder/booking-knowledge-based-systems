@@ -139,17 +139,17 @@ public class CalculateFlightPriceTest {
 
         List<ClassificationTemplateModel> data = new ArrayList<ClassificationTemplateModel>();
 
-        data.add(new ClassificationTemplateModel(500, 1000 , 3, 5, "BRONZE"));
-        data.add(new ClassificationTemplateModel(1000, 2000 , 6, 5, "BRONZE"));
-        data.add(new ClassificationTemplateModel(2000, 4000 , 12, 5, "BRONZE"));
+        data.add(new ClassificationTemplateModel(500, 1000 , 3, 0.05, "BRONZE"));
+        data.add(new ClassificationTemplateModel(1000, 2000 , 6, 0.05, "BRONZE"));
+        data.add(new ClassificationTemplateModel(2000, 4000 , 12, 0.05, "BRONZE"));
 
-        data.add(new ClassificationTemplateModel(1000, 2000 , 3, 10, "SILVER"));
-        data.add(new ClassificationTemplateModel(2000, 4000 , 6, 10, "SILVER"));
-        data.add(new ClassificationTemplateModel(4000, 8000 , 12, 10, "SILVER"));
+        data.add(new ClassificationTemplateModel(1000, 2000 , 3, 0.10, "SILVER"));
+        data.add(new ClassificationTemplateModel(2000, 4000 , 6, 0.10, "SILVER"));
+        data.add(new ClassificationTemplateModel(4000, 8000 , 12, 0.10, "SILVER"));
 
-        data.add(new ClassificationTemplateModel(2000, 4000 , 3, 15, "GOLD"));
-        data.add(new ClassificationTemplateModel(4000, 8000 , 6, 15, "GOLD"));
-        data.add(new ClassificationTemplateModel(8000, 999999999 , 12, 15, "GOLD"));
+        data.add(new ClassificationTemplateModel(2000, 4000 , 3, 0.15, "GOLD"));
+        data.add(new ClassificationTemplateModel(4000, 8000 , 6, 0.15, "GOLD"));
+        data.add(new ClassificationTemplateModel(8000, 999999999 , 12, 0.15, "GOLD"));
 
 
         ObjectDataCompiler converter = new ObjectDataCompiler();

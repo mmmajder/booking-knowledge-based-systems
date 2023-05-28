@@ -1,5 +1,6 @@
 package com.ftn.sbnz.backward.model.models.events;
 
+import com.ftn.sbnz.backward.model.models.Customer;
 import com.ftn.sbnz.backward.model.models.flight.Flight;
 import com.ftn.sbnz.backward.model.models.flight.PlaneSeat;
 import com.ftn.sbnz.backward.model.models.flight.price.AdditionalServicesPrice;
@@ -30,6 +31,6 @@ public class AdditionalServicesRequestEvent {
     private List<PlaneSeat> seats;
 
     private AdditionalServicesPrice additionalServicesPrice;
-
+    private Customer customer;
     private Date executionTime;
 }

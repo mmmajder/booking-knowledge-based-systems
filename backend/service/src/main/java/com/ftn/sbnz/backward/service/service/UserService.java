@@ -3,7 +3,10 @@ package com.ftn.sbnz.backward.service.service;
 import com.ftn.sbnz.backward.model.models.Customer;
 import com.ftn.sbnz.backward.model.models.User;
 import com.ftn.sbnz.backward.model.models.UserAuth;
+import com.ftn.sbnz.backward.model.models.events.CalculateLoyaltyEvent;
+import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgram;
 import com.ftn.sbnz.backward.service.dto.CreateUserDTO;
+import com.ftn.sbnz.backward.service.exception.BadRequestException;
 import com.ftn.sbnz.backward.service.repository.UserRepository;
 import com.ftn.sbnz.backward.model.models.enums.UserRole;
 import com.ftn.sbnz.backward.model.models.Role;
@@ -14,6 +17,7 @@ import com.ftn.sbnz.backward.service.repository.RoleRepository;
 import com.ftn.sbnz.backward.service.repository.UserRepository;
 import com.ftn.sbnz.backward.service.utils.DTOMapper;
 import net.bytebuddy.utility.RandomString;
+import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,6 +44,9 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private UserAuthService userAuthService;
+
+    @Autowired
+    private KieSession flightLoyaltyKieSession;
 
     public UserService() {
     }
@@ -162,5 +170,17 @@ public class UserService implements UserDetailsService {
     public void addTokens(double numberOfTokens, Customer user) {
         user.setNumberOfTokens(user.getNumberOfTokens() + numberOfTokens);
         save(user);
+    }
+
+    public LoyaltyProgram getLoyaltyProgramDiscount(Authentication authentication) {
+        Customer user = (Customer) getLoggedUser(authentication);
+        if (user == null) {
+            throw new BadRequestException("User does not exist");
+        }
+//        flightLoyaltyKieSession.setGlobal("userEmail", user.getEmail());
+        CalculateLoyaltyEvent calculateLoyaltyEvent = new CalculateLoyaltyEvent(user, new Date());
+        flightLoyaltyKieSession.insert(calculateLoyaltyEvent);
+        flightLoyaltyKieSession.fireAllRules();
+        return calculateLoyaltyEvent.getCustomer().getLoyaltyProgram();
     }
 }
