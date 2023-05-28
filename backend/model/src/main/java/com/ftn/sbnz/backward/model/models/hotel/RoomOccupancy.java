@@ -1,5 +1,6 @@
 package com.ftn.sbnz.backward.model.models.hotel;
 
+import com.ftn.sbnz.backward.model.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,8 @@ public class RoomOccupancy {
     @Column(unique = true)
     private Long id;
 
-    private Date start;
-    private Date end;
+    private Date startDate;
+    private Date endDate;
+    @OneToOne
+    private User user;
 }

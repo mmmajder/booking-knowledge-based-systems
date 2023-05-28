@@ -79,12 +79,8 @@ public class FillData implements CommandLineRunner {
             hotelRepository.save(hotel1);
             hotelsKieSession.insert(h);
         }
-        List<Hotel> popularHotels = new ArrayList<>();
-        hotelsKieSession.setGlobal("popularHotels", popularHotels);
         List<Hotel> filteredHotels = new ArrayList<>();
         hotelsKieSession.setGlobal("filteredHotels", filteredHotels);
-
-//        hotelsKieSession.fireAllRules();
     }
 
     private void fillFlightData() {

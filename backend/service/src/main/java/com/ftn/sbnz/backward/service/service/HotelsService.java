@@ -25,7 +25,7 @@ public class HotelsService {
     @Autowired
     private RoomOccupancyRepository roomOccupancyRepository;
     @Autowired
-    private HotelOccupancyRepository hotelOccupancyRepository;
+    private HotelRoomRepository hotelRoomRepository;
     @Autowired
     private KieSession hotelsKieSession;
 
@@ -80,35 +80,40 @@ public class HotelsService {
     }
 
     public boolean reserveHotel(ReserveHotelParams reserveHotelParams) {
-        // GET FROM RULE SOMEHOW
-        HotelRoom hotelRoom = new HotelRoom();
+        Hotel hotel = findById(reserveHotelParams.getHotelId());
+        CheckRoomAvailability roomAvailability = new CheckRoomAvailability(hotel, reserveHotelParams, null);
+        hotelsKieSession.insert(roomAvailability);
+
+        HotelRoom room = roomAvailability.getHotelRoom();
+        if (room == null)
+            return false;
 
         RoomOccupancy roomOccupancy = new RoomOccupancy();
-        roomOccupancy.setStart(reserveHotelParams.getStart());
-        roomOccupancy.setEnd(reserveHotelParams.getEnd());
+        roomOccupancy.setStartDate(reserveHotelParams.getStart());
+        roomOccupancy.setEndDate(reserveHotelParams.getEnd());
         roomOccupancyRepository.save(roomOccupancy);
 
-        HotelOccupancy hotelOccupancy = hotelOccupancyRepository.findByHotelRoom_Id(hotelRoom.getId());
-//        hotelOccupancy.getOccupancies().add(roomOccupancy);
-        hotelOccupancyRepository.save(hotelOccupancy);
+        if (room.getRoomOccupancies() == null)
+            room.setRoomOccupancies(new ArrayList<>());
+        room.getRoomOccupancies().add(roomOccupancy);
+        hotelRoomRepository.save(room);
 
-//        hotelsKieSession.insert(new HotelEvent(hotel, HotelEventType.RESERVATION, user));
-
+        hotelsKieSession.insert(new HotelEvent(hotel, HotelEventType.RESERVATION, null));
         return true;
     }
 
-    public List<HotelResponse> popularHotels() {
-        List<Hotel> popularHotels = new ArrayList<>();
-        hotelsKieSession.setGlobal("popularHotels", popularHotels);
-
-        hotelsKieSession.insert(new ReloadPopularHotelsEvent());
+    public List<HotelResponse> getPopularHotels() {
+        ReloadPopularHotelsEvent event = new ReloadPopularHotelsEvent();
+        hotelsKieSession.insert(event);
         hotelsKieSession.fireAllRules();
 
         List<HotelResponse> hotelResponses = new ArrayList<>();
-        for (Hotel h : popularHotels) {
+
+        for (Hotel h : event.getHotels()) {
             hotelResponses.add(new HotelResponse(h));
         }
-
+        if (hotelResponses.size() > 10)
+            return hotelResponses.subList(0, 10);
         return hotelResponses;
     }
 }

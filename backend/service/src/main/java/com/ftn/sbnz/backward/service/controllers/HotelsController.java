@@ -25,7 +25,7 @@ public class HotelsController {
 
     @GetMapping("/popular")
     public List<HotelResponse> popularHotels() {
-        return hotelsService.popularHotels();
+        return hotelsService.getPopularHotels();
     }
 
     @GetMapping("/{id}")

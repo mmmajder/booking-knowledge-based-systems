@@ -18,4 +18,14 @@ public class HotelEvent implements Serializable {
     private Hotel hotel;
     private HotelEventType hotelEventType;
     private User user;
+
+    public void addPoints(Integer points) {
+        System.out.println("DODAJEM " + points);
+        this.hotel.addPoints(points);
+    }
+
+    public void addPoints(Long points) {
+        System.out.println("DODAJEM " + points);
+        this.hotel.addPoints(points);
+    }
 }

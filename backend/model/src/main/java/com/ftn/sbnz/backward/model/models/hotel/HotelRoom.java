@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -16,8 +17,11 @@ public class HotelRoom {
     @Column(unique = true)
     private Long id;
 
+    private Long hotelId;
     private String roomNumber;
     private RoomType roomType;
     private int numberOfAdults;
     private int numberOfChildren;
+    @OneToMany
+    private List<RoomOccupancy> roomOccupancies;
 }

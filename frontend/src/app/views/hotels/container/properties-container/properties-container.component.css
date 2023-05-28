@@ -27,3 +27,14 @@ mat-slider {
   width: 90%;
   margin-left: 20px;
 }
+
+.scrollable-row {
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+  white-space: nowrap;
+}
+
+.popular-hotel {
+  padding: 10px;
+}

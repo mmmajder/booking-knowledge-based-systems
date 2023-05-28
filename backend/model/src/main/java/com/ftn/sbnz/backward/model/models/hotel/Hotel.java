@@ -24,8 +24,6 @@ public class Hotel {
     private String country;
     @OneToMany
     private List<HotelRoom> hotelRooms;
-    @OneToMany
-    private List<HotelOccupancy> hotelOccupancy;
     private double rating;
     private int stars;
     private int points;
@@ -37,10 +35,12 @@ public class Hotel {
     private double distanceFromCenter;
 
     public void addPoints(Integer num) {
+        System.out.println("DODAJEM " + num);
         this.points += num;
     }
 
     public void addPoints(Long num) {
+        System.out.println("DODAJEM " + num);
         this.points += num;
     }
 
@@ -57,7 +57,6 @@ public class Hotel {
         this.points = 0;
         this.facilities = facilities;
         this.hotelRooms = hotelRooms;
-        this.hotelOccupancy = new ArrayList<>();
         this.reviews = new ArrayList<>();
     }
 }

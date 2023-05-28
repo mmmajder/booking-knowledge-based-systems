@@ -7,19 +7,22 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Collection;
 import java.time.ZoneId;
-import java.text.SimpleDateFormat;
+import java.text.SimpleDateFormat
+import java.util.ArrayList
+import java.util.HashSet
+import java.util.Comparator;
 
 global List<Hotel> filteredHotels;
-global List<Hotel> popularHotels;
 
-rule "Add hotel"
-when
-    $hotel: Hotel()
-then
-    System.out.println("HOTEL " + $hotel.getName());
-end
+//rule "Add hotel"
+//when
+//    $hotel: Hotel()
+//then
+//    System.out.println("HOTEL " + $hotel.getName());
+//end
 
 rule "Filter Hotels"
+no-loop
 when
     $searchParams: SearchHotelsParams()
     $hotel: Hotel(
@@ -33,11 +36,11 @@ when
         $hotel.facilities.containsAll($searchParams.facilities) || $searchParams.facilities.size() == 0
     )
 then
-    System.out.println("SEARCH");
     insert(new CalculateHotelPrice($hotel, $searchParams));
 end
 
 rule "Calculate Hotel Price"
+no-loop
 when
     $calculateHotelPrice: CalculateHotelPrice(
         $hotel: hotel,
@@ -57,23 +60,28 @@ then
         totalPrice -= totalPrice * (lastMinuteDiscount / 100);
     }
 
-//    System.out.println($hotel.getName() + ": " + totalPrice);
+    System.out.println($hotel.getName() + ": " + totalPrice);
 
     if(totalPrice >= $searchParams.getPriceRangeStart() && $searchParams.getPriceRangeEnd() >= totalPrice) {
-        insert(new CheckRoomAvailability($hotel, $searchParams));
+        filteredHotels.add($hotel);
     }
 end
 
 rule "Available room"
 when
-     $checkRoomAvailability: CheckRoomAvailability()
+    $checkRoomAvailability: CheckRoomAvailability($hotel: hotel, $params: reserveHotelParams)
+    $room: HotelRoom($roomOccupancies: roomOccupancies, $hotel.getId() == hotelId, numberOfAdults >= $params.getNumberOfAdults(), numberOfChildren >= $params.getNumberOfChildren())
+    not(RoomOccupancy(isBetween($params.getStart(), $params.getEnd(), startDate), isBetween($params.getStart(), $params.getEnd(), endDate)) from $roomOccupancies)
 then
-     filteredHotels.add($checkRoomAvailability.getHotel());
+    System.out.println("THERE IS A ROOM");
+    modify($checkRoomAvailability){setHotelRoom($room);}
 end
 
 rule "Hotel - Number of Views"
+no-loop
 when
   $event: HotelEvent(hotelEventType == HotelEventType.VIEW, $hotel: hotel)
+  $h: Hotel(id == $hotel.getId())
 //  accumulate(
 //    $viewEvent: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.VIEW) over window:time(5h),
 //    $points: ( accumulate($v: $viewEvent; count($v) < 3), -1;
@@ -89,7 +97,8 @@ when
   )
 then
     // TODO: numberOfViews -> points
-  $hotel.addPoints($numberOfViews);
+  System.out.println("HOTEL VIEWED");
+  modify($h){addPoints($numberOfViews)};
   insert(new ReloadPopularHotelsEvent());
 end
 
@@ -109,7 +118,8 @@ when
 //               0 )
 //  )
 then
-  $hotel.addPoints($numberOfViews);
+  System.out.println("HOTEL BOOKED");
+  modify($hotel){addPoints($numberOfViews)};
   insert(new ReloadPopularHotelsEvent());
 end
 
@@ -129,7 +139,7 @@ when
 //               0 )
 //  )
 then
-  $hotel.addPoints($numberOfViews);
+  modify($hotel){addPoints($numberOfViews)};
   insert(new ReloadPopularHotelsEvent());
 end
 
@@ -148,30 +158,23 @@ when
 //               0 )
 //  )
 then
-  $hotel.addPoints($numberOfViews);
+  modify($hotel){addPoints($numberOfViews)};
   insert(new ReloadPopularHotelsEvent());
 end
 
 rule "Sort and Select Top 10 Hotels"
+no-loop
 when
-  ReloadPopularHotelsEvent()
-  $hotel: Hotel()
-  not Hotel(this != $hotel, points > $hotel.points) // Ensure unique hotels with top points
+    $event: ReloadPopularHotelsEvent()
+    $hotels: List() from collect(Hotel(points > 0))
 then
-  modify($hotel) {
-    setPoints(-$hotel.getPoints()) // Negate points for descending order sorting
-  };
-  popularHotels.add($hotel);
+    $hotels.sort(Comparator.comparing(Hotel::getPoints).reversed());
+    modify($event){setHotels($hotels);}
 end
 
-//query "Get Top 10 Hotels"
-//$hotels: List(size > 0) from accumulate(
-//  $hotel: Hotel() from collect(Hotel() over window:length(10) from popularHotels),
-//  init($hotels = new ArrayList<Hotel>()),
-//  action($hotels.add($hotel)),
-//  reverse
-//)
-//end
+function boolean isBetween(Date min, Date max, Date d) {
+    return d.after(min) && d.before(max);
+}
 
 function double holidayDiscount(int daysBeforeStay, boolean holidayPeriod) {
     if (daysBeforeStay >= 16 && daysBeforeStay <= 25) {

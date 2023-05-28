@@ -9,5 +9,6 @@ import lombok.*;
 @Data
 public class CheckRoomAvailability {
     private Hotel hotel;
-    private SearchHotelsParams searchHotelsParams;
+    private ReserveHotelParams reserveHotelParams;
+    private HotelRoom hotelRoom;
 }
