@@ -25,4 +25,10 @@ public class SearchHotelsParams {
     private int distanceEnd;
     private List<String> facilities;
     private List<String> meals;
+
+    private List<HotelResponse> hotels;
+
+    public void addHotel(HotelResponse h) {
+        this.hotels.add(h);
+    }
 }

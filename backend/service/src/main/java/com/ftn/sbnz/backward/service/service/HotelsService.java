@@ -2,7 +2,6 @@ package com.ftn.sbnz.backward.service.service;
 
 import com.ftn.sbnz.backward.model.models.User;
 import com.ftn.sbnz.backward.model.models.hotel.*;
-import com.ftn.sbnz.backward.service.dto.HotelResponse;
 import com.ftn.sbnz.backward.service.dto.PropertyDetailsResponse;
 import com.ftn.sbnz.backward.service.repository.*;
 import org.kie.api.runtime.KieSession;
@@ -30,18 +29,11 @@ public class HotelsService {
     private KieSession hotelsKieSession;
 
     public List<HotelResponse> searchHotels(SearchHotelsParams searchHotelsParams) {
-        List<Hotel> filteredHotels = new ArrayList<>();
-        hotelsKieSession.setGlobal("filteredHotels", filteredHotels);
-
+        searchHotelsParams.setHotels(new ArrayList<>());
         hotelsKieSession.insert(searchHotelsParams);
         hotelsKieSession.fireAllRules();
 
-        List<HotelResponse> hotelResponses = new ArrayList<>();
-        for (Hotel h : filteredHotels) {
-            hotelResponses.add(new HotelResponse(h));
-        }
-
-        return hotelResponses;
+        return searchHotelsParams.getHotels();
     }
 
     public void save(Hotel hotel) {
@@ -71,12 +63,13 @@ public class HotelsService {
         reviewRepository.save(review);
 
         Hotel hotel = findById(reviewHotelParams.getHotelId());
-        hotel.getReviews().add(review);
-        hotelRepository.save(hotel);
 
         HotelEventType type = review.getRating() > 3 ? HotelEventType.POSITIVE_REVIEW : HotelEventType.NEGATIVE_REVIEW;
         hotelsKieSession.insert(new HotelEvent(hotel, type, user));
         hotelsKieSession.fireAllRules();
+
+        hotel.getReviews().add(review);
+        hotelRepository.save(hotel);
     }
 
     public boolean reserveHotel(ReserveHotelParams reserveHotelParams) {
@@ -103,14 +96,14 @@ public class HotelsService {
     }
 
     public List<HotelResponse> getPopularHotels() {
-        ReloadPopularHotelsEvent event = new ReloadPopularHotelsEvent();
+        ReloadPopularHotelsEvent event = new ReloadPopularHotelsEvent(new ArrayList<>());
         hotelsKieSession.insert(event);
         hotelsKieSession.fireAllRules();
 
         List<HotelResponse> hotelResponses = new ArrayList<>();
 
         for (Hotel h : event.getHotels()) {
-            hotelResponses.add(new HotelResponse(h));
+            hotelResponses.add(new HotelResponse(h, 0));
         }
         if (hotelResponses.size() > 10)
             return hotelResponses.subList(0, 10);

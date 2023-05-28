@@ -1,6 +1,5 @@
-package com.ftn.sbnz.backward.service.dto;
+package com.ftn.sbnz.backward.model.models.hotel;
 
-import com.ftn.sbnz.backward.model.models.hotel.Hotel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -15,8 +14,9 @@ public class HotelResponse {
     private String city;
     private double rating;
     private double stars;
+    private double price;
 
-    public HotelResponse(Hotel h) {
+    public HotelResponse(Hotel h, double price) {
         this.id = h.getId();
         this.name = h.getName();
         this.address = h.getAddress();
@@ -25,5 +25,6 @@ public class HotelResponse {
         this.stars = h.getStars();
         this.city = h.getCity();
         this.country = h.getCountry();
+        this.price = price;
     }
 }

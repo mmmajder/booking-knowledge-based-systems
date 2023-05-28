@@ -9,7 +9,7 @@ export class ReserveHotelParams {
 
 export class ReviewHotelParams {
   hotelId!: number;
-  userEmail!: string;
+  userEmail: string = "customer@gmail.com";
   comment: string = "";
   stars: number = 10;
 }

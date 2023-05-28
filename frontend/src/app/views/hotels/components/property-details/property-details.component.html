@@ -39,7 +39,7 @@
         </div>
       </div>
     </div>
-    <div style="width: 100%; display: flex">
+    <div style="width: 100%; display: flex; margin-bottom: 20px">
       <button mat-raised-button style="width: 49%" (click)="review()">Review</button>
       <button mat-raised-button style="width: 49%; margin-left: 5px" color="primary" (click)="reserve()">Reserve
       </button>
@@ -81,7 +81,7 @@
 
       <mat-form-field style="width: 100%" appearance="outline">
         <mat-label>Leave a comment</mat-label>
-        <textarea matInput placeholder="Ex. It is a great hotel..."></textarea>
+        <textarea [(ngModel)]="reviewParams.comment" matInput placeholder="Ex. It is a great hotel..."></textarea>
       </mat-form-field>
     </div>
   </div>

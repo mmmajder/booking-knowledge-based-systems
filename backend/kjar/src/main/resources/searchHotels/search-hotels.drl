@@ -12,8 +12,6 @@ import java.util.ArrayList
 import java.util.HashSet
 import java.util.Comparator;
 
-global List<Hotel> filteredHotels;
-
 //rule "Add hotel"
 //when
 //    $hotel: Hotel()
@@ -63,7 +61,7 @@ then
     System.out.println($hotel.getName() + ": " + totalPrice);
 
     if(totalPrice >= $searchParams.getPriceRangeStart() && $searchParams.getPriceRangeEnd() >= totalPrice) {
-        filteredHotels.add($hotel);
+        modify($searchParams){addHotel(new HotelResponse($hotel, totalPrice));}
     }
 end
 
@@ -99,7 +97,7 @@ then
     // TODO: numberOfViews -> points
   System.out.println("HOTEL VIEWED");
   modify($h){addPoints($numberOfViews)};
-  insert(new ReloadPopularHotelsEvent());
+  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
 end
 
 rule "Hotel - Number of Bookings"
@@ -120,7 +118,7 @@ when
 then
   System.out.println("HOTEL BOOKED");
   modify($hotel){addPoints($numberOfViews)};
-  insert(new ReloadPopularHotelsEvent());
+  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
 end
 
 rule "Hotel - Number of Positive Reviews"
@@ -140,7 +138,7 @@ when
 //  )
 then
   modify($hotel){addPoints($numberOfViews)};
-  insert(new ReloadPopularHotelsEvent());
+  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
 end
 
 rule "Hotel - Number of Negative Reviews"
@@ -159,7 +157,7 @@ when
 //  )
 then
   modify($hotel){addPoints($numberOfViews)};
-  insert(new ReloadPopularHotelsEvent());
+  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
 end
 
 rule "Sort and Select Top 10 Hotels"

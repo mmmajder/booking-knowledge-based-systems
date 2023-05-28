@@ -12,6 +12,7 @@ import {ReserveHotelParams, ReviewHotelParams} from "../../../../model/hotels/Re
 })
 export class PropertyDetailsComponent implements OnInit {
   @Input() id!: number;
+  userEmail: string = '';
 
   reservationParams = new ReserveHotelParams();
   reviewParams = new ReviewHotelParams();
@@ -28,6 +29,8 @@ export class PropertyDetailsComponent implements OnInit {
 
   ngOnInit() {
     this.loadProperty();
+    this.reviewParams.hotelId = this.id;
+    this.reservationParams.hotelId = this.id;
   }
 
   loadProperty() {
