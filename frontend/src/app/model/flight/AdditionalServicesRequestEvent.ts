@@ -9,5 +9,5 @@ export class AdditionalServicesRequestEvent {
    specificSeats!: boolean;
    seats!: PlaneSeat[];
    additionalServicesPrice?: AdditionalServicesPrice;
-   executionTime?: Date = new Date();
+   executionTime!: Date;
 }

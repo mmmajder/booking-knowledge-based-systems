@@ -10,6 +10,7 @@ package loyalty;
 import com.ftn.sbnz.backward.model.models.Payment;
 import com.ftn.sbnz.backward.model.models.Customer;
 import com.ftn.sbnz.backward.model.models.Customer;
+import com.ftn.sbnz.backward.model.models.events.AdditionalServicesRequestEvent;
 import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgram;
 import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgramTier;
 
@@ -21,7 +22,7 @@ rule "Loyalty discount_@{row.rowNumber}"
         AdditionalServicesRequestEvent(additionalServicesPrice!=null)
         Number(doubleValue >= @{minMoney} && doubleValue < @{maxMoney}) from accumulate(
             $p: Payment(email == $email, $totalPrice: totalPrice)
-            over window: time(@{timeInMonths}* 30 * 24 * 60 * 60 * 1000L, TimeUnit.MILLISECONDS),
+            over window: time(129600m, TimeUnit.MILLISECONDS),
             sum($totalPrice)
         )
     then
@@ -42,6 +43,22 @@ rule "Loyalty discount_@{row.rowNumber}"
             break;
         }
         modify($c){setLoyaltyProgram(loyaltyProgram);}
+end
+
+rule "add cutomer_@{row.rowNumber}"
+when
+        $c: Customer($email: email)
+then
+    System.out.println("New customer");
+    System.out.println($c.getName());
+end
+
+rule "add additional_price@{row.rowNumber}"
+when
+        $c: AdditionalServicesRequestEvent()
+then
+    System.out.println("New additional price event");
+    System.out.println($c);
 end
 
 end template

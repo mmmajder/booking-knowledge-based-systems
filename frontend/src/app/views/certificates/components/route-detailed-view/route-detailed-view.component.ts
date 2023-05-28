@@ -53,6 +53,7 @@ export class RouteDetailedViewComponent {
           specificSeats: this.seats[this.seats.length - 1].value?.length !== 0,
           flight: flightPrice.flight,
           luggageWeight: this.totalWeight,
+          executionTime: new Date()
         })
       })
     })
@@ -83,7 +84,7 @@ export class RouteDetailedViewComponent {
         this.seats[index].value.forEach((seatNumber: number) => {
           price.seats.push({
             number: seatNumber,
-            seatClass: this.data.seatClass,
+            seatClass: seatClassReverseMapping[this.data.seatClass],
           })
         })
       }
@@ -94,8 +95,7 @@ export class RouteDetailedViewComponent {
     console.log(this.seats)
 
 
-    this.displayAdditionalPrice = true    //todo move
-
+    this.displayAdditionalPrice = true;   //todo move
     this.flightService.getAdditionalServicesPrice(this.additionalPrices).subscribe((res) => {
       this.additionalPrices = res
     })

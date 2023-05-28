@@ -50,174 +50,174 @@ export class FlightsContainerComponent implements OnInit {
   singleDate!: Date;
 
   searchedFlights: FlightResponse[][] = [
-    [
-      {
-        "id": 1,
-        "departureAirport": {
-          "name": "Belgrad (Beograd) - Belgrade Nikola Tesla International",
-          "country": "Serbia",
-          "code": "BEG"
-        },
-        "arrivalAirport": {
-          "name": "Nis",
-          "country": "Serbia",
-          "code": "INI"
-        },
-        "departureTime": 1688210382.12,
-        "arrivalTime": 1688217582.12,
-        "priceCatalog": null,
-        "planeBusyness": null,
-        "airline": "Air Serbia"
-      },
-      {
-        "id": 5,
-        "departureAirport": {
-          "name": "Nis",
-          "country": "Serbia",
-          "code": "INI"
-        },
-        "arrivalAirport": {
-          "name": "Amsterdam - Amsterdam Airport Schiphol",
-          "country": "Netherlands",
-          "code": "AMS"
-        },
-        "departureTime": 1688219982.12,
-        "arrivalTime": 1688224782.12,
-        "priceCatalog": null,
-        "planeBusyness": null,
-        "airline": "Air Serbia"
-      },
-      {
-        "id": 6,
-        "departureAirport": {
-          "name": "Amsterdam - Amsterdam Airport Schiphol",
-          "country": "Netherlands",
-          "code": "AMS"
-        },
-        "arrivalAirport": {
-          "name": "Paris",
-          "country": "France",
-          "code": "PAR"
-        },
-        "departureTime": 1688228382.12,
-        "arrivalTime": 1688239182.12,
-        "priceCatalog": null,
-        "planeBusyness": null,
-        "airline": "Air France"
-      }
-    ],
-    [
-      {
-        "id": 1,
-        "departureAirport": {
-          "name": "Belgrad (Beograd) - Belgrade Nikola Tesla International",
-          "country": "Serbia",
-          "code": "BEG"
-        },
-        "arrivalAirport": {
-          "name": "Nis",
-          "country": "Serbia",
-          "code": "INI"
-        },
-        "departureTime": 1688210382.12,
-        "arrivalTime": 1688217582.12,
-        "priceCatalog": null,
-        "planeBusyness": null,
-        "airline": "Air Serbia"
-      },
-      {
-        "id": 3,
-        "departureAirport": {
-          "name": "Nis",
-          "country": "Serbia",
-          "code": "INI"
-        },
-        "arrivalAirport": {
-          "name": "Istanbul - Istanbul Atatürk Airport",
-          "country": "Turkey",
-          "code": "IST"
-        },
-        "departureTime": 1688223582.12,
-        "arrivalTime": 1688224782.12,
-        "priceCatalog": null,
-        "planeBusyness": null,
-        "airline": "Turkish Airlines"
-      },
-      {
-        "id": 4,
-        "departureAirport": {
-          "name": "Istanbul - Istanbul Atatürk Airport",
-          "country": "Turkey",
-          "code": "IST"
-        },
-        "arrivalAirport": {
-          "name": "Paris",
-          "country": "France",
-          "code": "PAR"
-        },
-        "departureTime": 1688228382.12,
-        "arrivalTime": 1688239182.12,
-        "priceCatalog": null,
-        "planeBusyness": null,
-        "airline": "Turkish Airlines"
-      }
-    ],
-    [
-      {
-        "id": 1,
-        "departureAirport": {
-          "name": "Belgrad (Beograd) - Belgrade Nikola Tesla International",
-          "country": "Serbia",
-          "code": "BEG"
-        },
-        "arrivalAirport": {
-          "name": "Nis",
-          "country": "Serbia",
-          "code": "INI"
-        },
-        "departureTime": 1688210382.12,
-        "arrivalTime": 1688217582.12,
-        "priceCatalog": null,
-        "planeBusyness": null,
-        "airline": "Air Serbia"
-      },
-      {
-        "id": 2,
-        "departureAirport": {
-          "name": "Nis",
-          "country": "Serbia",
-          "code": "INI"
-        },
-        "arrivalAirport": {
-          "name": "Istanbul - Istanbul Atatürk Airport",
-          "country": "Turkey",
-          "code": "IST"
-        },
-        "departureTime": 1688219982.12,
-        "arrivalTime": 1688224782.12,
-        "priceCatalog": null,
-        "planeBusyness": null,
-        "airline": "Air Serbia"
-      },
-      {
-        "id": 4,
-        "departureAirport": {
-          "name": "Istanbul - Istanbul Atatürk Airport",
-          "country": "Turkey",
-          "code": "IST"
-        },
-        "arrivalAirport": {
-          "name": "Paris",
-          "country": "France",
-          "code": "PAR"
-        },
-        "departureTime": 1688228382.12,
-        "arrivalTime": 1688239182.12,
-        "priceCatalog": null,
-        "planeBusyness": null,
-        "airline": "Turkish Airlines"
-      }
-    ]
+    // [
+    //   {
+    //     "id": 1,
+    //     "departureAirport": {
+    //       "name": "Belgrad (Beograd) - Belgrade Nikola Tesla International",
+    //       "country": "Serbia",
+    //       "code": "BEG"
+    //     },
+    //     "arrivalAirport": {
+    //       "name": "Nis",
+    //       "country": "Serbia",
+    //       "code": "INI"
+    //     },
+    //     "departureTime": 1688210382.12,
+    //     "arrivalTime": 1688217582.12,
+    //     "priceCatalog": null,
+    //     "planeBusyness": null,
+    //     "airline": "Air Serbia"
+    //   },
+    //   {
+    //     "id": 5,
+    //     "departureAirport": {
+    //       "name": "Nis",
+    //       "country": "Serbia",
+    //       "code": "INI"
+    //     },
+    //     "arrivalAirport": {
+    //       "name": "Amsterdam - Amsterdam Airport Schiphol",
+    //       "country": "Netherlands",
+    //       "code": "AMS"
+    //     },
+    //     "departureTime": 1688219982.12,
+    //     "arrivalTime": 1688224782.12,
+    //     "priceCatalog": null,
+    //     "planeBusyness": null,
+    //     "airline": "Air Serbia"
+    //   },
+    //   {
+    //     "id": 6,
+    //     "departureAirport": {
+    //       "name": "Amsterdam - Amsterdam Airport Schiphol",
+    //       "country": "Netherlands",
+    //       "code": "AMS"
+    //     },
+    //     "arrivalAirport": {
+    //       "name": "Paris",
+    //       "country": "France",
+    //       "code": "PAR"
+    //     },
+    //     "departureTime": 1688228382.12,
+    //     "arrivalTime": 1688239182.12,
+    //     "priceCatalog": null,
+    //     "planeBusyness": null,
+    //     "airline": "Air France"
+    //   }
+    // ],
+    // [
+    //   {
+    //     "id": 1,
+    //     "departureAirport": {
+    //       "name": "Belgrad (Beograd) - Belgrade Nikola Tesla International",
+    //       "country": "Serbia",
+    //       "code": "BEG"
+    //     },
+    //     "arrivalAirport": {
+    //       "name": "Nis",
+    //       "country": "Serbia",
+    //       "code": "INI"
+    //     },
+    //     "departureTime": 1688210382.12,
+    //     "arrivalTime": 1688217582.12,
+    //     "priceCatalog": null,
+    //     "planeBusyness": null,
+    //     "airline": "Air Serbia"
+    //   },
+    //   {
+    //     "id": 3,
+    //     "departureAirport": {
+    //       "name": "Nis",
+    //       "country": "Serbia",
+    //       "code": "INI"
+    //     },
+    //     "arrivalAirport": {
+    //       "name": "Istanbul - Istanbul Atatürk Airport",
+    //       "country": "Turkey",
+    //       "code": "IST"
+    //     },
+    //     "departureTime": 1688223582.12,
+    //     "arrivalTime": 1688224782.12,
+    //     "priceCatalog": null,
+    //     "planeBusyness": null,
+    //     "airline": "Turkish Airlines"
+    //   },
+    //   {
+    //     "id": 4,
+    //     "departureAirport": {
+    //       "name": "Istanbul - Istanbul Atatürk Airport",
+    //       "country": "Turkey",
+    //       "code": "IST"
+    //     },
+    //     "arrivalAirport": {
+    //       "name": "Paris",
+    //       "country": "France",
+    //       "code": "PAR"
+    //     },
+    //     "departureTime": 1688228382.12,
+    //     "arrivalTime": 1688239182.12,
+    //     "priceCatalog": null,
+    //     "planeBusyness": null,
+    //     "airline": "Turkish Airlines"
+    //   }
+    // ],
+    // [
+    //   {
+    //     "id": 1,
+    //     "departureAirport": {
+    //       "name": "Belgrad (Beograd) - Belgrade Nikola Tesla International",
+    //       "country": "Serbia",
+    //       "code": "BEG"
+    //     },
+    //     "arrivalAirport": {
+    //       "name": "Nis",
+    //       "country": "Serbia",
+    //       "code": "INI"
+    //     },
+    //     "departureTime": 1688210382.12,
+    //     "arrivalTime": 1688217582.12,
+    //     "priceCatalog": null,
+    //     "planeBusyness": null,
+    //     "airline": "Air Serbia"
+    //   },
+    //   {
+    //     "id": 2,
+    //     "departureAirport": {
+    //       "name": "Nis",
+    //       "country": "Serbia",
+    //       "code": "INI"
+    //     },
+    //     "arrivalAirport": {
+    //       "name": "Istanbul - Istanbul Atatürk Airport",
+    //       "country": "Turkey",
+    //       "code": "IST"
+    //     },
+    //     "departureTime": 1688219982.12,
+    //     "arrivalTime": 1688224782.12,
+    //     "priceCatalog": null,
+    //     "planeBusyness": null,
+    //     "airline": "Air Serbia"
+    //   },
+    //   {
+    //     "id": 4,
+    //     "departureAirport": {
+    //       "name": "Istanbul - Istanbul Atatürk Airport",
+    //       "country": "Turkey",
+    //       "code": "IST"
+    //     },
+    //     "arrivalAirport": {
+    //       "name": "Paris",
+    //       "country": "France",
+    //       "code": "PAR"
+    //     },
+    //     "departureTime": 1688228382.12,
+    //     "arrivalTime": 1688239182.12,
+    //     "priceCatalog": null,
+    //     "planeBusyness": null,
+    //     "airline": "Turkish Airlines"
+    //   }
+    // ]
   ]
 
   constructor(public dialog: MatDialog, private certificateService: CertificateService, private flightService: FlightService) {

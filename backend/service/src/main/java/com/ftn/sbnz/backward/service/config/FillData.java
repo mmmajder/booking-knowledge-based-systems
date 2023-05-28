@@ -1,9 +1,9 @@
 package com.ftn.sbnz.backward.service.config;
 
-import com.ftn.sbnz.backward.model.models.flight.Airport;
-import com.ftn.sbnz.backward.model.models.flight.DiscountForMultipleFlightTickets;
-import com.ftn.sbnz.backward.model.models.flight.Flight;
-import com.ftn.sbnz.backward.model.models.flight.PriceCatalogFlight;
+import com.ftn.sbnz.backward.model.models.Customer;
+import com.ftn.sbnz.backward.model.models.UserAuth;
+import com.ftn.sbnz.backward.model.models.enums.UserRole;
+import com.ftn.sbnz.backward.model.models.flight.*;
 import com.ftn.sbnz.backward.model.models.hotel.Hotel;
 import com.ftn.sbnz.backward.service.repository.*;
 import org.kie.api.runtime.KieSession;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -29,10 +30,16 @@ public class FillData implements CommandLineRunner {
     private KieSession flightsKieSession;
 
     @Autowired
+    private KieSession flightLoyaltyKieSession;
+
+    @Autowired
     private FlightRepository flightRepository;
 
     @Autowired
     private AirportRepository airportRepository;
+
+    @Autowired
+    private LuggagePriceRepository luggagePriceRepository;
 
     @Autowired
     private PriceCatalogFlightRepository priceCatalogFlightRepository;
@@ -40,12 +47,72 @@ public class FillData implements CommandLineRunner {
     @Autowired
     private DiscountForMultipleFlightTicketsRepository discountForMultipleFlightTicketsRepository;
 
+    @Autowired
+    private UserAuthRepository userAuthRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public void run(String... args) {
+        fillHotelData();
+        fillFlightData();
+        fillUserData();
+    }
+
+    private void fillUserData() {
+        UserAuth userAuth1 = new UserAuth();
+        userAuth1.setDeleted(false);
+        userAuth1.setIsEnabled(true);
+        userAuth1.setLastPasswordSet(Timestamp.valueOf("2021-12-12 00:00:00"));
+        userAuthRepository.save(userAuth1);
+
+        UserAuth userAuth2 = new UserAuth();
+        userAuth2.setDeleted(false);
+        userAuth2.setIsEnabled(true);
+        userAuth2.setLastPasswordSet(Timestamp.valueOf("2021-12-12 00:00:00"));
+        userAuthRepository.save(userAuth2);
+
+        // Insert into customer table
+        Customer customer1 = new Customer();
+        customer1.setEmail("customer@gmail.com");
+        customer1.setCity("Customville");
+        customer1.setDeleted(false);
+        customer1.setBlocked(false);
+        customer1.setName("Customer");
+        customer1.setPassword("$2a$10$2Mtev/q1qqNoSn39O7194eZVLBEvgM2dKzjkO0NUWETNKUYY9R/RO");
+        customer1.setPhoneNumber("064 433456");
+        customer1.setRole(UserRole.CUSTOMER);
+        customer1.setSurname("Customic");
+        customer1.setUserAuth(userAuth1);
+        customer1.setNumberOfTokens(1000.0);
+        customer1.setActive(false);
+        userRepository.save(customer1);
+
+        Customer customer2 = new Customer();
+        customer2.setEmail("petar@gmail.com");
+        customer2.setCity("Petrovgrad");
+        customer2.setDeleted(false);
+        customer2.setBlocked(false);
+        customer2.setName("Petar");
+        customer2.setPassword("$2a$10$tnplXdStY6t7kOqqKssMYedAGjJ0T3OJH2BxeT81c1YrDqOUvHLD6");
+        customer2.setPhoneNumber("064 654321");
+        customer2.setRole(UserRole.CUSTOMER);
+        customer2.setSurname("Petrovic");
+        customer2.setUserAuth(userAuth2);
+        customer2.setNumberOfTokens(11150.0);
+        customer2.setActive(false);
+        userRepository.save(customer2);
+
+        flightLoyaltyKieSession.insert(customer1);
+        flightLoyaltyKieSession.insert(customer2);
+        System.out.println("Filled customer data");
+    }
+
+    private void fillHotelData() {
         List<Hotel> hotels = new ArrayList<>();
 
-// Hotel 1
+        // Hotel 1
         Hotel hotel1 = new Hotel();
         hotel1.setName("Italian Villa");
         hotel1.setAddress("123 Via Roma");
@@ -89,8 +156,6 @@ public class FillData implements CommandLineRunner {
             hotelsKieSession.insert(h);
         }
         hotelsKieSession.fireAllRules();
-
-        fillFlightData();
     }
 
     private void fillFlightData() {
@@ -108,7 +173,7 @@ public class FillData implements CommandLineRunner {
         airportRepository.saveAll(airports);
 
         // Save price catalog flight
-        PriceCatalogFlight priceCatalogFlight = new PriceCatalogFlight(150, 30, 0.2, 100, 170, 25, 200, 20);
+        PriceCatalogFlight priceCatalogFlight = new PriceCatalogFlight(100, 200, 150, 170, 0.2, 25, 30, 20);
         priceCatalogFlightRepository.save(priceCatalogFlight);
 
         // Save discount for multiple flight tickets
@@ -120,6 +185,16 @@ public class FillData implements CommandLineRunner {
 
         // Save price catalog flight discount for multiple tickets
         priceCatalogFlight.setDiscountForMultipleTickets(discounts);
+
+        LuggagePrice luggagePrice1 = new LuggagePrice(1L, 7, 10);
+        LuggagePrice luggagePrice2 = new LuggagePrice(2L, 12, 20);
+        LuggagePrice luggagePrice3 = new LuggagePrice(3L, 15, 30);
+        priceCatalogFlight.setLuggagePrices(new ArrayList<>(Arrays.asList(luggagePrice1, luggagePrice2, luggagePrice3)));
+
+        luggagePriceRepository.save(luggagePrice1);
+        luggagePriceRepository.save(luggagePrice2);
+        luggagePriceRepository.save(luggagePrice3);
+
         priceCatalogFlightRepository.save(priceCatalogFlight);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");

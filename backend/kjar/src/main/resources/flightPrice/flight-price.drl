@@ -67,60 +67,31 @@ rule "calculate price of additional services"
         modify($additionalServicesRequest){setAdditionalServicesPrice(additionalServicesPrice)};
 end
 
-rule "Loyalty discount"
-    when
-        $c: Customer($email: email)
-        AdditionalServicesRequestEvent(additionalServicesPrice!=null)
-        Number(doubleValue >= 500 && doubleValue < 1000) from accumulate(
-            $p: Payment(email == $email, $totalPrice: totalPrice)
-            over window: time(129600m),
-            sum($totalPrice)
-        )
-    then
-        System.out.println("Trece pravilo se aktiviralo");
-        LoyaltyProgram loyaltyProgram = new LoyaltyProgram();
-        loyaltyProgram.setDiscount(5);
-        switch("BRONZE") {
-          case "BRONZE":
-            loyaltyProgram.setTier(LoyaltyProgramTier.BRONZE);
-            break;
-          case "SILVER":
-            loyaltyProgram.setTier(LoyaltyProgramTier.SILVER);
-            break;
-          case "GOLD":
-            loyaltyProgram.setTier(LoyaltyProgramTier.GOLD);
-            break;
-          default:
-            break;
-        }
-        modify($c){setLoyaltyProgram(loyaltyProgram);}
-end
-
-
-//rule "Bronze loyalty program"
-//    when
-//
-//    then
-//
-//end
-
 //rule "Loyalty discount"
 //    when
 //        $c: Customer($email: email)
 //        AdditionalServicesRequestEvent(additionalServicesPrice!=null)
-//        Number(doubleValue >= 500) from accumulate(
+//        Number(doubleValue >= 500 && doubleValue < 1000) from accumulate(
 //            $p: Payment(email == $email, $totalPrice: totalPrice)
-//            over window: time(10m),
+//            over window: time(129600m),
 //            sum($totalPrice)
 //        )
 //    then
-//        System.out.println("EVE ME");
-//        LoyaltyProgramTier l = LoyaltyProgramTier.BRONZE;
+//        System.out.println("Trece pravilo se aktiviralo");
 //        LoyaltyProgram loyaltyProgram = new LoyaltyProgram();
-//        switch (l) {
-//            case
+//        loyaltyProgram.setDiscount(5);
+//        switch("BRONZE") {
+//          case "BRONZE":
+//            loyaltyProgram.setTier(LoyaltyProgramTier.BRONZE);
+//            break;
+//          case "SILVER":
+//            loyaltyProgram.setTier(LoyaltyProgramTier.SILVER);
+//            break;
+//          case "GOLD":
+//            loyaltyProgram.setTier(LoyaltyProgramTier.GOLD);
+//            break;
+//          default:
+//            break;
 //        }
-//        loyaltyProgram.setDiscount();
-//        loyaltyProgram.setTier();
-//        modify($c){setLoyaltyProgram(@{discount});}
+//        modify($c){setLoyaltyProgram(loyaltyProgram);}
 //end
