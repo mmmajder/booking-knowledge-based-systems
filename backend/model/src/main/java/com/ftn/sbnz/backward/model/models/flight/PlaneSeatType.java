@@ -17,7 +17,6 @@ public class PlaneSeatType {
     @Column(unique = true)
     private long id;
 
-    private int numberOfRows;
-    private int numberOfCols;
+    private int number;
     private SeatClass seatClass;
 }

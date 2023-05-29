@@ -29,8 +29,6 @@ public class FillData implements CommandLineRunner {
     private KieSession hotelsKieSession;
     @Autowired
     private KieSession flightsKieSession;
-//    @Autowired
-//    private KieSession flightLoyaltyKieSession;
 
     @Autowired
     private FlightRepository flightRepository;
@@ -73,12 +71,9 @@ public class FillData implements CommandLineRunner {
         payment2.setExecutionTime(new Date());
         payment2.setDeleted(false);
 
-//        flightLoyaltyKieSession.insert(payment1);
-//        flightLoyaltyKieSession.insert(payment2);
         flightsKieSession.insert(payment1);
         flightsKieSession.insert(payment2);
 
-//        flightsKieSession.setGlobal("grandTotalPrice", new ArrayList<>());
     }
 
     private void fillUserData() {
@@ -125,8 +120,6 @@ public class FillData implements CommandLineRunner {
         customer2.setActive(false);
         userRepository.save(customer2);
 
-//        flightLoyaltyKieSession.insert(customer1);
-//        flightLoyaltyKieSession.insert(customer2);
         flightsKieSession.insert(customer1);
         flightsKieSession.insert(customer2);
         System.out.println("Filled customer data");

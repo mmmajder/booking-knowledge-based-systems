@@ -10,7 +10,6 @@ import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.Timestamp;
 
-import javax.persistence.Entity;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -21,26 +20,27 @@ import java.util.Objects;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlightPaymentRequestEvent {
-    private Long id;
-    private List<Flight> flights;
-    private Customer customer;
-    private boolean isRequested;
-    private boolean isAccepted;
-    private Date executionTime;
-    private double totalPrice;
+public class CheckRequestValidityEvent {
     private List<List<PlaneSeat>> seats;
+    private List<Flight> flights;
+    private Date executionTime;
+    private boolean seatsValid;
+    private boolean moneyValid;
+    private Customer customer;
+    private double totalPrice;
+    private boolean isAccepted;
+    private FlightPaymentRequestEvent flightPaymentRequestEvent;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        FlightPaymentRequestEvent that = (FlightPaymentRequestEvent) o;
-        return isRequested == that.isRequested && isAccepted == that.isAccepted && Double.compare(that.totalPrice, totalPrice) == 0 && Objects.equals(flights, that.flights) && Objects.equals(customer, that.customer) && Objects.equals(executionTime, that.executionTime) && Objects.equals(seats, that.seats);
+        CheckRequestValidityEvent that = (CheckRequestValidityEvent) o;
+        return seatsValid == that.seatsValid && moneyValid == that.moneyValid && Double.compare(that.totalPrice, totalPrice) == 0 && isAccepted == that.isAccepted && Objects.equals(seats, that.seats) && Objects.equals(flights, that.flights) && Objects.equals(executionTime, that.executionTime) && Objects.equals(customer, that.customer) && Objects.equals(flightPaymentRequestEvent, that.flightPaymentRequestEvent);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(flights, customer, isRequested, isAccepted, executionTime, totalPrice, seats);
+        return Objects.hash(seats, flights, executionTime, seatsValid, moneyValid, customer, totalPrice, isAccepted, flightPaymentRequestEvent);
     }
 }

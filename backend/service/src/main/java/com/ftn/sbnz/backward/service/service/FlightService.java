@@ -31,15 +31,6 @@ public class FlightService {
 
     @Autowired
     private KieSession flightsKieSession;
-//    @Autowired
-//    private KieSession flightPriceKieSession;
-
-//    @Autowired
-//    private KieSession flightLoyaltyKieSession;
-
-//    private static KieSession flighttransfersession = KieService.getKieSession("flighttransfersession");
-//    private static KieSession flightpricesession = KieService.getKieSession("flightpricesession");
-
 
     public List<List<Flight>> searchFlights(SearchFlightsParams searchFlightsParams) {
         List<List<Flight>> foundFlights = new ArrayList<>();
@@ -50,8 +41,7 @@ public class FlightService {
             } else {
                 foundFlights.addAll(searchFlights(searchFlightsParams.getFrom(), searchFlightsParams.getTo(), searchFlightsParams.getSelectedNumberOfStops(), searchFlightsParams.getSingleDate()));
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             System.out.println("Greska");
         }
         return foundFlights;
@@ -101,9 +91,6 @@ public class FlightService {
 
         flightsKieSession.insert(previewFlightEvent);
         long ruleFireCount = flightsKieSession.fireAllRules();
-//
-//        flightPriceKieSession.insert(previewFlightEvent);
-//        long ruleFireCount = flightPriceKieSession.fireAllRules();
         System.out.println(previewFlightEvent.getBasePrice());
         return new FlightBasePriceResponse(flight, previewFlightEvent.getBasePrice());
     }
@@ -131,13 +118,11 @@ public class FlightService {
 
         PlaneSeatType planeSeatType1 = new PlaneSeatType();
         planeSeatType1.setSeatClass(SeatClass.ECONOMY);
-        planeSeatType1.setNumberOfCols(10);
-        planeSeatType1.setNumberOfRows(10);
+        planeSeatType1.setNumber(100);
 
         PlaneSeatType planeSeatType2 = new PlaneSeatType();
         planeSeatType2.setSeatClass(SeatClass.BUSINESS);
-        planeSeatType2.setNumberOfCols(5);
-        planeSeatType2.setNumberOfRows(5);
+        planeSeatType2.setNumber(25);
 
         Plane plane = new Plane();
         plane.setAirlineAgency("Air Serbia");
@@ -146,13 +131,15 @@ public class FlightService {
         Customer customer = new Customer();
         customer.setEmail("aca@gmail.com");
 
+        PlaneSeat seat = new PlaneSeat();
+        seat.setSeatClass(SeatClass.BUSINESS);
+        seat.setNumber(12);
+
         Set<FlightTickets> tickets = new HashSet<>();
         FlightTickets flightTickets = new FlightTickets();
         flightTickets.setName("Pera");
         flightTickets.setSurname("Peric");
-        flightTickets.setSeatClass(SeatClass.BUSINESS);
-        flightTickets.setRow(4);
-        flightTickets.setCol(3);
+        flightTickets.setSeat(seat);
         flightTickets.setResponsibleUser(customer.getEmail());
 
         PlaneBusyness planeBusyness = new PlaneBusyness();
@@ -287,17 +274,11 @@ public class FlightService {
 
         for (AdditionalServicesRequestEvent additionalServicePrice : additionalServicesRequestEvent) {
             additionalServicePrice.setCustomer(user);
-//            flightPriceKieSession.insert(additionalServicePrice);
             flightsKieSession.insert(additionalServicePrice);
-//            flightLoyaltyKieSession.insert(additionalServicePrice);
         }
-//        flightPriceKieSession.fireAllRules();
         flightsKieSession.fireAllRules();
 
         // provera
-//        for (AdditionalServicesRequestEvent additionalServicePrice : additionalServicesRequestEvent) {
-//            flightLoyaltyKieSession.insert(additionalServicePrice);
-//        }
         return additionalServicesRequestEvent;
     }
 
@@ -307,8 +288,29 @@ public class FlightService {
         return grandTotalPrice.get(0);
     }
 
-    public boolean reserve(FlightPaymentRequestEvent reserveFlightRequest) {
+    public boolean reserve(FlightPaymentRequestEvent reserveFlightRequest, Authentication authentication) {
+        reserveFlightRequest.setRequested(true);
+        reserveFlightRequest.setCustomer((Customer) userService.getLoggedUser(authentication));
+        reserveFlightRequest.setExecutionTime(new Date());
+        Random random = new Random();
+        long randomLong = random.nextLong();
+        System.out.println("Random Long: " + randomLong);
+        reserveFlightRequest.setId(randomLong);
         flightsKieSession.insert(reserveFlightRequest);
-        return true;
+        flightsKieSession.fireAllRules();
+        System.out.println(reserveFlightRequest);
+
+        Customer customer = (Customer) userService.findByEmail(reserveFlightRequest.getCustomer().getEmail());
+        customer.setNumberOfTokens(reserveFlightRequest.getCustomer().getNumberOfTokens());
+        userService.save(customer);
+
+        if (reserveFlightRequest.isAccepted()) {
+            removeOccupiedSeats(reserveFlightRequest);
+        }
+
+        return reserveFlightRequest.isAccepted();
+    }
+
+    private void removeOccupiedSeats(FlightPaymentRequestEvent reserveFlightRequest) {
     }
 }

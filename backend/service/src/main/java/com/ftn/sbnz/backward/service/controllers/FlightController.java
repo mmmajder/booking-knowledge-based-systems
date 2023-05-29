@@ -43,7 +43,7 @@ public class FlightController {
     }
 
     @PostMapping("/reserve")
-    public boolean reserve(@RequestBody FlightPaymentRequestEvent reserveFlightRequest) {
-        return flightService.reserve(reserveFlightRequest);
+    public boolean reserve(@RequestBody FlightPaymentRequestEvent reserveFlightRequest, Authentication authentication) {
+        return flightService.reserve(reserveFlightRequest, authentication);
     }
 }

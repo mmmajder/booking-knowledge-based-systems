@@ -46,8 +46,6 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserAuthService userAuthService;
 
-//    @Autowired
-//    private KieSession flightLoyaltyKieSession;
 
     @Autowired
     private KieSession flightsKieSession;
@@ -184,15 +182,12 @@ public class UserService implements UserDetailsService {
         if (user == null) {
             throw new BadRequestException("User does not exist");
         }
-//        flightLoyaltyKieSession.setGlobal("userEmail", user.getEmail());
         CalculateLoyaltyEvent calculateLoyaltyEvent = new CalculateLoyaltyEvent(user, new Date());
 
         flightsKieSession.insert(calculateLoyaltyEvent);
         flightsKieSession.fireAllRules();
         loyaltyProgramRepository.save(calculateLoyaltyEvent.getCustomer().getLoyaltyProgram());
         save(calculateLoyaltyEvent.getCustomer());
-//        flightLoyaltyKieSession.insert(calculateLoyaltyEvent);
-//        flightLoyaltyKieSession.fireAllRules();
         return calculateLoyaltyEvent.getCustomer().getLoyaltyProgram();
     }
 }

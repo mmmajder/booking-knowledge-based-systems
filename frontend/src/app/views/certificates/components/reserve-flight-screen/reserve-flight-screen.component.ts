@@ -1,10 +1,11 @@
-import {Component, Input} from '@angular/core';
+import {Component, Inject, Input} from '@angular/core';
 import {AdditionalServicesPrice} from "../../../../model/flight/AdditionalServicesPrice";
 import {AdditionalServicesRequestEvent} from "../../../../model/flight/AdditionalServicesRequestEvent";
 import {FlightBasePriceResponse} from "../../../../model/flight/FlightBasePriceResponse";
 import {UserService} from "../../../../services/user.service";
 import {FlightService} from "../../../../services/flight.service";
-import {FlightResponse} from "../../../../model/flight/FlightResponse";
+import {FlightPaymentRequestEvent} from "../../../../model/flight/FlightPaymentRequestEvent";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-reserve-flight-screen',
@@ -21,7 +22,9 @@ export class ReserveFlightScreenComponent {
   totalPrice: number = 0;
   loyaltyStatus!: string;
 
-  constructor(private userService: UserService, private flightService: FlightService) {
+  constructor(private userService: UserService, private flightService: FlightService,
+              @Inject(MatSnackBar) private _snackBar: MatSnackBar,
+  ) {
     // this.totalAdditionalServicePrice = this.additionalPrices.reduce((accumulator, obj) => accumulator + obj.additionalServicesPrice?.totalAdditionalPrice)
   }
 
@@ -63,12 +66,30 @@ export class ReserveFlightScreenComponent {
 
 
   reserve() {
-    let request = {
+    let request: FlightPaymentRequestEvent = {
       flights: this.basePrice.map((obj) => obj.flight),
-      totalPrice: this.totalPrice
+      totalPrice: this.totalPrice,
+      seats: this.additionalPrices.map((obj) => obj.seats)
     }
-    this.flightService.reserveFlights(request).subscribe((res) => {
-      console.log(res)
+    this.flightService.reserveFlights(request).subscribe({
+      next: (res) => {
+        console.log(res)
+        if (res)
+          this._snackBar.open("Successfully reserved flight", '', {
+            duration: 3000,
+            panelClass: ['snack-bar']
+          })
+        else
+          this._snackBar.open("Error while reserving flight", '', {
+            duration: 3000,
+            panelClass: ['snack-bar']
+          })
+      }, error: (res) => {
+        this._snackBar.open("Error while reserving flight", '', {
+          duration: 3000,
+          panelClass: ['snack-bar']
+        })
+      }
     })
   }
 }

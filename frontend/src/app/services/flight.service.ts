@@ -8,6 +8,7 @@ import {FlightResponse} from "../model/flight/FlightResponse";
 import {FlightBasePriceResponse} from "../model/flight/FlightBasePriceResponse";
 import {FlightPriceRequest} from "../model/flight/FlightPriceRequest";
 import {AdditionalServicesRequestEvent} from "../model/flight/AdditionalServicesRequestEvent";
+import {FlightPaymentRequestEvent} from "../model/flight/FlightPaymentRequestEvent";
 
 @Injectable({
   providedIn: 'root'
@@ -36,7 +37,7 @@ export class FlightService {
     return this.http.get<number>(this.flightUrl + "/grand-total-price", AuthService.getHttpOptions());
   }
 
-  public reserveFlights(requestBody: { totalPrice: number; flights: FlightResponse[] }): Observable<AdditionalServicesRequestEvent[]> {
+  public reserveFlights(requestBody: FlightPaymentRequestEvent): Observable<AdditionalServicesRequestEvent[]> {
     return this.http.post<AdditionalServicesRequestEvent[]>(this.flightUrl + "/reserve", requestBody, AuthService.getHttpOptions());
   }
 }

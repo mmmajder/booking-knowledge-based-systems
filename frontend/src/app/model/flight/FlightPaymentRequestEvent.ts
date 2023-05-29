@@ -1,8 +1,8 @@
+import {FlightResponse} from "./FlightResponse";
+import {PlaneSeat} from "./PlaneSeat";
+
 export class FlightPaymentRequestEvent {
-  // previewFlightEvent!: PreviewFlightEvent;
-  // additionalServicesRequestEvent!: AdditionalServicesRequestEvent;
-  // customer!: Customer;
-  // isRequested!: boolean;
-  // executionTime!: Date;
-  // totalPrice!: number;
+  flights!: FlightResponse[];
+  totalPrice!: number;
+  seats!: PlaneSeat[][];
 }
