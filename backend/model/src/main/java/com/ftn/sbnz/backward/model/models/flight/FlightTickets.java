@@ -16,9 +16,8 @@ public class FlightTickets {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true)
     private long id;
-    private int row;
-    private int col;
-    private SeatClass seatClass;
+    @OneToOne
+    private PlaneSeat seat;
     private String name;
     private String surname;
     private String responsibleUser;

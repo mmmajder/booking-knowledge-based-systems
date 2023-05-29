@@ -24,7 +24,8 @@ lock-on-active
         $c: Customer(email == $cl.getCustomer().getEmail())
         Number(doubleValue >= @{minMoney} && doubleValue < @{maxMoney}) from accumulate(
             $p: Payment(email == $c.getEmail(), $totalPrice: totalPrice)
-            over window: time(129600, TimeUnit.MILLISECONDS),
+//            over window: time(2629800 * @{timeInMonths}, TimeUnit.SECONDS),
+            over window: time(2629800, TimeUnit.SECONDS),
             sum($totalPrice)
         )
     then
