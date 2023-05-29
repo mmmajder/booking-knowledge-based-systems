@@ -1,20 +1,29 @@
 package com.ftn.sbnz.backward.service.config;
 
 import com.ftn.sbnz.backward.model.models.flight.ClassificationTemplateModel;
+import com.ftn.sbnz.backward.service.exception.BadRequestException;
 import org.drools.template.ObjectDataCompiler;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,21 +38,41 @@ public class DroolsConfiguration {
     }
 
     @Bean
-    public KieSession flightsKieSession() {
+    public KieSession flightsKieSession() throws Exception {
         KieServices ks = KieServices.Factory.get();
-        KieContainer kc = ks.newKieClasspathContainer();
-        return kc.newKieSession("flighttransfersession");
+        KieBaseConfiguration kieBaseConfiguration = ks.newKieBaseConfiguration();
+        kieBaseConfiguration.setOption(EventProcessingOption.STREAM);
+
+        String loyaltyRules = renderFlightLoyaltyTemplate();
+        KieFileSystem kieFileSystem = ks.newKieFileSystem();
+        kieFileSystem
+                .write(ResourceFactory.newClassPathResource("flightPrice/flight-price.drl"))
+                .write(ResourceFactory.newClassPathResource("flightTransfer/flight-transfer.drl"))
+                .write("src/main/resources/generated-loyalty.drl", loyaltyRules);
+
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kieFileSystem);
+        kieBuilder.buildAll();
+
+        if (kieBuilder.getResults().hasMessages(Message.Level.ERROR)) {
+            // Handle build errors
+            System.out.println(kieBuilder.getResults().toString());
+            throw new Exception("Error in rules");
+        }
+
+        KieContainer kc = ks.newKieContainer(ks.getRepository().getDefaultReleaseId());
+        KieBase kieBase = kc.newKieBase(kieBaseConfiguration);
+        return kieBase.newKieSession();
     }
 
-    @Bean
-    public KieSession flightPriceKieSession() {
-        KieServices ks = KieServices.Factory.get();
-        KieContainer kc = ks.newKieClasspathContainer();
-        return kc.newKieSession("flightpricesession");
-    }
+//    @Bean
+//    public KieSession flightPriceKieSession() {
+//        KieServices ks = KieServices.Factory.get();
+//        KieContainer kc = ks.newKieClasspathContainer();
+//        return kc.newKieSession("flightpricesession");
+//    }
 
-    @Bean
-    public KieSession flightLoyaltyKieSession() {
+    public String renderFlightLoyaltyTemplate() throws IOException {
         InputStream template = DroolsConfiguration.class.getResourceAsStream("/loyalty/loyalty-program.drt");
 
         List<ClassificationTemplateModel> data = new ArrayList<ClassificationTemplateModel>();
@@ -66,7 +95,10 @@ public class DroolsConfiguration {
 
         System.out.println(drl);
 
-        return this.createKieSessionFromDRL(drl);
+//        String drlFilePath = "loyalty/generated.drl";
+//        Files.write(Paths.get(drlFilePath), drl.getBytes());
+        return drl;
+//        return this.createKieSessionFromDRL(drl);
     }
 
     private KieSession createKieSessionFromDRL(String drl){

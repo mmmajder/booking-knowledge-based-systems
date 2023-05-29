@@ -7,6 +7,7 @@ import com.ftn.sbnz.backward.model.models.events.CalculateLoyaltyEvent;
 import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgram;
 import com.ftn.sbnz.backward.service.dto.CreateUserDTO;
 import com.ftn.sbnz.backward.service.exception.BadRequestException;
+import com.ftn.sbnz.backward.service.repository.LoyaltyProgramRepository;
 import com.ftn.sbnz.backward.service.repository.UserRepository;
 import com.ftn.sbnz.backward.model.models.enums.UserRole;
 import com.ftn.sbnz.backward.model.models.Role;
@@ -45,8 +46,14 @@ public class UserService implements UserDetailsService {
     @Autowired
     private UserAuthService userAuthService;
 
+//    @Autowired
+//    private KieSession flightLoyaltyKieSession;
+
     @Autowired
-    private KieSession flightLoyaltyKieSession;
+    private KieSession flightsKieSession;
+
+    @Autowired
+    private LoyaltyProgramRepository loyaltyProgramRepository;
 
     public UserService() {
     }
@@ -179,8 +186,13 @@ public class UserService implements UserDetailsService {
         }
 //        flightLoyaltyKieSession.setGlobal("userEmail", user.getEmail());
         CalculateLoyaltyEvent calculateLoyaltyEvent = new CalculateLoyaltyEvent(user, new Date());
-        flightLoyaltyKieSession.insert(calculateLoyaltyEvent);
-        flightLoyaltyKieSession.fireAllRules();
+
+        flightsKieSession.insert(calculateLoyaltyEvent);
+        flightsKieSession.fireAllRules();
+        loyaltyProgramRepository.save(calculateLoyaltyEvent.getCustomer().getLoyaltyProgram());
+        save(calculateLoyaltyEvent.getCustomer());
+//        flightLoyaltyKieSession.insert(calculateLoyaltyEvent);
+//        flightLoyaltyKieSession.fireAllRules();
         return calculateLoyaltyEvent.getCustomer().getLoyaltyProgram();
     }
 }

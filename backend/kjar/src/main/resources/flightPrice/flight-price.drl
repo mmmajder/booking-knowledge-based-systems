@@ -2,6 +2,8 @@ package flightPrice;
 
 import com.ftn.sbnz.backward.model.models.events.PreviewFlightEvent;
 import com.ftn.sbnz.backward.model.models.events.AdditionalServicesRequestEvent;
+import com.ftn.sbnz.backward.model.models.events.FlightPaymentRequestEvent;
+import com.ftn.sbnz.backward.model.models.events.CheckSeatsEvent;
 import com.ftn.sbnz.backward.model.models.flight.SeatClass;
 import com.ftn.sbnz.backward.model.models.flight.price.BasePrice;
 import com.ftn.sbnz.backward.model.models.flight.price.AdditionalServicesPrice;
@@ -9,14 +11,18 @@ import com.ftn.sbnz.backward.model.models.Payment;
 import com.ftn.sbnz.backward.model.models.Customer
 import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgram;
 import com.ftn.sbnz.backward.model.models.flight.LoyaltyProgramTier;
-
+import java.util.Date
+import java.util.ArrayList
+import com.ftn.sbnz.backward.model.models.flight.PlaneSeat
+import java.util.List
+import com.ftn.sbnz.backward.model.models.flight.Flight;
 
 rule "Calculate base price"
 lock-on-active
     when
         $previewFlight: PreviewFlightEvent($flight: flight, $customer: customer, $numberOfAdults: numberOfAdults, $numberOfChildren: numberOfChildren, $seatClass: seatClass)
     then
-        System.out.println("Stigao u prvo prvilo");
+        System.out.println("Calculate base price");
         double basePrice = 0.0;
         switch($seatClass) {
           case ECONOMY:
@@ -54,7 +60,7 @@ rule "calculate price of additional services"
         $previewFlight: PreviewFlightEvent(basePrice != null, $flight1: flight, $customer: customer)
         $additionalServicesRequest: AdditionalServicesRequestEvent($customer.getEmail() == customer.getEmail(), flight.getId() == $flight1.getId(), $luggageWeight: luggageWeight, $isPriorityBoarding: priorityBoarding, $isSpecificSeats: specificSeats, $seats: seats)
     then
-        System.out.println("Stigao u drugo prvilo");
+        System.out.println("calculate price of additional services");
         int numberOfPassengers = $previewFlight.getBasePrice().getNumberOfAdults() + $previewFlight.getBasePrice().getNumberOfChildren();
         System.out.println(numberOfPassengers);
         double luggagePrice = $flight1.getPriceCatalog().calculateLuggagePrice($luggageWeight / numberOfPassengers);
@@ -70,31 +76,46 @@ rule "calculate price of additional services"
         modify($additionalServicesRequest){setAdditionalServicesPrice(additionalServicesPrice)};
 end
 
-//rule "Loyalty discount"
-//    when
-//        $c: Customer($email: email)
-//        AdditionalServicesRequestEvent(additionalServicesPrice!=null)
-//        Number(doubleValue >= 500 && doubleValue < 1000) from accumulate(
-//            $p: Payment(email == $email, $totalPrice: totalPrice)
-//            over window: time(129600m),
-//            sum($totalPrice)
-//        )
-//    then
-//        System.out.println("Trece pravilo se aktiviralo");
-//        LoyaltyProgram loyaltyProgram = new LoyaltyProgram();
-//        loyaltyProgram.setDiscount(5);
-//        switch("BRONZE") {
-//          case "BRONZE":
-//            loyaltyProgram.setTier(LoyaltyProgramTier.BRONZE);
-//            break;
-//          case "SILVER":
-//            loyaltyProgram.setTier(LoyaltyProgramTier.SILVER);
-//            break;
-//          case "GOLD":
-//            loyaltyProgram.setTier(LoyaltyProgramTier.GOLD);
-//            break;
-//          default:
-//            break;
-//        }
-//        modify($c){setLoyaltyProgram(loyaltyProgram);}
-//end
+rule "update price after loyalty program discount"
+lock-on-active
+    when
+        $previewFlight: PreviewFlightEvent(basePrice != null, $flight1: flight, $customer: customer)
+        $additionalServicesRequest: AdditionalServicesRequestEvent($customer.getEmail() == customer.getEmail(), flight.getId() == $flight1.getId(), additionalServicesPrice!=null)
+        $c: Customer(loyaltyProgram!=null)
+    then
+        System.out.println("update price after loyalty program discount");
+        double totalPrice = ($previewFlight.getBasePrice().getTotalPrice() + $additionalServicesRequest.getAdditionalServicesPrice().getTotalAdditionalPrice()) * (1 - $c.getLoyaltyProgram().getDiscount());
+
+        FlightPaymentRequestEvent flightPaymentRequestEvent = new FlightPaymentRequestEvent();
+        flightPaymentRequestEvent.setPreviewFlightEvent($previewFlight);
+        flightPaymentRequestEvent.setAdditionalServicesRequestEvent($additionalServicesRequest);
+        flightPaymentRequestEvent.setRequested(false);
+        flightPaymentRequestEvent.setCustomer($c);
+        flightPaymentRequestEvent.setTotalPrice(totalPrice);
+        System.out.println(totalPrice);
+        insert(flightPaymentRequestEvent);
+end
+
+
+rule "reserve ride"
+    when
+        $paymentRequest: FlightPaymentRequestEvent()
+    then
+        System.out.println("reserve ride");
+        List<PlaneSeat> seats = $paymentRequest.getAdditionalServicesRequestEvent().getSeats();
+        Flight flight = $paymentRequest.getPreviewFlightEvent().getFlight();
+        CheckSeatsEvent checkSeatsEvent = new CheckSeatsEvent();
+        checkSeatsEvent.setSeats(seats);
+        checkSeatsEvent.setFlight(flight);
+        checkSeatsEvent.setExecutionTime(new Date());
+        insert(checkSeatsEvent);
+//        insert(new CheckPriceEvent($paymentRequest))
+end
+
+rule "check seats"
+    when
+        $c: CheckSeatsEvent()
+//        $paymentRequest: FlightPaymentRequestEvent()
+    then
+        System.out.println("check seats");
+end

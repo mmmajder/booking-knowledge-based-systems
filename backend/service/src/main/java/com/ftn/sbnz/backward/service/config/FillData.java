@@ -29,8 +29,8 @@ public class FillData implements CommandLineRunner {
     private KieSession hotelsKieSession;
     @Autowired
     private KieSession flightsKieSession;
-    @Autowired
-    private KieSession flightLoyaltyKieSession;
+//    @Autowired
+//    private KieSession flightLoyaltyKieSession;
 
     @Autowired
     private FlightRepository flightRepository;
@@ -73,8 +73,12 @@ public class FillData implements CommandLineRunner {
         payment2.setExecutionTime(new Date());
         payment2.setDeleted(false);
 
-        flightLoyaltyKieSession.insert(payment1);
-        flightLoyaltyKieSession.insert(payment2);
+//        flightLoyaltyKieSession.insert(payment1);
+//        flightLoyaltyKieSession.insert(payment2);
+        flightsKieSession.insert(payment1);
+        flightsKieSession.insert(payment2);
+
+//        flightsKieSession.setGlobal("grandTotalPrice", new ArrayList<>());
     }
 
     private void fillUserData() {
@@ -121,8 +125,10 @@ public class FillData implements CommandLineRunner {
         customer2.setActive(false);
         userRepository.save(customer2);
 
-        flightLoyaltyKieSession.insert(customer1);
-        flightLoyaltyKieSession.insert(customer2);
+//        flightLoyaltyKieSession.insert(customer1);
+//        flightLoyaltyKieSession.insert(customer2);
+        flightsKieSession.insert(customer1);
+        flightsKieSession.insert(customer2);
         System.out.println("Filled customer data");
     }
 
@@ -215,7 +221,8 @@ public class FillData implements CommandLineRunner {
                 new Flight(airports.get(2), airports.get(4), LocalDateTime.parse("2023-07-01T13:59:42.120", formatter).toInstant(ZoneOffset.UTC), LocalDateTime.parse("2023-07-01T15:19:42.120", formatter).toInstant(ZoneOffset.UTC), "Air Serbia", priceCatalogFlight),
                 new Flight(airports.get(4), airports.get(5), LocalDateTime.parse("2023-07-01T16:19:42.120", formatter).toInstant(ZoneOffset.UTC), LocalDateTime.parse("2023-07-01T19:19:42.120", formatter).toInstant(ZoneOffset.UTC), "Air France", priceCatalogFlight),
                 new Flight(airports.get(0), airports.get(1), LocalDateTime.parse("2023-07-01T16:19:42.120", formatter).toInstant(ZoneOffset.UTC), LocalDateTime.parse("2023-07-01T19:19:42.120", formatter).toInstant(ZoneOffset.UTC), "Air Serbia", priceCatalogFlight),
-                new Flight(airports.get(5), airports.get(6), LocalDateTime.parse("2023-07-01T20:19:42.120", formatter).toInstant(ZoneOffset.UTC), LocalDateTime.parse("2023-07-01T21:19:42.120", formatter).toInstant(ZoneOffset.UTC), "Air France", priceCatalogFlight)
+                new Flight(airports.get(5), airports.get(6), LocalDateTime.parse("2023-07-01T20:19:42.120", formatter).toInstant(ZoneOffset.UTC), LocalDateTime.parse("2023-07-01T21:19:42.120", formatter).toInstant(ZoneOffset.UTC), "Air France", priceCatalogFlight),
+                new Flight(airports.get(5), airports.get(0), LocalDateTime.parse("2023-07-08T20:19:42.120", formatter).toInstant(ZoneOffset.UTC), LocalDateTime.parse("2023-07-08T21:19:42.120", formatter).toInstant(ZoneOffset.UTC), "Air France", priceCatalogFlight)
         );
         flightRepository.saveAll(flights);
 

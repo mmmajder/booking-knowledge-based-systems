@@ -45,9 +45,12 @@ lock-on-active
             break;
         }
         System.out.println($c);
+        Customer updatedCustomer = $cl.getCustomer();
+        updatedCustomer.setLoyaltyProgram(loyaltyProgram);
+        modify($cl){setCustomer(updatedCustomer);}
         modify($c){setLoyaltyProgram(loyaltyProgram);}
-        modify($cl){setCustomer($c);}
         System.out.println($cl);
+        System.out.println($c);
 end
 
 end template

@@ -3,6 +3,8 @@ import {AdditionalServicesPrice} from "../../../../model/flight/AdditionalServic
 import {AdditionalServicesRequestEvent} from "../../../../model/flight/AdditionalServicesRequestEvent";
 import {FlightBasePriceResponse} from "../../../../model/flight/FlightBasePriceResponse";
 import {UserService} from "../../../../services/user.service";
+import {FlightService} from "../../../../services/flight.service";
+import {FlightResponse} from "../../../../model/flight/FlightResponse";
 
 @Component({
   selector: 'app-reserve-flight-screen',
@@ -19,7 +21,7 @@ export class ReserveFlightScreenComponent {
   totalPrice: number = 0;
   loyaltyStatus!: string;
 
-  constructor(private userService: UserService) {
+  constructor(private userService: UserService, private flightService: FlightService) {
     // this.totalAdditionalServicePrice = this.additionalPrices.reduce((accumulator, obj) => accumulator + obj.additionalServicesPrice?.totalAdditionalPrice)
   }
 
@@ -29,20 +31,44 @@ export class ReserveFlightScreenComponent {
       this.totalBasePrice = this.basePrice.reduce((accumulator, obj) => accumulator + obj.basePrice.totalPrice, 0);
     }
     if (this.additionalPrices) {
-      this.totalAdditionalServicePrice = this.additionalPrices.reduce((accumulator, obj) => accumulator + obj.additionalServicesPrice!.totalAdditionalPrice, 0);
+      this.totalAdditionalServicePrice = 0
+      this.additionalPrices.forEach((additionalPrice) => {
+        if (additionalPrice.additionalServicesPrice) {
+          this.totalAdditionalServicePrice += additionalPrice.additionalServicesPrice.totalAdditionalPrice
+        }
+      })
     }
+    this.totalPrice = (this.totalBasePrice + this.totalAdditionalServicePrice)
 
     this.userService.getLoyaltyProgramDiscount().subscribe((res) => {
       console.log(res)
       console.log("Ovde Miki")
-      this.loyaltyProgramDiscount = res.discount
+      if (res) {
+        this.loyaltyProgramDiscount = res.discount
+        if (this.loyaltyProgramDiscount === 0.05) this.loyaltyStatus = "BRONZE"
+        else if (this.loyaltyProgramDiscount === 0.1) this.loyaltyStatus = "SILVER"
+        else if (this.loyaltyProgramDiscount === 0.05) this.loyaltyStatus = "GOLD"
+        else
+          this.loyaltyStatus = "NONE"
+      }
+      // this.flightService.getGrandTotalPrice().subscribe((res) => {
+      //   console.log(res)
+      //   this.totalPrice = res
+      // })
+      this.totalPrice = (this.totalBasePrice + this.totalAdditionalServicePrice) * (1 - this.loyaltyProgramDiscount)
     })
 
-    this.totalPrice = this.totalBasePrice + this.totalAdditionalServicePrice - this.loyaltyProgramDiscount
+
   }
 
 
   reserve() {
-
+    let request = {
+      flights: this.basePrice.map((obj) => obj.flight),
+      totalPrice: this.totalPrice
+    }
+    this.flightService.reserveFlights(request).subscribe((res) => {
+      console.log(res)
+    })
   }
 }

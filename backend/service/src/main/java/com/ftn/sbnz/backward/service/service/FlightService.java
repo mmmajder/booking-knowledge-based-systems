@@ -2,12 +2,10 @@ package com.ftn.sbnz.backward.service.service;
 
 import com.ftn.sbnz.backward.model.models.Customer;
 import com.ftn.sbnz.backward.model.models.events.AdditionalServicesRequestEvent;
+import com.ftn.sbnz.backward.model.models.events.FlightPaymentRequestEvent;
 import com.ftn.sbnz.backward.model.models.events.PreviewFlightEvent;
 import com.ftn.sbnz.backward.model.models.flight.*;
-import com.ftn.sbnz.backward.service.dto.FlightBasePriceResponse;
-import com.ftn.sbnz.backward.service.dto.FlightPriceRequest;
-import com.ftn.sbnz.backward.service.dto.FlightResponse;
-import com.ftn.sbnz.backward.service.dto.SearchFlightsParams;
+import com.ftn.sbnz.backward.service.dto.*;
 import com.ftn.sbnz.backward.service.exception.BadRequestException;
 import com.ftn.sbnz.backward.service.repository.FlightRepository;
 import org.kie.api.runtime.KieSession;
@@ -33,11 +31,11 @@ public class FlightService {
 
     @Autowired
     private KieSession flightsKieSession;
-    @Autowired
-    private KieSession flightPriceKieSession;
+//    @Autowired
+//    private KieSession flightPriceKieSession;
 
-    @Autowired
-    private KieSession flightLoyaltyKieSession;
+//    @Autowired
+//    private KieSession flightLoyaltyKieSession;
 
 //    private static KieSession flighttransfersession = KieService.getKieSession("flighttransfersession");
 //    private static KieSession flightpricesession = KieService.getKieSession("flightpricesession");
@@ -101,8 +99,11 @@ public class FlightService {
         previewFlightEvent.setNumberOfChildren(numberOfChildren);
         previewFlightEvent.setSeatClass(seatClass);
 
-        flightPriceKieSession.insert(previewFlightEvent);
-        long ruleFireCount = flightPriceKieSession.fireAllRules();
+        flightsKieSession.insert(previewFlightEvent);
+        long ruleFireCount = flightsKieSession.fireAllRules();
+//
+//        flightPriceKieSession.insert(previewFlightEvent);
+//        long ruleFireCount = flightPriceKieSession.fireAllRules();
         System.out.println(previewFlightEvent.getBasePrice());
         return new FlightBasePriceResponse(flight, previewFlightEvent.getBasePrice());
     }
@@ -286,14 +287,28 @@ public class FlightService {
 
         for (AdditionalServicesRequestEvent additionalServicePrice : additionalServicesRequestEvent) {
             additionalServicePrice.setCustomer(user);
-            flightPriceKieSession.insert(additionalServicePrice);
+//            flightPriceKieSession.insert(additionalServicePrice);
+            flightsKieSession.insert(additionalServicePrice);
 //            flightLoyaltyKieSession.insert(additionalServicePrice);
         }
-        flightPriceKieSession.fireAllRules();
-        for (AdditionalServicesRequestEvent additionalServicePrice : additionalServicesRequestEvent) {
-            flightLoyaltyKieSession.insert(additionalServicePrice);
-        }
+//        flightPriceKieSession.fireAllRules();
+        flightsKieSession.fireAllRules();
+
+        // provera
+//        for (AdditionalServicesRequestEvent additionalServicePrice : additionalServicesRequestEvent) {
+//            flightLoyaltyKieSession.insert(additionalServicePrice);
+//        }
         return additionalServicesRequestEvent;
     }
 
+    public double getGrandTotalPrice() {
+        List<Double> grandTotalPrice = (List<Double>) flightsKieSession.getGlobal("grandTotalPrice");
+        System.out.println(grandTotalPrice);
+        return grandTotalPrice.get(0);
+    }
+
+    public boolean reserve(FlightPaymentRequestEvent reserveFlightRequest) {
+        flightsKieSession.insert(reserveFlightRequest);
+        return true;
+    }
 }

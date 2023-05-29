@@ -32,8 +32,11 @@ export class FlightService {
     return this.http.post<AdditionalServicesRequestEvent[]>(this.flightUrl + "/additional-services", requestBody, AuthService.getHttpOptions());
   }
 
+  public getGrandTotalPrice(): Observable<number> {
+    return this.http.get<number>(this.flightUrl + "/grand-total-price", AuthService.getHttpOptions());
+  }
 
-  // addTokens(tokens: number) {
-  //   return this.http.put<number>(this.customerUrl + "/tokens", {numberOfTokens: tokens}, AuthService.getHttpOptions());
-  // }
+  public reserveFlights(requestBody: { totalPrice: number; flights: FlightResponse[] }): Observable<AdditionalServicesRequestEvent[]> {
+    return this.http.post<AdditionalServicesRequestEvent[]>(this.flightUrl + "/reserve", requestBody, AuthService.getHttpOptions());
+  }
 }
