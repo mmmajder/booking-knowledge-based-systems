@@ -20,10 +20,6 @@ export class PropertiesContainerComponent {
     "Sauna",
     "Gym",
     "Spa",
-    "Playroom",
-    "Restaurant",
-    "Bar",
-    "Store",
     "Cinema"
   ];
   meals = [
@@ -62,7 +58,7 @@ export class PropertiesContainerComponent {
     return list.filter(item => item !== choice);
   }
 
-  private updatePopularHotels() {
+  public updatePopularHotels() {
     this.propertiesService.getPopularHotels().subscribe({
       next: (hotels) => this.popularHotels = hotels,
       error: err => console.error(err)

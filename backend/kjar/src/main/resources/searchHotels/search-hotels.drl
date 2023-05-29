@@ -10,17 +10,11 @@ import java.time.ZoneId;
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.HashSet
-import java.util.Comparator;
-
-//rule "Add hotel"
-//when
-//    $hotel: Hotel()
-//then
-//    System.out.println("HOTEL " + $hotel.getName());
-//end
+import java.util.Comparator
+import java.util.stream.Collectors;
 
 rule "Filter Hotels"
-no-loop
+lock-on-active
 when
     $searchParams: SearchHotelsParams()
     $hotel: Hotel(
@@ -30,11 +24,13 @@ when
         rating >= $searchParams.reviewScore,
         stars memberOf $searchParams.starRating || $searchParams.starRating.size() == 0,
         distanceFromCenter >= $searchParams.distanceStart,
-        distanceFromCenter <= $searchParams.distanceEnd,
-        $hotel.facilities.containsAll($searchParams.facilities) || $searchParams.facilities.size() == 0
+        distanceFromCenter <= $searchParams.distanceEnd
     )
 then
-    insert(new CalculateHotelPrice($hotel, $searchParams));
+    List<String> f = $hotel.getFacilities().stream().map(HotelFacility::getFacility).collect(Collectors.toList());
+    if(f.containsAll($searchParams.getFacilities())) {
+        insert(new CalculateHotelPrice($hotel, $searchParams));
+    }
 end
 
 rule "Calculate Hotel Price"
@@ -45,22 +41,21 @@ when
         $searchParams: searchHotelsParams
     )
 then
-    // CALCULATE DISCOUNT
+    // CALCULATE PRICE
     double numOfNights = calculateNumberOfNights($searchParams.getStartDate(), $searchParams.getEndDate());
     double basicPrice = 10.0 * $hotel.getStars() * numOfNights;
-    double mealPrice = ($searchParams.getNumAdults() + $searchParams.getNumChildren()) * 10.0 * numOfNights * $hotel.getStars();
+    System.out.println("Price of meals" + HotelUtils.getPrice($searchParams.getMeals()));
+    double mealPrice = ($searchParams.getNumAdults() + $searchParams.getNumChildren()) * HotelUtils.getPrice($searchParams.getMeals()) * numOfNights * $hotel.getStars();
     double totalPrice = basicPrice + mealPrice;
 
     // LAST MINUTE DISCOUNT
     int daysBeforeStay = calculateNumberOfNights(new Date(), $searchParams.getStartDate());
     double lastMinuteDiscount = holidayDiscount(daysBeforeStay, isHolidayPeriod($searchParams.getStartDate()));
-    if(lastMinuteDiscount > 0.0) {
+    if (lastMinuteDiscount > 0.0) {
         totalPrice -= totalPrice * (lastMinuteDiscount / 100);
     }
 
-    System.out.println($hotel.getName() + ": " + totalPrice);
-
-    if(totalPrice >= $searchParams.getPriceRangeStart() && $searchParams.getPriceRangeEnd() >= totalPrice) {
+    if (totalPrice >= $searchParams.getPriceRangeStart() && $searchParams.getPriceRangeEnd() >= totalPrice) {
         modify($searchParams){addHotel(new HotelResponse($hotel, totalPrice));}
     }
 end
@@ -76,7 +71,7 @@ then
 end
 
 rule "Hotel - Number of Views"
-no-loop
+lock-on-active
 when
   $event: HotelEvent(hotelEventType == HotelEventType.VIEW, $hotel: hotel)
   $h: Hotel(id == $hotel.getId())
@@ -97,12 +92,13 @@ then
     // TODO: numberOfViews -> points
   System.out.println("HOTEL VIEWED");
   modify($h){addPoints($numberOfViews)};
-  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
 end
 
 rule "Hotel - Number of Bookings"
+lock-on-active
 when
-  $event: HotelEvent(hotelEventType == HotelEventType.RESERVATION, $user: user, $hotel: hotel)
+  $event: HotelEvent(hotelEventType == HotelEventType.RESERVATION, $hotel: hotel)
+  $h: Hotel(id == $hotel.getId())
     $numberOfViews: Long() from accumulate(
         $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.RESERVATION)
         over window: time(24h),
@@ -117,18 +113,19 @@ when
 //  )
 then
   System.out.println("HOTEL BOOKED");
-  modify($hotel){addPoints($numberOfViews)};
-  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
+  modify($h){addPoints($numberOfViews)};
 end
 
 rule "Hotel - Number of Positive Reviews"
+lock-on-active
 when
-  $event: HotelEvent(hotelEventType == HotelEventType.POSITIVE_REVIEW, $user: user, $hotel: hotel)
-      $numberOfViews: Long() from accumulate(
-          $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.POSITIVE_REVIEW)
-          over window: time(24h),
-          count($v)
-      )
+  $event: HotelEvent(hotelEventType == HotelEventType.POSITIVE_REVIEW, $hotel: hotel)
+  $h: Hotel(id == $hotel.getId())
+  $numberOfViews: Long() from accumulate(
+      $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.POSITIVE_REVIEW)
+      over window: time(24h),
+      count($v)
+  )
 //  accumulate(
 //    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.POSITIVE_REVIEW) over window:time(1h) from $events: List(),
 //    $points: ( $events.size() > 3 ? 1 :
@@ -137,18 +134,20 @@ when
 //               0 )
 //  )
 then
-  modify($hotel){addPoints($numberOfViews)};
-  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
+  System.out.println("POSITIVE REVIEW");
+  modify($h){addPoints($numberOfViews)};
 end
 
 rule "Hotel - Number of Negative Reviews"
+lock-on-active
 when
   $event: HotelEvent(hotelEventType == HotelEventType.NEGATIVE_REVIEW, $user: user, $hotel: hotel)
-       $numberOfViews: Long() from accumulate(
-            $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.NEGATIVE_REVIEW)
-            over window: time(24h),
-            count($v)
-        )
+  $h: Hotel(id == $hotel.getId())
+   $numberOfViews: Long() from accumulate(
+        $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.NEGATIVE_REVIEW)
+        over window: time(24h),
+        count($v)
+    )
 //  accumulate(
 //    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.NEGATIVE_REVIEW) over window:time(24h) from $events: List(),
 //    $points: ( $events.size() > 3 ? -5 :
@@ -156,8 +155,8 @@ when
 //               0 )
 //  )
 then
-  modify($hotel){addPoints($numberOfViews)};
-  insert(new ReloadPopularHotelsEvent(new ArrayList<>()));
+  System.out.println("NEGATIVE REVIEW");
+  modify($h){addPoints($numberOfViews)};
 end
 
 rule "Sort and Select Top 10 Hotels"

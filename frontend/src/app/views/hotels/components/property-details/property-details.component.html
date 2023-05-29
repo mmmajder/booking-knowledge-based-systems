@@ -20,9 +20,10 @@
     </div>
     <div class="row">
       <div class="label">Facilities:</div>
-      <div class="value">
-        <div *ngFor="let f of property.facilities" [matTooltip]="'{{f.additionalPrice}}$'"
-             style="padding: 5px; margin: 5px; border-radius: 5px; background-color: var(--gray)">{{f.facility}}
+      <div class="value" style="display: flex">
+        <div *ngFor="let f of property.facilities"
+             style="padding: 5px; margin: 5px;  border-radius: 5px; background-color: var(--light-gray)">
+          {{f.facility}} <span *ngIf="f.additionalPrice > 0">({{f.additionalPrice}}$)</span>
         </div>
         <div *ngIf="property.facilities.length == 0">
           No facilities
@@ -33,7 +34,9 @@
       <div class="label">Reviews:</div>
       <div class="value">
         <div *ngFor="let r of property.reviews"
-             style="padding: 5px; border-radius: 5px; background-color: var(--gray)">{{r}}</div>
+             style="padding: 5px; border-radius: 5px; width: 70%; background-color: var(--light-gray)">
+          <b>{{r.user.email}} ({{r.rating}}/10)</b>
+          <br>{{r.comment}}</div>
         <div *ngIf="property.reviews.length == 0">
           No reviews
         </div>

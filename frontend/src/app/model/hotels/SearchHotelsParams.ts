@@ -12,7 +12,7 @@ export class SearchHotelsParams {
   distanceStart: number;
   distanceEnd: number;
   facilities: string[];
-  meals: string[];
+  meals: string;
 
   constructor() {
     this.name = '';
@@ -30,6 +30,6 @@ export class SearchHotelsParams {
     this.distanceStart = 0;
     this.distanceEnd = 5000;
     this.facilities = [];
-    this.meals = [];
+    this.meals = "All inclusive";
   }
 }

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -18,10 +19,19 @@ public class HotelRoom {
     private Long id;
 
     private Long hotelId;
-    private String roomNumber;
+    private int roomNumber;
     private RoomType roomType;
     private int numberOfAdults;
     private int numberOfChildren;
     @OneToMany
     private List<RoomOccupancy> roomOccupancies;
+
+    public HotelRoom(Long hotelId, int roomNumber, RoomType roomType, int numberOfAdults, int numberOfChildren) {
+        this.hotelId = hotelId;
+        this.roomNumber = roomNumber;
+        this.roomType = roomType;
+        this.numberOfAdults = numberOfAdults;
+        this.numberOfChildren = numberOfChildren;
+        this.roomOccupancies = new ArrayList<>();
+    }
 }

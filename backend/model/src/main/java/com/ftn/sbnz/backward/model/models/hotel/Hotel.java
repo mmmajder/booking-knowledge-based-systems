@@ -28,20 +28,20 @@ public class Hotel {
     private int stars;
     private int points;
     private String imageUrl;
-    @OneToMany
+    @ManyToMany
     private List<HotelFacility> facilities;
     @OneToMany
     private List<Review> reviews;
     private double distanceFromCenter;
 
     public void addPoints(Integer num) {
-        System.out.println("DODAJEM " + num);
         this.points += num;
+        System.out.println(name + ": " + points + " points");
     }
 
     public void addPoints(Long num) {
-        System.out.println("DODAJEM " + num);
         this.points += num;
+        System.out.println(name + ": " + points + " points");
     }
 
     public Hotel(Long id, String name, String address, String city, String country, List<HotelFacility> facilities, List<HotelRoom> hotelRooms, double rating, int stars, String image_url, int distance_from_center) {
