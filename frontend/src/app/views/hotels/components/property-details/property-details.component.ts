@@ -55,6 +55,7 @@ export class PropertyDetailsComponent implements OnInit {
 
   reserve() {
     if (this.reserveFormVisible) {
+      console.log(this.reservationParams)
       this.propertyService.reserve(this.reservationParams).subscribe({
         next: (success) => {
           console.log(success)

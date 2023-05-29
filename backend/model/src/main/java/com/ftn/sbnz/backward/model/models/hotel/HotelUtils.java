@@ -18,11 +18,11 @@ public class HotelUtils {
             RoomType.APARTMENT, 30.0
     );
 
-    public Double getPrice(String serviceType) {
+    public static Double getPrice(String serviceType) {
         return SERVICE_PRICE.get(ServiceTypes.valueOf(serviceType));
     }
 
-    public Double getRoomPrice(RoomType roomType) {
+    public static Double getRoomPrice(RoomType roomType) {
         return ROOM_PRICE.get(roomType);
     }
 }
