@@ -8,6 +8,9 @@ import com.ftn.sbnz.backward.model.models.flight.*;
 import com.ftn.sbnz.backward.service.dto.*;
 import com.ftn.sbnz.backward.service.exception.BadRequestException;
 import com.ftn.sbnz.backward.service.repository.FlightRepository;
+import com.ftn.sbnz.backward.service.repository.FlightTicketsRepository;
+import com.ftn.sbnz.backward.service.repository.PlaneBusynessRepository;
+import com.ftn.sbnz.backward.service.repository.PlaneSeatRepository;
 import org.kie.api.runtime.KieSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -31,6 +34,15 @@ public class FlightService {
 
     @Autowired
     private KieSession flightsKieSession;
+
+    @Autowired
+    private FlightTicketsRepository flightTicketsRepository;
+
+    @Autowired
+    private PlaneBusynessRepository planeBusynessRepository;
+
+    @Autowired
+    private PlaneSeatRepository planeSeatRepository;
 
     public List<List<Flight>> searchFlights(SearchFlightsParams searchFlightsParams) {
         List<List<Flight>> foundFlights = new ArrayList<>();
@@ -312,5 +324,23 @@ public class FlightService {
     }
 
     private void removeOccupiedSeats(FlightPaymentRequestEvent reserveFlightRequest) {
+        Customer customer = reserveFlightRequest.getCustomer();
+        for (int i=0; i<reserveFlightRequest.getFlights().size(); i++) {
+            PlaneBusyness planeBusyness = reserveFlightRequest.getFlights().get(i).getPlaneBusyness();
+            List<PlaneSeat> seats = reserveFlightRequest.getSeats().get(i);
+            Set<FlightTickets> tickets = planeBusyness.getTickets();
+            for (PlaneSeat selectedSeat : seats) {
+                planeSeatRepository.save(selectedSeat);
+                FlightTickets flightTicket = new FlightTickets();
+                flightTicket.setSeat(selectedSeat);
+                flightTicket.setName(customer.getName());
+                flightTicket.setSurname(customer.getSurname());
+                flightTicket.setResponsibleUser(customer.getEmail());
+                flightTicketsRepository.save(flightTicket);
+                tickets.add(flightTicket);
+            }
+            planeBusyness.setTickets(tickets);
+            planeBusynessRepository.save(planeBusyness);
+        }
     }
 }

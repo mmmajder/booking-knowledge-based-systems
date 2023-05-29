@@ -29,7 +29,7 @@ lock-on-active
             sum($totalPrice)
         )
     then
-        System.out.println("EVO ME");
+        System.out.println("Loyalty");
         LoyaltyProgram loyaltyProgram = new LoyaltyProgram();
         loyaltyProgram.setDiscount(@{discount});
         switch("@{category}") {

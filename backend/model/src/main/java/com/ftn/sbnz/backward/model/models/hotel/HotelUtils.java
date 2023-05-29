@@ -18,7 +18,7 @@ public class HotelUtils {
             RoomType.APARTMENT, 30.0
     );
 
-    public Double getPrice(String serviceType) {
+    public static Double getPrice(String serviceType) {
         return SERVICE_PRICE.get(ServiceTypes.valueOf(serviceType));
     }
 

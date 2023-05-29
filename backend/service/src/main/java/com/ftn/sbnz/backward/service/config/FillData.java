@@ -21,10 +21,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class FillData implements CommandLineRunner {
@@ -41,7 +38,6 @@ public class FillData implements CommandLineRunner {
     private AirportRepository airportRepository;
     @Autowired
     private LuggagePriceRepository luggagePriceRepository;
-
     @Autowired
     private PriceCatalogFlightRepository priceCatalogFlightRepository;
     @Autowired
@@ -56,6 +52,12 @@ public class FillData implements CommandLineRunner {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PlaneBusynessRepository planeBusynessRepository;
+
+    @Autowired
+    private PlaneRepository planeRepository;
 
     @Override
     public void run(String... args) {
@@ -199,6 +201,17 @@ public class FillData implements CommandLineRunner {
                 new Airport("AAR", "Denmark", "Aarhus"),
                 new Airport("ZRH", "Switzerland", "Zurich (Zürich) - Kloten")
         );
+        Plane plane = new Plane();
+        plane.setPlaneSeatTypes(new ArrayList<>());
+        plane.setAirlineAgency("Air Serbia");
+        planeRepository.save(plane);
+
+        PlaneBusyness planeBusyness = new PlaneBusyness();
+        planeBusyness.setPlane(plane);
+        planeBusyness.setTickets(new HashSet<>());
+        planeBusynessRepository.save(planeBusyness);
+
+
         airportRepository.saveAll(airports);
 
         // Save price catalog flight
@@ -238,6 +251,9 @@ public class FillData implements CommandLineRunner {
                 new Flight(airports.get(5), airports.get(6), LocalDateTime.parse("2023-07-01T20:19:42.120", formatter).toInstant(ZoneOffset.UTC), LocalDateTime.parse("2023-07-01T21:19:42.120", formatter).toInstant(ZoneOffset.UTC), "Air France", priceCatalogFlight),
                 new Flight(airports.get(5), airports.get(0), LocalDateTime.parse("2023-07-08T20:19:42.120", formatter).toInstant(ZoneOffset.UTC), LocalDateTime.parse("2023-07-08T21:19:42.120", formatter).toInstant(ZoneOffset.UTC), "Air France", priceCatalogFlight)
         );
+        for (Flight f : flights) {
+            f.setPlaneBusyness(planeBusyness);
+        }
         flightRepository.saveAll(flights);
         for (Flight flight : flights) {
             flightsKieSession.insert(flight);
