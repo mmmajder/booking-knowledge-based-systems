@@ -31,7 +31,6 @@ public class FillData implements CommandLineRunner {
     private KieSession hotelsKieSession;
     @Autowired
     private KieSession flightsKieSession;
-
     @Autowired
     private FlightRepository flightRepository;
     @Autowired
@@ -46,10 +45,8 @@ public class FillData implements CommandLineRunner {
     private HotelFacilitiesRepository hotelFacilitiesRepository;
     @Autowired
     private HotelRoomRepository hotelRoomRepository;
-
     @Autowired
     private UserAuthRepository userAuthRepository;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -134,7 +131,6 @@ public class FillData implements CommandLineRunner {
 
         flightsKieSession.insert(customer1);
         flightsKieSession.insert(customer2);
-        System.out.println("Filled customer data");
     }
 
     private void fillHotelsData() {

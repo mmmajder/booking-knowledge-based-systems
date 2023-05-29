@@ -30,6 +30,6 @@ export class SearchHotelsParams {
     this.distanceStart = 0;
     this.distanceEnd = 5000;
     this.facilities = [];
-    this.meals = "All inclusive";
+    this.meals = "ALL_INCLUSIVE";
   }
 }

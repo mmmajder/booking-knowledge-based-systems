@@ -23,10 +23,10 @@ export class PropertiesContainerComponent {
     "Cinema"
   ];
   meals = [
-    "Bed and breakfast",
-    "Half board",
-    "Full board",
-    "All inclusive"
+    {"value": "BED_AND_BREAKFAST", "description": "Bed and breakfast"},
+    {"value": "HALF_BOARD", "description": "Half board"},
+    {"value": "FULL_BOARD", "description": "Full board"},
+    {"value": "ALL_INCLUSIVE", "description": "All inclusive"},
   ];
   reviewScores = [
     {"value": 9.0, "description": "Excellent 9+"},
@@ -44,7 +44,10 @@ export class PropertiesContainerComponent {
     console.log(this.searchParams)
     if (this.searchParams.startDate != undefined && this.searchParams.endDate != undefined) {
       this.propertiesService.getProperties(this.searchParams).subscribe({
-        next: (properties) => { this.properties = properties; console.log(properties) },
+        next: (properties) => {
+          this.properties = properties;
+          console.log(properties)
+        },
         error: err => console.error(err)
       })
     }

@@ -22,7 +22,7 @@ public class HotelUtils {
         return SERVICE_PRICE.get(ServiceTypes.valueOf(serviceType));
     }
 
-    public Double getRoomPrice(RoomType roomType) {
+    public static Double getRoomPrice(RoomType roomType) {
         return ROOM_PRICE.get(roomType);
     }
 }

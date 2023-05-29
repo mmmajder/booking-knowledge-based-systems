@@ -8,7 +8,7 @@ public enum ServiceTypes {
 
     public final String label;
 
-    private ServiceTypes(String label) {
+    ServiceTypes(String label) {
         this.label = label;
     }
 }

@@ -44,7 +44,6 @@ then
     // CALCULATE PRICE
     double numOfNights = calculateNumberOfNights($searchParams.getStartDate(), $searchParams.getEndDate());
     double basicPrice = 10.0 * $hotel.getStars() * numOfNights;
-    System.out.println("Price of meals" + HotelUtils.getPrice($searchParams.getMeals()));
     double mealPrice = ($searchParams.getNumAdults() + $searchParams.getNumChildren()) * HotelUtils.getPrice($searchParams.getMeals()) * numOfNights * $hotel.getStars();
     double totalPrice = basicPrice + mealPrice;
 

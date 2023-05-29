@@ -111,8 +111,8 @@
         <mat-form-field appearance="outline" style="width: 100%">
           <mat-label>Meals</mat-label>
           <mat-select [(ngModel)]="searchParams.meals" name="meals">
-            <mat-option *ngFor="let choice of meals" [value]="choice">
-              {{choice}}
+            <mat-option *ngFor="let choice of meals" [value]="choice.value">
+              {{choice.description}}
             </mat-option>
           </mat-select>
         </mat-form-field>
