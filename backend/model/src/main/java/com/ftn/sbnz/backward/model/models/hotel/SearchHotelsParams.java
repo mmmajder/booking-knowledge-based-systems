@@ -24,7 +24,7 @@ public class SearchHotelsParams {
     private int distanceStart;
     private int distanceEnd;
     private List<String> facilities;
-    private List<String> meals;
+    private String meals;
 
     private List<HotelResponse> hotels;
 

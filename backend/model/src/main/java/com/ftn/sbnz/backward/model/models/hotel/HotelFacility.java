@@ -18,4 +18,9 @@ public class HotelFacility {
 
     private String facility;
     private Double additionalPrice;
+
+    public HotelFacility(String facility, Double price) {
+        this.facility = facility;
+        this.additionalPrice = price;
+    }
 }
