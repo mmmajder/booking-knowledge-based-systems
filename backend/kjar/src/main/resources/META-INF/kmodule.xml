@@ -14,4 +14,8 @@
     <kbase name="searchHotelsBase" eventProcessingMode="stream" packages="searchHotels">
         <ksession name="searchhotelssession"/>
     </kbase>
+
+    <kbase name="loyaltyBase" eventProcessingMode="stream" packages="loyalty">
+        <ksession name="loyaltyssession"/>
+    </kbase>
 </kmodule>

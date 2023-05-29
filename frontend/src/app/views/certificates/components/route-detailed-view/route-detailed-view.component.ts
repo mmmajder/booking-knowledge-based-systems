@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, ViewChild} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {FlightResponse} from "../../../../model/flight/FlightResponse";
 import {FlightService} from "../../../../services/flight.service";
@@ -7,6 +7,9 @@ import {seatClassReverseMapping} from "../../../../model/flight/SeatClass";
 import {FlightBasePriceResponse} from "../../../../model/flight/FlightBasePriceResponse";
 import {FormControl} from '@angular/forms';
 import {AdditionalServicesRequestEvent} from "../../../../model/flight/AdditionalServicesRequestEvent";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {StepperSelectionEvent} from "@angular/cdk/stepper";
+import {ReserveFlightScreenComponent} from "../reserve-flight-screen/reserve-flight-screen.component";
 
 @Component({
   selector: 'app-route-detailed-view',
@@ -14,6 +17,9 @@ import {AdditionalServicesRequestEvent} from "../../../../model/flight/Additiona
   styleUrls: ['./route-detailed-view.component.css']
 })
 export class RouteDetailedViewComponent {
+  @ViewChild(ReserveFlightScreenComponent)
+  private reserveFlightScreenComponent!: ReserveFlightScreenComponent;
+
   route!: FlightResponse[]
   routePrices!: FlightBasePriceResponse[]
   totalPrice!: number;
@@ -28,6 +34,7 @@ export class RouteDetailedViewComponent {
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any,
               public dialogRef: MatDialogRef<RouteDetailedViewComponent>,
+              @Inject(MatSnackBar) private _snackBar: MatSnackBar,
               private flightService: FlightService) {
   }
 
@@ -53,6 +60,7 @@ export class RouteDetailedViewComponent {
           specificSeats: this.seats[this.seats.length - 1].value?.length !== 0,
           flight: flightPrice.flight,
           luggageWeight: this.totalWeight,
+          executionTime: new Date()
         })
       })
     })
@@ -83,7 +91,7 @@ export class RouteDetailedViewComponent {
         this.seats[index].value.forEach((seatNumber: number) => {
           price.seats.push({
             number: seatNumber,
-            seatClass: this.data.seatClass,
+            seatClass: seatClassReverseMapping[this.data.seatClass],
           })
         })
       }
@@ -94,11 +102,27 @@ export class RouteDetailedViewComponent {
     console.log(this.seats)
 
 
-    this.displayAdditionalPrice = true    //todo move
+    this.displayAdditionalPrice = true;   //todo move
 
-    this.flightService.getAdditionalServicesPrice(this.additionalPrices).subscribe((res) => {
-      this.additionalPrices = res
-    })
+    function isValidSeats(additionalPrices: any[], that: any) {
+      for (let additionalPrice of additionalPrices) {
+        if (additionalPrice.seats.length > that.data.numberOfAdults + that.data.numberOfChildren) {
+          return false
+        }
+      }
+      return true
+    }
+
+    if (isValidSeats(this.additionalPrices, this)) {
+      this.flightService.getAdditionalServicesPrice(this.additionalPrices).subscribe((res) => {
+        this.additionalPrices = res
+      })
+    } else {
+      this._snackBar.open("You can not reserve more seats than number of passengers", '', {
+        duration: 3000,
+        panelClass: ['snack-bar']
+      })
+    }
 
   }
 
@@ -106,5 +130,11 @@ export class RouteDetailedViewComponent {
     console.log("CAOOO")
     console.log(this.route)
     return false;
+  }
+
+  onStepSelection($event: StepperSelectionEvent) {
+    if ($event.selectedIndex === 2) {
+      this.reserveFlightScreenComponent.updatePrice();
+    }
   }
 }

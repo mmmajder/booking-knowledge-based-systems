@@ -12,8 +12,8 @@ import lombok.Setter;
 public class BasePrice {
     private double seatPrice;
     private double childrenDiscount;
-    private double numberOfChildren;
-    private double numberOfAdults;
+    private int numberOfChildren;
+    private int numberOfAdults;
     private double discountForNumberOfPassengers;
     private double totalPrice;
 

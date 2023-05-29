@@ -11,6 +11,7 @@ import java.util.Iterator
 import java.util.Objects;
 
 global java.util.List order;
+global java.util.List startPositions;
 
 query isConnectedTo(Airport startLocation, Airport endLocation, boolean isFirst, Instant departureTime, Instant arrivalTime, Object connected)
     $f1: Flight( startLocation, endLocation, endDepartureTime, endArrivalTime; )
@@ -55,6 +56,8 @@ function boolean updateRoutes(Instant departureTime, Instant arrivalTime, boolea
             List<Flight> newRoute = new ArrayList<>();
             newRoute.add(followingFlight);
             orderFlight.add(newRoute);
+            System.out.println("Dodata nova ruta");
+            System.out.println(orderFlight);
         }
         // ako ne, updajtuj postojece rute
         else {
@@ -94,6 +97,9 @@ function boolean updateRoutes(Instant departureTime, Instant arrivalTime, boolea
                 }
             }
 
+            System.out.println("Dodate vrednosti");
+            System.out.println(orderFlight);
+
             // provera da li nova ruta koja se dodaje vec postoji u postojecim rutama
             for (List<Flight> newRouteFlights : newRoutes) {
                 boolean isDuplicate = false;
@@ -119,6 +125,9 @@ function boolean updateRoutes(Instant departureTime, Instant arrivalTime, boolea
                     orderFlight.add(newRouteFlights);
                 }
             }
+
+            System.out.println("Uklonjene vrednosti");
+            System.out.println(orderFlight);
         }
         return true;
     }
@@ -141,7 +150,7 @@ rule "check connection"
 lock-on-active
 when
     $fr: FlightRequest($startLocation: departureAirport, $endLocation: arrivalAirport, $departureTime: departureTime)
-    isConnectedTo(startLocation: $startLocation, endLocation: $endLocation, isFirst: true, departureTime: $departureTime, arrivalTime: $departureTime, connected: new ArrayList())
+    isConnectedTo(startLocation: $startLocation, endLocation: $endLocation, isFirst: true, departureTime: $departureTime, arrivalTime: $departureTime, connected: startPositions)
 then
     System.out.println("----------");
     System.out.println("Flight request");
@@ -156,7 +165,7 @@ then
 end
 
 
-rule "check duplicate"
+rule "check number of stops"
 no-loop
 when
     $fr: FlightRequest(routes != null, $numberOfStops: numberOfStops)
@@ -180,7 +189,6 @@ then
             }
             modify($fr){setRoutes(newList);}
         }
-    System.out.println("Treba da se proveri sta vec ne");
     System.out.println($fr.getRoutes());
 
 end
