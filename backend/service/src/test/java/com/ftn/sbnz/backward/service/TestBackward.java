@@ -125,10 +125,11 @@ public class TestBackward {
         flightRequest.setDepartureAirport(airportNIS);
         flightRequest.setArrivalAirport(airportMIN);
         flightRequest.setDepartureTime(Instant.parse("2023-07-01T11:00:42.12Z"));
-        flightRequest.setNumberOfStops(NumberOfStops.ONE_MAX);
+        flightRequest.setNumberOfStops(NumberOfStops.ANY);
 
         List<List<Flight>> order = new ArrayList<>();
         ksession.setGlobal("order", order);
+        ksession.setGlobal("startPositions", new ArrayList<>());
 
 
         ksession.insert(flightRequest);

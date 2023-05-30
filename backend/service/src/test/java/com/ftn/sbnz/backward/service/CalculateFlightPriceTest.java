@@ -102,8 +102,9 @@ public class CalculateFlightPriceTest {
         additionalServicesRequestEvent.setLuggageWeight(8);
         additionalServicesRequestEvent.setPriorityBoarding(true);
         additionalServicesRequestEvent.setSpecificSeats(true);
-        additionalServicesRequestEvent.setSeats(null);
+        additionalServicesRequestEvent.setSeats(new ArrayList<>(Arrays.asList(new PlaneSeat(1L, 1, SeatClass.BUSINESS))));
         additionalServicesRequestEvent.setExecutionTime(Date.from(Instant.now()));
+        additionalServicesRequestEvent.setCustomer(customer);
 
         ksession.insert(previewFlightEvent);
         ksession.insert(additionalServicesRequestEvent);
