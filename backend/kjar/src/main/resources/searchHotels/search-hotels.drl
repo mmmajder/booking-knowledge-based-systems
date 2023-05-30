@@ -1,6 +1,7 @@
 package searchHotels
 
 import com.ftn.sbnz.backward.model.models.hotel.*;
+import com.ftn.sbnz.backward.model.models.Customer;
 import java.time.LocalDate;
 import java.util.Date;
 import java.time.temporal.ChronoUnit;
@@ -28,8 +29,8 @@ when
     )
 then
     List<String> f = $hotel.getFacilities().stream().map(HotelFacility::getFacility).collect(Collectors.toList());
-    if(f.containsAll($searchParams.getFacilities())) {
-        insert(new CalculateHotelPrice($hotel, $searchParams));
+    if (f.containsAll($searchParams.getFacilities())) {
+        insert(new CalculateHotelPrice($hotel, $searchParams, 0));
     }
 end
 
@@ -41,31 +42,36 @@ when
         $searchParams: searchHotelsParams
     )
 then
-    // CALCULATE PRICE
     double numOfNights = calculateNumberOfNights($searchParams.getStartDate(), $searchParams.getEndDate());
     double basicPrice = 10.0 * $hotel.getStars() * numOfNights;
     double mealPrice = ($searchParams.getNumAdults() + $searchParams.getNumChildren()) * HotelUtils.getPrice($searchParams.getMeals()) * numOfNights * $hotel.getStars();
     double totalPrice = basicPrice + mealPrice;
+    modify($calculateHotelPrice){setTotalPrice(totalPrice);}
+    insert(new LastMinute(isHolidayPeriod($searchParams.getStartDate()), calculateNumberOfNights(new Date(), $searchParams.getStartDate()), $calculateHotelPrice));
+end
 
-    // LAST MINUTE DISCOUNT
-    int daysBeforeStay = calculateNumberOfNights(new Date(), $searchParams.getStartDate());
-    double lastMinuteDiscount = holidayDiscount(daysBeforeStay, isHolidayPeriod($searchParams.getStartDate()));
-    if (lastMinuteDiscount > 0.0) {
-        totalPrice -= totalPrice * (lastMinuteDiscount / 100);
+rule "Check total price"
+no-loop
+when
+    $event: TotalPriceEvent()
+then
+    Double totalPrice = $event.getCalculateHotelPrice().getTotalPrice();
+    if ($event.getTotalDiscount() > 0.0) {
+        totalPrice -= totalPrice * ($event.getTotalDiscount() / 100);
     }
-
-    if (totalPrice >= $searchParams.getPriceRangeStart() && $searchParams.getPriceRangeEnd() >= totalPrice) {
-        modify($searchParams){addHotel(new HotelResponse($hotel, totalPrice));}
+    if (totalPrice >= $event.getCalculateHotelPrice().getSearchHotelsParams().getPriceRangeStart() && $event.getCalculateHotelPrice().getSearchHotelsParams().getPriceRangeEnd() >= totalPrice) {
+        modify($event.getCalculateHotelPrice().getSearchHotelsParams()){addHotel(new HotelResponse($event.getCalculateHotelPrice().getHotel(), totalPrice));}
     }
 end
 
 rule "Available room"
+no-loop
 when
     $checkRoomAvailability: CheckRoomAvailability($hotel: hotel, $params: reserveHotelParams)
+    $user: Customer(email == $params.getUserEmail(), numberOfTokens >= $params.getPrice())
     $room: HotelRoom($roomOccupancies: roomOccupancies, $hotel.getId() == hotelId, numberOfAdults >= $params.getNumberOfAdults(), numberOfChildren >= $params.getNumberOfChildren())
     not(RoomOccupancy(isBetween($params.getStart(), $params.getEnd(), startDate), isBetween($params.getStart(), $params.getEnd(), endDate)) from $roomOccupancies)
 then
-    System.out.println("THERE IS A ROOM");
     modify($checkRoomAvailability){setHotelRoom($room);}
 end
 
@@ -74,21 +80,12 @@ lock-on-active
 when
   $event: HotelEvent(hotelEventType == HotelEventType.VIEW, $hotel: hotel)
   $h: Hotel(id == $hotel.getId())
-//  accumulate(
-//    $viewEvent: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.VIEW) over window:time(5h),
-//    $points: ( accumulate($v: $viewEvent; count($v) < 3), -1;
-//               accumulate($v: $viewEvent; count($v) > 10), 1;
-//               accumulate($v: $viewEvent; count($v) > 30), 5;
-//               accumulate($v: $viewEvent; count($v) > 100), 10;
-//               0 )
-//  )
   $numberOfViews: Long() from accumulate(
       $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.VIEW)
       over window: time(5h),
       count($v)
   )
 then
-    // TODO: numberOfViews -> points
   System.out.println("HOTEL VIEWED");
   modify($h){addPoints($numberOfViews)};
 end
@@ -98,21 +95,14 @@ lock-on-active
 when
   $event: HotelEvent(hotelEventType == HotelEventType.RESERVATION, $hotel: hotel)
   $h: Hotel(id == $hotel.getId())
-    $numberOfViews: Long() from accumulate(
+  $numberOfBookings: Long() from accumulate(
         $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.RESERVATION)
         over window: time(24h),
         count($v)
     )
-//  accumulate(
-//    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.BOOKING) over window:time(24h) from $events: List(),
-//    $points: ( $events.size() > 3 ? 1 :
-//               $events.size() > 10 ? 5 :
-//               $events.size() > 15 ? 10 :
-//               0 )
-//  )
 then
   System.out.println("HOTEL BOOKED");
-  modify($h){addPoints($numberOfViews)};
+  modify($h){addPoints($numberOfBookings * 5)};
 end
 
 rule "Hotel - Number of Positive Reviews"
@@ -120,21 +110,14 @@ lock-on-active
 when
   $event: HotelEvent(hotelEventType == HotelEventType.POSITIVE_REVIEW, $hotel: hotel)
   $h: Hotel(id == $hotel.getId())
-  $numberOfViews: Long() from accumulate(
+  $numberOfReviews: Long() from accumulate(
       $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.POSITIVE_REVIEW)
       over window: time(24h),
       count($v)
   )
-//  accumulate(
-//    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.POSITIVE_REVIEW) over window:time(1h) from $events: List(),
-//    $points: ( $events.size() > 3 ? 1 :
-//               $events.size() > 5 ? 5 :
-//               $events.size() > 10 ? 10 :
-//               0 )
-//  )
 then
   System.out.println("POSITIVE REVIEW");
-  modify($h){addPoints($numberOfViews)};
+  modify($h){addPoints($numberOfReviews * 10)};
 end
 
 rule "Hotel - Number of Negative Reviews"
@@ -142,20 +125,14 @@ lock-on-active
 when
   $event: HotelEvent(hotelEventType == HotelEventType.NEGATIVE_REVIEW, $user: user, $hotel: hotel)
   $h: Hotel(id == $hotel.getId())
-   $numberOfViews: Long() from accumulate(
+  $numberOfReviews: Long() from accumulate(
         $v: HotelEvent($hotel == hotel, hotelEventType == HotelEventType.NEGATIVE_REVIEW)
         over window: time(24h),
         count($v)
     )
-//  accumulate(
-//    HotelEvent($hotel == hotel, hotelEventType == HotelEventType.NEGATIVE_REVIEW) over window:time(24h) from $events: List(),
-//    $points: ( $events.size() > 3 ? -5 :
-//               $events.size() > 10 ? -$negativeReviews :
-//               0 )
-//  )
 then
   System.out.println("NEGATIVE REVIEW");
-  modify($h){addPoints($numberOfViews)};
+  modify($h){addPoints(-$numberOfReviews * 10)};
 end
 
 rule "Sort and Select Top 10 Hotels"
@@ -169,30 +146,7 @@ then
 end
 
 function boolean isBetween(Date min, Date max, Date d) {
-    return d.after(min) && d.before(max);
-}
-
-function double holidayDiscount(int daysBeforeStay, boolean holidayPeriod) {
-    if (daysBeforeStay >= 16 && daysBeforeStay <= 25) {
-        if (holidayPeriod) {
-            return 5.0;
-        } else {
-            return 10.0;
-        }
-    } else if (daysBeforeStay >= 6 && daysBeforeStay <= 15) {
-        if (holidayPeriod) {
-            return 10.0;
-        } else {
-            return 15.0;
-        }
-    } else if (daysBeforeStay <= 5) {
-        if (holidayPeriod) {
-            return 15.0;
-        } else {
-            return 20.0;
-        }
-    }
-    return 0.0;
+    return (d.after(min) && d.before(max)) || d.equals(min) || d.equals(max);
 }
 
 function boolean isHolidayPeriod(Date date) {

@@ -44,32 +44,8 @@
     </div>
     <div style="width: 100%; display: flex; margin-bottom: 20px">
       <button mat-raised-button style="width: 49%" (click)="review()">Review</button>
-      <button mat-raised-button style="width: 49%; margin-left: 5px" color="primary" (click)="reserve()">Reserve
+      <button mat-raised-button style="width: 49%; margin-left: 5px" color="primary" [matTooltip]="getTooltipMessage()" (click)="reserve()">Reserve for {{price}}$
       </button>
-    </div>
-
-    <div *ngIf="reserveFormVisible">
-      <mat-form-field appearance="outline" style="width: 100%;">
-        <mat-label>Enter a date range</mat-label>
-        <mat-date-range-input [rangePicker]="picker">
-          <input matStartDate name="dateStart" [(ngModel)]="reservationParams.start" placeholder="Start date">
-          <input matEndDate name="dateEnd" [(ngModel)]="reservationParams.end" placeholder="End date">
-        </mat-date-range-input>
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker></mat-date-range-picker>
-      </mat-form-field>
-
-      <p style="width: 100%; display: flex">
-        <mat-form-field appearance="outline" style="width: 49%; float: left">
-          <mat-label>Number of adults</mat-label>
-          <input [(ngModel)]="reservationParams.numberOfAdults" name="numOfAdults" matInput type="number" value="2">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" style="width: 49%; float: right">
-          <mat-label>Number of children</mat-label>
-          <input [(ngModel)]="reservationParams.numberOfChildren" name="numOfChildren" matInput type="number" value="0">
-        </mat-form-field>
-      </p>
     </div>
 
     <div *ngIf="reviewFormVisible">

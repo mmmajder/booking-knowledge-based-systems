@@ -2,19 +2,23 @@ template header
 holiday
 daysStart
 daysEnd
+daysBefore
 discount
+totalDiscount
 
 package templates;
 
-import com.ftn.sbnz.backward.model.models.LastMinute;
+import com.ftn.sbnz.backward.model.models.hotel.LastMinute;
+import com.ftn.sbnz.backward.model.models.hotel.TotalPriceEvent;
 
 template "hotelsLastMinute"
 
 rule "Last Minute discount_@{row.rowNumber}"
+no-loop
     when
-        $l: LastMinute(holiday == @{holiday}, daysStart >= @{daysStart}, daysEnd < @{daysEnd})
+        $l: LastMinute(holiday == @{holiday}, daysBefore >= @{daysStart}, daysBefore < @{daysEnd})
     then
-        modify($l){setDiscount(@{discount});}
+        insert(new TotalPriceEvent(@{discount}, $l.getCalculateHotelPrice()));
 end
 
 end template

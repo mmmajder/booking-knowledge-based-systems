@@ -12,7 +12,13 @@ import {ReserveHotelParams, ReviewHotelParams} from "../../../../model/hotels/Re
 })
 export class PropertyDetailsComponent implements OnInit {
   @Input() id!: number;
-  userEmail: string = '';
+  @Input() price!: number;
+  @Input() numberOfAdults!: number;
+  @Input() numberOfChildren!: number;
+  @Input() startDate!: Date;
+  @Input() endDate!: Date;
+
+  userEmail: string = 'customer@gmail.com';
 
   reservationParams = new ReserveHotelParams();
   reviewParams = new ReviewHotelParams();
@@ -24,7 +30,7 @@ export class PropertyDetailsComponent implements OnInit {
   reviewFormVisible = false;
 
   constructor(private authService: AuthService, private propertyService: PropertyService) {
-    this.userRole = localStorage.getItem("userRole") || ""
+    this.userRole = localStorage.getItem("userRole") || "";
   }
 
   ngOnInit() {
@@ -54,18 +60,24 @@ export class PropertyDetailsComponent implements OnInit {
   }
 
   reserve() {
-    if (this.reserveFormVisible) {
-      console.log(this.reservationParams)
-      this.propertyService.reserve(this.reservationParams).subscribe({
-        next: (success) => {
-          console.log(success)
-        },
-        error: err => console.error(err)
-      });
-    } else {
-      this.reserveFormVisible = true;
-      this.reviewFormVisible = false;
-    }
+    console.log(this.reservationParams)
+    this.reservationParams.start = this.startDate;
+    this.reservationParams.end = this.endDate;
+    this.reservationParams.price = this.price;
+    this.reservationParams.numberOfAdults = this.numberOfAdults;
+    this.reservationParams.numberOfChildren = this.numberOfChildren;
+    this.reservationParams.userEmail = this.userEmail;
+
+    this.propertyService.reserve(this.reservationParams).subscribe({
+      next: (success) => {
+        if (!success) {
+          alert("Reservation failed.")
+        } else {
+          alert("Successfully reserved.")
+        }
+      },
+      error: err => console.error(err)
+    });
   }
 
   review() {
@@ -80,5 +92,17 @@ export class PropertyDetailsComponent implements OnInit {
       this.reviewFormVisible = true;
       this.reserveFormVisible = false;
     }
+  }
+
+  getTooltipMessage() {
+    return this.formatDate(this.startDate) + " - " + this.formatDate(this.endDate) + " for " + this.numberOfAdults + " adults " + " and " + this.numberOfChildren + " children";
+  }
+
+  formatDate(date_Object: Date): string {
+    return date_Object.getDate() +
+      "/" +
+      (date_Object.getMonth() + 1) +
+      "/" +
+      +date_Object.getFullYear();
   }
 }

@@ -127,7 +127,12 @@
   <div class="col-7" style="border-left: 1px solid gray; padding-left: 20px;">
     <div class="row">
       <div class="col-6" *ngFor="let o of properties">
-        <app-property-card [property]="o" (updateDisplay)="updatePopularHotels()"></app-property-card>
+        <app-property-card [property]="o"
+                           [startDate]="searchParams.startDate"
+                           [endDate]="searchParams.endDate"
+                           [numberOfAdults]="searchParams.numAdults"
+                           [numberOfChildren]="searchParams.numChildren"
+                           (updateDisplay)="updatePopularHotels()"></app-property-card>
       </div>
     </div>
     <div *ngIf="properties.length === 0" class="d-flex justify-content-center" style="width: 100%">

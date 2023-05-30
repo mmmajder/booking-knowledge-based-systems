@@ -5,6 +5,7 @@ export class ReserveHotelParams {
   end!: Date;
   numberOfAdults: number = 2;
   numberOfChildren: number = 0;
+  price: number = 0;
 }
 
 export class ReviewHotelParams {

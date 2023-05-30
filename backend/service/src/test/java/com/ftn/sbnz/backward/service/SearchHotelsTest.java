@@ -1,7 +1,6 @@
 package com.ftn.sbnz.backward.service;
 
-import com.ftn.sbnz.backward.model.models.LastMinute;
-import com.ftn.sbnz.backward.service.repository.HotelRepository;
+import com.ftn.sbnz.backward.model.models.hotel.LastMinute;
 import org.drools.template.ObjectDataCompiler;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,7 +9,6 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.InputStream;
@@ -19,9 +17,6 @@ import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
 public class SearchHotelsTest {
-
-    @Mock
-    private HotelRepository hotelRepository;
 
     @Test
     public void testLastMinute() {

@@ -10,4 +10,5 @@ import lombok.*;
 public class CalculateHotelPrice {
     private Hotel hotel;
     private SearchHotelsParams searchHotelsParams;
+    private double totalPrice;
 }

@@ -11,18 +11,28 @@ import {PropertyDetailsComponent} from "../property-details/property-details.com
 export class PropertyCardComponent {
   @Output() updateDisplay: EventEmitter<any> = new EventEmitter();
   @Input() property!: HotelResponse;
+  @Input() numberOfAdults!: number;
+  @Input() numberOfChildren!: number;
+  @Input() startDate!: Date;
+  @Input() endDate!: Date;
+
   userRole!: string;
 
   constructor(private dialog: MatDialog) {
     this.userRole = localStorage.getItem("userRole") || ""
   }
 
-  objectDetails(id: number) {
+  objectDetails(id: number, price: number) {
     let dialogRef = this.dialog.open(PropertyDetailsComponent, {
       height: '650px',
       width: '800px'
     });
     dialogRef.componentInstance.id = id;
+    dialogRef.componentInstance.price = price;
+    dialogRef.componentInstance.numberOfAdults = this.numberOfAdults;
+    dialogRef.componentInstance.numberOfChildren = this.numberOfChildren;
+    dialogRef.componentInstance.startDate = this.startDate;
+    dialogRef.componentInstance.endDate = this.endDate;
     dialogRef.afterClosed().subscribe(() => this.updateDisplay.emit())
   }
 }

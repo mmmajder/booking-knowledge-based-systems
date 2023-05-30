@@ -76,22 +76,29 @@ public class HotelsService {
         Hotel hotel = findById(reserveHotelParams.getHotelId());
         CheckRoomAvailability roomAvailability = new CheckRoomAvailability(hotel, reserveHotelParams, null);
         hotelsKieSession.insert(roomAvailability);
+        hotelsKieSession.fireAllRules();
 
         HotelRoom room = roomAvailability.getHotelRoom();
-        if (room == null)
+        if (room == null) {
+            System.out.println("No rooms available");
             return false;
+        }
 
         RoomOccupancy roomOccupancy = new RoomOccupancy();
         roomOccupancy.setStartDate(reserveHotelParams.getStart());
         roomOccupancy.setEndDate(reserveHotelParams.getEnd());
         roomOccupancyRepository.save(roomOccupancy);
+        hotelsKieSession.insert(roomOccupancy);
 
-        if (room.getRoomOccupancies() == null)
+        if (room.getRoomOccupancies() == null) {
             room.setRoomOccupancies(new ArrayList<>());
+        }
         room.getRoomOccupancies().add(roomOccupancy);
         hotelRoomRepository.save(room);
 
         hotelsKieSession.insert(new HotelEvent(hotel, HotelEventType.RESERVATION, null));
+        hotelsKieSession.fireAllRules();
+        System.out.println("Reservation was a success.");
         return true;
     }
 

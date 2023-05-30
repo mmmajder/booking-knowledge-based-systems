@@ -16,4 +16,5 @@ public class ReserveHotelParams {
     private Date end;
     private int numberOfAdults;
     private int numberOfChildren;
+    private double price;
 }

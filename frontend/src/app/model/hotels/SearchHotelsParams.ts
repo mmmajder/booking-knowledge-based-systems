@@ -1,8 +1,8 @@
 export class SearchHotelsParams {
   name: string;
   destination: string;
-  startDate: Date | undefined;
-  endDate: Date | undefined;
+  startDate: Date;
+  endDate: Date;
   numAdults: number;
   numChildren: number;
   reviewScore: number;

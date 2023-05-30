@@ -23,4 +23,9 @@ public class RoomOccupancy {
     private Date endDate;
     @OneToOne
     private User user;
+
+    public RoomOccupancy(Date startDate, Date endDate) {
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

@@ -79,7 +79,6 @@ public class FillData implements CommandLineRunner {
 
         flightsKieSession.insert(payment1);
         flightsKieSession.insert(payment2);
-
     }
 
     private void fillUserData() {
@@ -128,6 +127,9 @@ public class FillData implements CommandLineRunner {
 
         flightsKieSession.insert(customer1);
         flightsKieSession.insert(customer2);
+
+        hotelsKieSession.insert(customer1);
+        hotelsKieSession.insert(customer2);
     }
 
     private void fillHotelsData() {
@@ -178,6 +180,12 @@ public class FillData implements CommandLineRunner {
 
             hotelRepository.save(h);
             hotelsKieSession.insert(h);
+
+            hotelsKieSession.insert(hotelRoom1);
+            hotelsKieSession.insert(hotelRoom2);
+            hotelsKieSession.insert(hotelRoom3);
+            hotelsKieSession.insert(hotelRoom4);
+            hotelsKieSession.insert(hotelRoom5);
         }
         hotelsKieSession.fireAllRules();
     }
